@@ -1554,6 +1554,60 @@ export function useDescribeImage4(
   throw new Error('Invalid props')
 }
 /**
+ * A specialized hook for the DescribeMedia1599 BAML function that supports both streaming and non‑streaming responses.
+ *
+ * **Input Types:**
+ *
+ * - img: Image
+ *
+ * - client_sector: string
+ *
+ * - client_name: string
+ *
+ *
+ * **Return Type:**
+ * - **Non‑streaming:** string
+ * - **Streaming Partial:** string
+ * - **Streaming Final:** string
+ *
+ * **Usage Patterns:**
+ * 1. **Non‑streaming (Default)**
+ *    - Best for quick responses and simple UI updates.
+ * 2. **Streaming**
+ *    - Ideal for long‑running operations or real‑time feedback.
+ *
+ * **Edge Cases:**
+ * - Ensure robust error handling via `onError`.
+ * - Handle cases where partial data may be incomplete or missing.
+ *
+ * @example
+ * ```tsx
+ * // Basic non‑streaming usage:
+ * const { data, error, isLoading, mutate } = useDescribeMedia1599({ stream: false});
+ *
+ * // Streaming usage:
+ * const { data, streamData, isLoading, error, mutate } = useDescribeMedia1599({
+ *   stream: true | undefined,
+ *   onStreamData: (partial) => console.log('Partial update:', partial),
+ *   onFinalData: (final) => console.log('Final result:', final),
+ *   onError: (err) => console.error('Error:', err),
+ * });
+ * ```
+ */
+export function useDescribeMedia1599(props: HookInput<'DescribeMedia1599', { stream: false }>): HookOutput<'DescribeMedia1599', { stream: false }>
+export function useDescribeMedia1599(props?: HookInput<'DescribeMedia1599', { stream?: true }>): HookOutput<'DescribeMedia1599', { stream: true }>
+export function useDescribeMedia1599(
+  props: HookInput<'DescribeMedia1599', { stream?: boolean }> = {},
+): HookOutput<'DescribeMedia1599', { stream: true }> | HookOutput<'DescribeMedia1599', { stream: false }> {
+  if (isNotStreamingProps(props)) {
+    return useBamlAction(Actions.DescribeMedia1599, props)
+  }
+  if (isStreamingProps(props)) {
+    return useBamlAction(StreamingActions.DescribeMedia1599, props)
+  }
+  throw new Error('Invalid props')
+}
+/**
  * A specialized hook for the DifferentiateUnions BAML function that supports both streaming and non‑streaming responses.
  *
  * **Input Types:**
@@ -5252,6 +5306,56 @@ export function useStreamingCompoundNumbers(
   }
   if (isStreamingProps(props)) {
     return useBamlAction(StreamingActions.StreamingCompoundNumbers, props)
+  }
+  throw new Error('Invalid props')
+}
+/**
+ * A specialized hook for the StructureDocument1559 BAML function that supports both streaming and non‑streaming responses.
+ *
+ * **Input Types:**
+ *
+ * - document_txt: string
+ *
+ *
+ * **Return Type:**
+ * - **Non‑streaming:** Document1559
+ * - **Streaming Partial:** partial_types.Document1559
+ * - **Streaming Final:** Document1559
+ *
+ * **Usage Patterns:**
+ * 1. **Non‑streaming (Default)**
+ *    - Best for quick responses and simple UI updates.
+ * 2. **Streaming**
+ *    - Ideal for long‑running operations or real‑time feedback.
+ *
+ * **Edge Cases:**
+ * - Ensure robust error handling via `onError`.
+ * - Handle cases where partial data may be incomplete or missing.
+ *
+ * @example
+ * ```tsx
+ * // Basic non‑streaming usage:
+ * const { data, error, isLoading, mutate } = useStructureDocument1559({ stream: false});
+ *
+ * // Streaming usage:
+ * const { data, streamData, isLoading, error, mutate } = useStructureDocument1559({
+ *   stream: true | undefined,
+ *   onStreamData: (partial) => console.log('Partial update:', partial),
+ *   onFinalData: (final) => console.log('Final result:', final),
+ *   onError: (err) => console.error('Error:', err),
+ * });
+ * ```
+ */
+export function useStructureDocument1559(props: HookInput<'StructureDocument1559', { stream: false }>): HookOutput<'StructureDocument1559', { stream: false }>
+export function useStructureDocument1559(props?: HookInput<'StructureDocument1559', { stream?: true }>): HookOutput<'StructureDocument1559', { stream: true }>
+export function useStructureDocument1559(
+  props: HookInput<'StructureDocument1559', { stream?: boolean }> = {},
+): HookOutput<'StructureDocument1559', { stream: true }> | HookOutput<'StructureDocument1559', { stream: false }> {
+  if (isNotStreamingProps(props)) {
+    return useBamlAction(Actions.StructureDocument1559, props)
+  }
+  if (isStreamingProps(props)) {
+    return useBamlAction(StreamingActions.StructureDocument1559, props)
   }
   throw new Error('Invalid props')
 }

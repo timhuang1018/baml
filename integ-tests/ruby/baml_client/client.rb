@@ -829,6 +829,38 @@ module Baml
     sig {
       params(
         varargs: T.untyped,
+        img: Baml::Image,client_sector: String,client_name: String,
+        baml_options: T::Hash[Symbol, T.any(Baml::TypeBuilder, Baml::ClientRegistry)]
+      ).returns(String)
+    }
+    def DescribeMedia1599(
+        *varargs,
+        img:,client_sector:,client_name:,
+        baml_options: {}
+    )
+      if varargs.any?
+        
+        raise ArgumentError.new("DescribeMedia1599 may only be called with keyword arguments")
+      end
+      if (baml_options.keys - [:client_registry, :tb]).any?
+        raise ArgumentError.new("Received unknown keys in baml_options (valid keys: :client_registry, :tb): #{baml_options.keys - [:client_registry, :tb]}")
+      end
+
+      raw = @runtime.call_function(
+        "DescribeMedia1599",
+        {
+          img: img,client_sector: client_sector,client_name: client_name,
+        },
+        @ctx_manager,
+        baml_options[:tb]&.instance_variable_get(:@registry),
+        baml_options[:client_registry],
+      )
+      (raw.parsed_using_types(Baml::Types, Baml::PartialTypes, false))
+    end
+
+    sig {
+      params(
+        varargs: T.untyped,
         
         baml_options: T::Hash[Symbol, T.any(Baml::TypeBuilder, Baml::ClientRegistry)]
       ).returns(T.any(Baml::Types::OriginalA, Baml::Types::OriginalB))
@@ -3186,6 +3218,38 @@ module Baml
         "StreamingCompoundNumbers",
         {
           digits: digits,yapping: yapping,
+        },
+        @ctx_manager,
+        baml_options[:tb]&.instance_variable_get(:@registry),
+        baml_options[:client_registry],
+      )
+      (raw.parsed_using_types(Baml::Types, Baml::PartialTypes, false))
+    end
+
+    sig {
+      params(
+        varargs: T.untyped,
+        document_txt: String,
+        baml_options: T::Hash[Symbol, T.any(Baml::TypeBuilder, Baml::ClientRegistry)]
+      ).returns(Baml::Types::Document1559)
+    }
+    def StructureDocument1559(
+        *varargs,
+        document_txt:,
+        baml_options: {}
+    )
+      if varargs.any?
+        
+        raise ArgumentError.new("StructureDocument1559 may only be called with keyword arguments")
+      end
+      if (baml_options.keys - [:client_registry, :tb]).any?
+        raise ArgumentError.new("Received unknown keys in baml_options (valid keys: :client_registry, :tb): #{baml_options.keys - [:client_registry, :tb]}")
+      end
+
+      raw = @runtime.call_function(
+        "StructureDocument1559",
+        {
+          document_txt: document_txt,
         },
         @ctx_manager,
         baml_options[:tb]&.instance_variable_get(:@registry),
@@ -6098,6 +6162,41 @@ module Baml
     sig {
       params(
         varargs: T.untyped,
+        img: Baml::Image,client_sector: String,client_name: String,
+        baml_options: T::Hash[Symbol, T.any(Baml::TypeBuilder, Baml::ClientRegistry)]
+      ).returns(Baml::BamlStream[String])
+    }
+    def DescribeMedia1599(
+        *varargs,
+        img:,client_sector:,client_name:,
+        baml_options: {}
+    )
+      if varargs.any?
+        
+        raise ArgumentError.new("DescribeMedia1599 may only be called with keyword arguments")
+      end
+      if (baml_options.keys - [:client_registry, :tb]).any?
+        raise ArgumentError.new("Received unknown keys in baml_options (valid keys: :client_registry, :tb): #{baml_options.keys - [:client_registry, :tb]}")
+      end
+
+      raw = @runtime.stream_function(
+        "DescribeMedia1599",
+        {
+          img: img,client_sector: client_sector,client_name: client_name,
+        },
+        @ctx_manager,
+        baml_options[:tb]&.instance_variable_get(:@registry),
+        baml_options[:client_registry],
+      )
+      Baml::BamlStream[T.nilable(String), String].new(
+        ffi_stream: raw,
+        ctx_manager: @ctx_manager
+      )
+    end
+
+    sig {
+      params(
+        varargs: T.untyped,
         
         baml_options: T::Hash[Symbol, T.any(Baml::TypeBuilder, Baml::ClientRegistry)]
       ).returns(Baml::BamlStream[T.any(Baml::Types::OriginalA, Baml::Types::OriginalB)])
@@ -8680,6 +8779,41 @@ module Baml
         baml_options[:client_registry],
       )
       Baml::BamlStream[T.nilable(Baml::PartialTypes::CompoundBigNumbers), Baml::Types::CompoundBigNumbers].new(
+        ffi_stream: raw,
+        ctx_manager: @ctx_manager
+      )
+    end
+
+    sig {
+      params(
+        varargs: T.untyped,
+        document_txt: String,
+        baml_options: T::Hash[Symbol, T.any(Baml::TypeBuilder, Baml::ClientRegistry)]
+      ).returns(Baml::BamlStream[Baml::Types::Document1559])
+    }
+    def StructureDocument1559(
+        *varargs,
+        document_txt:,
+        baml_options: {}
+    )
+      if varargs.any?
+        
+        raise ArgumentError.new("StructureDocument1559 may only be called with keyword arguments")
+      end
+      if (baml_options.keys - [:client_registry, :tb]).any?
+        raise ArgumentError.new("Received unknown keys in baml_options (valid keys: :client_registry, :tb): #{baml_options.keys - [:client_registry, :tb]}")
+      end
+
+      raw = @runtime.stream_function(
+        "StructureDocument1559",
+        {
+          document_txt: document_txt,
+        },
+        @ctx_manager,
+        baml_options[:tb]&.instance_variable_get(:@registry),
+        baml_options[:client_registry],
+      )
+      Baml::BamlStream[T.nilable(Baml::PartialTypes::Document1559), Baml::Types::Document1559].new(
         ffi_stream: raw,
         ctx_manager: @ctx_manager
       )

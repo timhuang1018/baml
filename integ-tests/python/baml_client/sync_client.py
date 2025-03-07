@@ -672,6 +672,32 @@ class BamlSyncClient:
       )
       return cast(str, raw.cast_to(types, types, partial_types, False))
     
+    def DescribeMedia1599(
+        self,
+        img: baml_py.Image,client_sector: str,client_name: str,
+        baml_options: BamlCallOptions = {},
+    ) -> str:
+      __tb__ = baml_options.get("tb", None)
+      if __tb__ is not None:
+        tb = __tb__._tb # type: ignore (we know how to use this private attribute)
+      else:
+        tb = None
+      __cr__ = baml_options.get("client_registry", None)
+      collector = baml_options.get("collector", None)
+      collectors = collector if isinstance(collector, list) else [collector] if collector is not None else []
+
+      raw = self.__runtime.call_function_sync(
+        "DescribeMedia1599",
+        {
+          "img": img,"client_sector": client_sector,"client_name": client_name,
+        },
+        self.__ctx_manager.get(),
+        tb,
+        __cr__,
+        collectors,
+      )
+      return cast(str, raw.cast_to(types, types, partial_types, False))
+    
     def DifferentiateUnions(
         self,
         
@@ -2595,6 +2621,32 @@ class BamlSyncClient:
         collectors,
       )
       return cast(types.CompoundBigNumbers, raw.cast_to(types, types, partial_types, False))
+    
+    def StructureDocument1559(
+        self,
+        document_txt: str,
+        baml_options: BamlCallOptions = {},
+    ) -> types.Document1559:
+      __tb__ = baml_options.get("tb", None)
+      if __tb__ is not None:
+        tb = __tb__._tb # type: ignore (we know how to use this private attribute)
+      else:
+        tb = None
+      __cr__ = baml_options.get("client_registry", None)
+      collector = baml_options.get("collector", None)
+      collectors = collector if isinstance(collector, list) else [collector] if collector is not None else []
+
+      raw = self.__runtime.call_function_sync(
+        "StructureDocument1559",
+        {
+          "document_txt": document_txt,
+        },
+        self.__ctx_manager.get(),
+        tb,
+        __cr__,
+        collectors,
+      )
+      return cast(types.Document1559, raw.cast_to(types, types, partial_types, False))
     
     def TakeRecAliasDep(
         self,
@@ -5069,6 +5121,41 @@ class BamlStreamClient:
         self.__ctx_manager.get(),
       )
     
+    def DescribeMedia1599(
+        self,
+        img: baml_py.Image,client_sector: str,client_name: str,
+        baml_options: BamlCallOptions = {},
+    ) -> baml_py.BamlSyncStream[Optional[str], str]:
+      __tb__ = baml_options.get("tb", None)
+      if __tb__ is not None:
+        tb = __tb__._tb # type: ignore (we know how to use this private attribute)
+      else:
+        tb = None
+      __cr__ = baml_options.get("client_registry", None)
+      collector = baml_options.get("collector", None)
+      collectors = collector if isinstance(collector, list) else [collector] if collector is not None else []
+
+      raw = self.__runtime.stream_function_sync(
+        "DescribeMedia1599",
+        {
+          "img": img,
+          "client_sector": client_sector,
+          "client_name": client_name,
+        },
+        None,
+        self.__ctx_manager.get(),
+        tb,
+        __cr__,
+        collectors,
+      )
+
+      return baml_py.BamlSyncStream[Optional[str], str](
+        raw,
+        lambda x: cast(Optional[str], x.cast_to(types, types, partial_types, True)),
+        lambda x: cast(str, x.cast_to(types, types, partial_types, False)),
+        self.__ctx_manager.get(),
+      )
+    
     def DifferentiateUnions(
         self,
         
@@ -7509,6 +7596,39 @@ class BamlStreamClient:
         raw,
         lambda x: cast(partial_types.CompoundBigNumbers, x.cast_to(types, types, partial_types, True)),
         lambda x: cast(types.CompoundBigNumbers, x.cast_to(types, types, partial_types, False)),
+        self.__ctx_manager.get(),
+      )
+    
+    def StructureDocument1559(
+        self,
+        document_txt: str,
+        baml_options: BamlCallOptions = {},
+    ) -> baml_py.BamlSyncStream[partial_types.Document1559, types.Document1559]:
+      __tb__ = baml_options.get("tb", None)
+      if __tb__ is not None:
+        tb = __tb__._tb # type: ignore (we know how to use this private attribute)
+      else:
+        tb = None
+      __cr__ = baml_options.get("client_registry", None)
+      collector = baml_options.get("collector", None)
+      collectors = collector if isinstance(collector, list) else [collector] if collector is not None else []
+
+      raw = self.__runtime.stream_function_sync(
+        "StructureDocument1559",
+        {
+          "document_txt": document_txt,
+        },
+        None,
+        self.__ctx_manager.get(),
+        tb,
+        __cr__,
+        collectors,
+      )
+
+      return baml_py.BamlSyncStream[partial_types.Document1559, types.Document1559](
+        raw,
+        lambda x: cast(partial_types.Document1559, x.cast_to(types, types, partial_types, True)),
+        lambda x: cast(types.Document1559, x.cast_to(types, types, partial_types, False)),
         self.__ctx_manager.get(),
       )
     
