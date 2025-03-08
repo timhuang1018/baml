@@ -2,9 +2,10 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 use crate::{BamlRuntime, FunctionResult};
-use baml_types::expr::{Expr, Name};
+use baml_types::expr::{Expr, ExprType, Arrow, Name};
 use baml_types::{BamlMap, BamlValue, BamlValueWithMeta};
 use internal_baml_core::ir::repr::IntermediateRepr;
+
 pub struct EvalEnv<'a, T: Clone + std::fmt::Debug, U: Clone + std::fmt::Debug + Default> {
     pub context: HashMap<Name, Expr<T, U>>,
     pub runtime: &'a BamlRuntime,
@@ -205,35 +206,6 @@ pub async fn eval_to_value<'a, T: Clone + std::fmt::Debug, U: Clone + std::fmt::
         }
     }
     Err(anyhow::anyhow!("Max steps reached."))
-}
-
-/// Create a context from the expr_functions, top_level_assignments, and
-/// functions in the IR.
-pub fn initial_context(ir: &IntermediateRepr) -> HashMap<Name, Expr<(), ()>> {
-    let mut ctx = HashMap::new();
-
-    for expr_fn in ir.expr_fns.iter() {
-        ctx.insert(expr_fn.elem.name.clone(), expr_fn.elem.body.clone());
-    }
-    for top_level_assignment in ir.toplevel_assignments.iter() {
-        ctx.insert(
-            top_level_assignment.elem.name.elem.clone(),
-            top_level_assignment.elem.expr.elem.clone(),
-        );
-    }
-    for llm_function in ir.functions.iter() {
-        let params = llm_function
-            .elem
-            .inputs
-            .iter()
-            .map(|arg| arg.0.clone())
-            .collect::<Vec<_>>();
-        ctx.insert(
-            llm_function.elem.name.clone(),
-            Expr::LLMFunction(llm_function.elem.name.clone(), params, ()),
-        );
-    }
-    ctx
 }
 
 #[cfg(test)]

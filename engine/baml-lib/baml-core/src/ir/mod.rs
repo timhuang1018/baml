@@ -1,4 +1,4 @@
-mod ir_helpers;
+pub mod ir_helpers;
 pub mod jinja_helpers;
 mod json_schema;
 pub mod repr;

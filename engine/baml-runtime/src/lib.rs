@@ -24,6 +24,8 @@ use std::sync::Arc;
 
 use anyhow::Context;
 use anyhow::Result;
+use baml_types::expr::ExprType;
+use internal_baml_core::ir::repr::initial_context;
 
 use crate::internal::llm_client::LLMCompleteResponse;
 use baml_types::expr::Expr;
@@ -73,7 +75,7 @@ pub(crate) use runtime_interface::InternalRuntimeInterface;
 
 pub use internal_baml_core::internal_baml_diagnostics;
 pub use internal_baml_core::internal_baml_diagnostics::Diagnostics as DiagnosticsError;
-pub use internal_baml_core::ir::{scope_diagnostics, FieldType, IRHelper, TypeValue};
+pub use internal_baml_core::ir::{scope_diagnostics, ir_helpers::infer_type, FieldType, IRHelper, TypeValue};
 
 use crate::internal::llm_client::LLMResponse;
 use crate::test_constraints::{evaluate_test_constraints, TestConstraintsResult};
@@ -424,7 +426,7 @@ impl BamlRuntime {
                         .elem
                         .body
                         .clone();
-                    let context = eval_expr::initial_context(&self.inner.ir());
+                    let context = initial_context(&self.inner.ir());
                     let env = EvalEnv {
                         context,
                         runtime: self,
@@ -432,11 +434,14 @@ impl BamlRuntime {
                     let params_expr = Expr::ArgsTuple(
                         params
                             .iter()
-                            .map(|(k, v)| Expr::Atom(BamlValueWithMeta::with_default_meta(v), ()))
+                            .map(|(k, v)| {
+                                let arg_type = infer_type(v).map(|t| ExprType::Atom(t));
+                                Expr::Atom(BamlValueWithMeta::with_default_meta(v), arg_type)
+                            })
                             .collect(),
-                        (),
+                        None,
                     );
-                    let fn_call_expr = Expr::App(Arc::new(fn_expr), Arc::new(params_expr), ());
+                    let fn_call_expr = Expr::App(Arc::new(fn_expr), Arc::new(params_expr), None);
                     let res = eval_expr::eval_to_value(&env, &fn_call_expr)
                         .await
                         .unwrap()

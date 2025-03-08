@@ -1,4 +1,5 @@
-use internal_baml_schema_ast::ast;
+use internal_baml_diagnostics::Span;
+use internal_baml_schema_ast::ast::{self, WithSpan};
 use baml_types::expr::{Expr};
 use internal_baml_schema_ast::ast::{TopLevelAssignment, ExprFn, WithName};
 
@@ -32,6 +33,11 @@ impl <'db> ExprFnWalker<'db> {
     /// Return the name of the function.
     pub fn name(&self) -> &str {
         self.db.ast[self.id].name.name()
+    }
+
+    /// Return the span of the name of the function.
+    pub fn name_span(&self) -> &Span {
+        self.db.ast[self.id].name.span()
     }
 
     /// Return the AST node for the function.

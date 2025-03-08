@@ -1,13 +1,17 @@
-use std::{collections::HashSet, sync::Arc};
+use std::{
+    collections::{HashMap, HashSet},
+    sync::Arc,
+};
 
 use anyhow::{anyhow, Result};
 use baml_types::{
-    expr::{Expr, Name},
+    expr::{self, Arrow, Expr, ExprType, Name},
     BamlValueWithMeta, Constraint, ConstraintLevel, FieldType, JinjaExpression, Resolvable,
-    StreamingBehavior, StringOr, UnresolvedValue,
+    StreamingBehavior, StringOr, TypeValue, UnresolvedValue,
 };
 use either::Either;
 use indexmap::{IndexMap, IndexSet};
+use internal_baml_diagnostics::Span;
 use internal_baml_parser_database::{
     walkers::{
         ClassWalker, ClientWalker, ConfigurationWalker, EnumValueWalker, EnumWalker, ExprFnWalker,
@@ -56,7 +60,7 @@ pub struct IntermediateRepr {
 #[derive(Debug)]
 pub struct TopLevelAssignment {
     pub name: Node<String>,
-    pub expr: Node<Expr<(), ()>>,
+    pub expr: Node<Expr<ExprMetadata, ()>>,
 }
 
 impl WithRepr<TopLevelAssignment> for TopLevelAssignmentWalker<'_> {
@@ -86,7 +90,7 @@ impl WithRepr<TopLevelAssignment> for TopLevelAssignmentWalker<'_> {
                         stmt.identifier.name().to_string(),
                         Arc::new(stmt_expr),
                         Arc::new(acc),
-                        (),
+                        (stmt.body.expr.span.clone(), None), // TODO: Infer the type.
                     )
                 });
         Ok(TopLevelAssignment {
@@ -102,8 +106,8 @@ impl WithRepr<TopLevelAssignment> for TopLevelAssignmentWalker<'_> {
     }
 }
 
-impl WithRepr<Expr<(), ()>> for ast::ExprWithSpan {
-    fn repr(&self, db: &ParserDatabase) -> Result<Expr<(), ()>> {
+impl WithRepr<Expr<ExprMetadata, ()>> for ast::ExprWithSpan {
+    fn repr(&self, db: &ParserDatabase) -> Result<Expr<ExprMetadata, ()>> {
         match &self.expr {
             ast::Expr::Atom(expr) => Ok(expr.repr(db)?),
             ast::Expr::Lambda(args, body) => {
@@ -113,18 +117,21 @@ impl WithRepr<Expr<(), ()>> for ast::ExprWithSpan {
                     .filter_map(|arg| arg.value.as_string_value().map(|v| v.0.to_string()))
                     .collect();
                 let body = convert_function_body(*body.to_owned(), db)?;
-                Ok(Expr::Lambda(args, Arc::new(body), ()))
+                Ok(Expr::Lambda(args, Arc::new(body), (
+                    self.span.clone(),
+                    None,
+                )))
             }
             ast::Expr::FnApp(func, args) => {
-                let func = Expr::Var(func.name().to_string(), ());
+                let func = Expr::Var(func.name().to_string(), (self.span.clone(), None));
                 let args = args
                     .iter()
                     .map(|arg| arg.repr(db).expect("TODO: Handle errors"))
                     .collect();
                 Ok(Expr::App(
                     Arc::new(func),
-                    Arc::new(Expr::ArgsTuple(args, ())),
-                    (),
+                    Arc::new(Expr::ArgsTuple(args, (self.span.clone(), None))),
+                    (self.span.clone(), None),
                 ))
             }
         }
@@ -134,7 +141,7 @@ impl WithRepr<Expr<(), ()>> for ast::ExprWithSpan {
 impl WithRepr<ExprFunction> for ExprFnWalker<'_> {
     fn repr(&self, db: &ParserDatabase) -> Result<ExprFunction> {
         let body = convert_function_body(self.expr_fn().body.to_owned(), db)?;
-        let args = self
+        let args: Vec<(String, FieldType)> = self
             .expr_fn()
             .args
             .args
@@ -154,11 +161,34 @@ impl WithRepr<ExprFunction> for ExprFnWalker<'_> {
             .walk_tests()
             .map(|e| e.node(db))
             .collect::<Result<Vec<_>>>()?;
+        let arg_types = args
+            .iter()
+            .map(|(_, arg_type)| ExprType::Atom(arg_type.clone()))
+            .collect();
+        let return_type = self
+            .expr_fn()
+            .return_type
+            .clone()
+            .map(|ret| ret.repr(db))
+            .transpose()
+            .expect("Grammar requires a return type");
+        let lambda_type = ExprType::Arrow(Box::new(expr::Arrow {
+            args: arg_types,
+            body: ExprType::Atom(
+                return_type
+                    .as_ref()
+                    .expect("Grammar requires a return type")
+                    .clone(),
+            ),
+        }));
         let expr_fn = ExprFunction {
             name: self.expr_fn().name.to_string(),
             inputs: args,
-            output: self.expr_fn().return_type.clone().unwrap().repr(db)?,
-            body: Expr::Lambda(arg_names, Arc::new(body), ()),
+            output: return_type
+                .as_ref()
+                .expect("Grammar requires a return type")
+                .clone(),
+            body: Expr::Lambda(arg_names, Arc::new(body), (self.expr_fn().span.clone(), Some(lambda_type))),
             tests,
         };
         Ok(expr_fn)
@@ -190,60 +220,90 @@ impl WithRepr<Function> for ExprFnWalker<'_> {
     }
 }
 
+/// Convert a function body to an expression.
+///
+/// The function body is a list of statements, which are let bindings.
+/// We fold the let bindings into a single expression.
 fn convert_function_body(
     function_body: ast::expr::FunctionBody,
     db: &ParserDatabase,
-) -> Result<Expr<(), ()>> {
-    let final_expr = function_body.expr.repr(db)?;
-    let expr = function_body.stmts.iter().fold(final_expr, |acc, stmt| {
+) -> Result<Expr<ExprMetadata, ()>> {
+    let last_expr = function_body.expr.repr(db)?;
+    let expr = function_body.stmts.iter().fold(last_expr, |acc, stmt| {
         let stmt_expr = stmt.body.expr.repr(db).expect("TODO: Handle errors");
         Expr::Let(
             stmt.identifier.name().to_string(),
             Arc::new(stmt_expr),
             Arc::new(acc),
-            (),
+            (stmt.body.expr.span.clone(), None),
         )
     });
     Ok(expr)
 }
 
 // TODO: This is a temporary implementation.
-impl WithRepr<Expr<(), ()>> for ast::Expression {
-    fn repr(&self, db: &ParserDatabase) -> Result<Expr<(), ()>> {
+impl WithRepr<Expr<ExprMetadata, ()>> for ast::Expression {
+    fn repr(&self, db: &ParserDatabase) -> Result<Expr<ExprMetadata, ()>> {
         match self {
-            ast::Expression::BoolValue(val, _) => {
-                Ok(Expr::Atom(BamlValueWithMeta::Bool(*val, ()), ()))
-            }
-            ast::Expression::NumericValue(val, _) => val
+            ast::Expression::BoolValue(val, span) => Ok(Expr::Atom(
+                BamlValueWithMeta::Bool(*val, ()),
+                (
+                    span.clone(),
+                    Some(ExprType::Atom(FieldType::Primitive(TypeValue::Bool))),
+                ),
+            )),
+            ast::Expression::NumericValue(val, span) => val
                 .parse::<i64>()
-                .map(|v| Expr::Atom(BamlValueWithMeta::Int(v, ()), ()))
+                .map(|v| {
+                    Expr::Atom(
+                        BamlValueWithMeta::Int(v, ()),
+                        (
+                            span.clone(),
+                            Some(ExprType::Atom(FieldType::Primitive(TypeValue::Int))),
+                        ),
+                    )
+                })
                 .or_else(|_| {
                     val.parse::<f64>()
-                        .map(|v| Expr::Atom(BamlValueWithMeta::Float(v, ()), ()))
+                        .map(|v| {
+                            Expr::Atom(
+                                BamlValueWithMeta::Float(v, ()),
+                                (
+                                    span.clone(),
+                                    Some(ExprType::Atom(FieldType::Primitive(TypeValue::Float))),
+                                ),
+                            )
+                        })
                         .or_else(|_| Err(anyhow!("Invalid numeric value: {}", val)))
                 }),
-            ast::Expression::StringValue(val, _) => Ok(Expr::Atom(
+            ast::Expression::StringValue(val, span) => Ok(Expr::Atom(
                 BamlValueWithMeta::String(val.to_string(), ()),
-                (),
+                (span.clone(), Some(ExprType::Atom(FieldType::Primitive(TypeValue::String)))),
             )),
             ast::Expression::RawStringValue(val) => Ok(Expr::Atom(
                 BamlValueWithMeta::String(val.value().to_string(), ()),
-                (),
+                (
+                    val.span().clone(),
+                    Some(ExprType::Atom(FieldType::Primitive(TypeValue::String))),
+                ),
             )),
-            ast::Expression::JinjaExpressionValue(val, _) => Ok(Expr::Atom(
+            ast::Expression::JinjaExpressionValue(val, span) => Ok(Expr::Atom(
                 BamlValueWithMeta::String(val.to_string(), ()), // TODO: Probably wrong.
-                (),
+                (
+                    span.clone(),
+                    Some(ExprType::Atom(FieldType::Primitive(TypeValue::String))),
+                ),
             )),
-            ast::Expression::Array(vals, _) => Ok(Expr::Atom(
+            ast::Expression::Array(vals, span) => Ok(Expr::Atom(
                 BamlValueWithMeta::List(
                     vals.iter()
                         .map(|v| v.repr(db).unwrap().as_atom().unwrap().clone())
                         .collect(),
                     (),
                 ),
-                (),
+                (span.clone(), None), // TODO: Infer the type. It's a list, but of what??
             )),
-            ast::Expression::Map(vals, _) => Ok(Expr::Atom(
+            ast::Expression::Map(vals, span) => Ok(Expr::Atom(
                 BamlValueWithMeta::Map(
                     vals.iter()
                         .map(|(k, v)| {
@@ -255,9 +315,11 @@ impl WithRepr<Expr<(), ()>> for ast::Expression {
                         .collect(),
                     (),
                 ),
-                (),
+                (span.clone(), None), // TODO: This is as hard as List.
             )),
-            ast::Expression::Identifier(id) => Ok(Expr::Var(id.name().to_string(), ())),
+            ast::Expression::Identifier(id) => {
+                Ok(Expr::Var(id.name().to_string(), (id.span().clone(), None)))
+            }
         }
     }
 }
@@ -364,7 +426,7 @@ impl IntermediateRepr {
         self.expr_fns
             .iter()
             .map(|efn| Node {
-                elem: efn.elem.predend_to_be_llm_function(),
+                elem: efn.elem.pretend_to_be_llm_function(),
                 attributes: efn.attributes.clone(),
             })
             .collect::<Vec<_>>()
@@ -1282,17 +1344,19 @@ pub struct FunctionConfig {
     pub client: ClientSpec,
 }
 
+pub type ExprMetadata = (Span, Option<ExprType>);
+
 #[derive(Debug)]
 pub struct ExprFunction {
     pub name: FunctionId,
     pub inputs: Vec<(String, FieldType)>,
     pub output: FieldType,
-    pub body: Expr<(), ()>,
+    pub body: Expr<ExprMetadata, ()>,
     pub tests: Vec<Node<TestCase>>,
 }
 
 impl ExprFunction {
-    pub fn predend_to_be_llm_function(&self) -> Function {
+    pub fn pretend_to_be_llm_function(&self) -> Function {
         Function {
             name: self.name.clone(),
             inputs: self.inputs.clone(),
@@ -1680,6 +1744,46 @@ fn streaming_behavior_from_attributes(attributes: &NodeAttributes) -> StreamingB
         done: is_some_true(attributes.get("stream.done")),
         state: is_some_true(attributes.get("stream.with_state")),
     }
+}
+
+/// Create a context from the expr_functions, top_level_assignments, and
+/// functions in the IR.
+pub fn initial_context(ir: &IntermediateRepr) -> HashMap<Name, Expr<Option<ExprType>, ()>> {
+    let mut ctx = HashMap::new();
+
+    for expr_fn in ir.expr_fns.iter() {
+        ctx.insert(expr_fn.elem.name.clone(), expr_fn.elem.body.clone());
+    }
+    for top_level_assignment in ir.toplevel_assignments.iter() {
+        ctx.insert(
+            top_level_assignment.elem.name.elem.clone(),
+            top_level_assignment.elem.expr.elem.clone(),
+        );
+    }
+    for llm_function in ir.functions.iter() {
+        let params = llm_function
+            .elem
+            .inputs
+            .iter()
+            .map(|arg| arg.0.clone())
+            .collect::<Vec<_>>();
+        let params_type: Vec<ExprType> = llm_function
+            .elem
+            .inputs
+            .iter()
+            .map(|arg| ExprType::Atom(arg.1.clone()))
+            .collect::<Vec<_>>();
+        let body_type = ExprType::Atom(llm_function.elem.output.clone());
+        let lambda_type = ExprType::Arrow(Box::new(Arrow {
+            args: params_type,
+            body: body_type,
+        }));
+        ctx.insert(
+            llm_function.elem.name.clone(),
+            Expr::LLMFunction(llm_function.elem.name.clone(), params, (llm_function.span.clone(), Some(lambda_type))),
+        );
+    }
+    ctx
 }
 
 #[cfg(test)]

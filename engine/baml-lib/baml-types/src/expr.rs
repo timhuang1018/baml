@@ -1,7 +1,7 @@
 // use moniker::{Binder, BoundTerm, Scope, Var};
 use std::sync::Arc;
 
-use crate::BamlValueWithMeta;
+use crate::{BamlValueWithMeta, FieldType};
 
 pub type Name = String;
 
@@ -33,6 +33,18 @@ impl <T: Clone + std::fmt::Debug, U: Clone + std::fmt::Debug> Expr<T,U> {
         }
     }
 
+    pub fn meta_mut(&mut self) -> &mut T {
+        match self {
+            Expr::Atom(_, meta) => meta,
+            Expr::LLMFunction(_, _, meta) => meta,
+            Expr::Var(_, meta) => meta,
+            Expr::Lambda(_, _, meta) => meta,
+            Expr::App(_, _, meta) => meta,
+            Expr::Let(_, _, _, meta) => meta,
+            Expr::ArgsTuple(_, meta) => meta,
+        }
+    }
+
     pub fn into_meta(self) -> T {
         match self {
             Expr::Atom(_, meta) => meta,
@@ -54,6 +66,7 @@ impl <T: Clone + std::fmt::Debug, U: Clone + std::fmt::Debug> Expr<T,U> {
         }
     }
 
+    /// A very rough pretty-printer for debugging expressions.
     pub fn dump_str(&self) -> String {
         match self {
             Expr::Atom(atom, _) => atom.clone().value().to_string(),
@@ -72,6 +85,9 @@ impl <T: Clone + std::fmt::Debug, U: Clone + std::fmt::Debug> Expr<T,U> {
         }
     }
 
+    /// This quick hack of a function checks whether two expressions are
+    /// equal in terms of reduction state. This test is used to detect
+    /// if the evaluation stepper is stuck.
     pub fn temporary_same_state(&self, other: &Expr<T,U>) -> bool {
         match (self, other) {
             (Expr::Atom(a1, _), Expr::Atom(a2, _)) => a1.clone().value() == a2.clone().value(),
@@ -92,4 +108,17 @@ impl <T: Clone + std::fmt::Debug, U: Clone + std::fmt::Debug> Expr<T,U> {
             _ => false,
         }
     }
+}
+
+
+#[derive(Debug, Clone)]
+pub enum ExprType {
+    Atom(FieldType),
+    Arrow(Box<Arrow>),
+}
+
+#[derive(Debug, Clone)]
+pub struct Arrow {
+    pub args: Vec<ExprType>,
+    pub body: ExprType,
 }
