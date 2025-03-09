@@ -25,7 +25,9 @@ use std::sync::Arc;
 use anyhow::Context;
 use anyhow::Result;
 use baml_types::expr::ExprType;
+use internal_baml_core::ast::Span;
 use internal_baml_core::ir::repr::initial_context;
+use internal_baml_core::ir::repr::ExprMetadata;
 
 use crate::internal::llm_client::LLMCompleteResponse;
 use baml_types::expr::Expr;
@@ -75,7 +77,9 @@ pub(crate) use runtime_interface::InternalRuntimeInterface;
 
 pub use internal_baml_core::internal_baml_diagnostics;
 pub use internal_baml_core::internal_baml_diagnostics::Diagnostics as DiagnosticsError;
-pub use internal_baml_core::ir::{scope_diagnostics, ir_helpers::infer_type, FieldType, IRHelper, TypeValue};
+pub use internal_baml_core::ir::{
+    ir_helpers::infer_type, scope_diagnostics, FieldType, IRHelper, TypeValue,
+};
 
 use crate::internal::llm_client::LLMResponse;
 use crate::test_constraints::{evaluate_test_constraints, TestConstraintsResult};
@@ -204,20 +208,14 @@ impl BamlRuntime {
         ctx: &RuntimeContext,
         strict: bool,
     ) -> Result<(BamlMap<String, BamlValue>, Vec<Constraint>)> {
-        eprintln!(
-            "get_test_params_and_constraints: function_name {:?} test_name {:?}",
-            function_name, test_name
-        );
         let params = self
             .inner
             .get_test_params(function_name, test_name, ctx, strict)?;
-        dbg!(&params);
         let constraints = self
             .inner
             .get_test_constraints(function_name, test_name, ctx)
             .unwrap_or(vec![]); // TODO: Fix this.
                                 // .get_test_constraints(function_name, test_name, ctx)?;
-        dbg!(&constraints);
         Ok((params, constraints))
     }
 
@@ -228,10 +226,6 @@ impl BamlRuntime {
         ctx: &RuntimeContext,
         strict: bool,
     ) -> Result<BamlMap<String, BamlValue>> {
-        eprintln!(
-            "get_test_params(214): function_name {:?} test_name {:?}",
-            function_name, test_name
-        );
         self.inner
             .get_test_params(function_name, test_name, ctx, strict)
     }
@@ -246,10 +240,6 @@ impl BamlRuntime {
     where
         F: Fn(FunctionResult),
     {
-        eprintln!(
-            "RUN_TEST run_test(226): function_name {:?} test_name {:?}",
-            function_name, test_name
-        );
         let span = self.tracer.start_span(test_name, ctx, &Default::default());
 
         let is_expr_fn = self
@@ -262,12 +252,10 @@ impl BamlRuntime {
         dbg!(&is_expr_fn);
         if is_expr_fn {
             let type_builder = None;
-            eprintln!("** RUN_TEST is_expr_fn");
             let rctx = ctx.create_ctx(type_builder.as_ref(), None).unwrap();
             let (params, _constraints) = self
                 .get_test_params_and_constraints(function_name, test_name, &rctx, true)
                 .unwrap();
-            eprintln!("** RUN_TEST is_expr_fn params: {:#?}", params);
 
             // Call the runtime synchronously.
             let (response_res, span_uuid) = self
@@ -286,11 +274,9 @@ impl BamlRuntime {
                 function_span: span_uuid,
                 constraints_result: TestConstraintsResult::empty(),
             };
-            eprintln!("** RUN_TEST is_expr_fn about to return");
             return (Ok(test_response), None);
         }
 
-        eprintln!("RUN_TEST run_to_response(248)");
         let run_to_response = || async {
             let type_builder = self
                 .inner
@@ -298,13 +284,10 @@ impl BamlRuntime {
                 .unwrap();
 
             let rctx = ctx.create_ctx(type_builder.as_ref(), None)?;
-            eprintln!("RUN_TEST closure about to get_test_params_and_constraints");
             let (params, constraints) =
                 self.get_test_params_and_constraints(function_name, test_name, &rctx, true)?;
-            eprintln!("RUN_TEST closure params: {:#?}", params);
             log::info!("params: {:#?}", params);
             let rctx_stream = ctx.create_ctx(type_builder.as_ref(), None)?;
-            eprintln!("RUN_TEST closure about to stream_function_impl");
             let mut stream = self.inner.stream_function_impl(
                 function_name.into(),
                 &params,
@@ -313,9 +296,7 @@ impl BamlRuntime {
                 #[cfg(not(target_arch = "wasm32"))]
                 self.async_runtime.clone(),
             )?;
-            eprintln!("RUN_TEST closure about to run");
             let (response_res, span_uuid) = stream.run(on_event, ctx, None, None).await;
-            eprintln!("RUN_TEST closure about to get response_res");
             log::info!("response_res: {:#?}", response_res);
             let res = response_res?;
             let (_, llm_resp, val) = res
@@ -402,6 +383,7 @@ impl BamlRuntime {
     ) -> (Result<FunctionResult>, Option<uuid::Uuid>) {
         log::trace!("Calling function: {}", function_name);
         let span = self.tracer.start_span(&function_name, ctx, params);
+        let fake_syntax_span = Span::fake();
         let response = match ctx.create_ctx(tb, cb) {
             Ok(rctx) => {
                 let is_expr_fn = self
@@ -424,24 +406,31 @@ impl BamlRuntime {
                         .find(|f| f.elem.name == function_name)
                         .unwrap()
                         .elem
-                        .body
+                        .expr
                         .clone();
                     let context = initial_context(&self.inner.ir());
                     let env = EvalEnv {
                         context,
                         runtime: self,
                     };
-                    let params_expr = Expr::ArgsTuple(
+                    let params_expr: Expr<ExprMetadata, ()> = Expr::ArgsTuple(
                         params
                             .iter()
                             .map(|(k, v)| {
                                 let arg_type = infer_type(v).map(|t| ExprType::Atom(t));
-                                Expr::Atom(BamlValueWithMeta::with_default_meta(v), arg_type)
+                                Expr::Atom(
+                                    BamlValueWithMeta::with_default_meta(v),
+                                    (fake_syntax_span.clone(), arg_type),
+                                )
                             })
                             .collect(),
-                        None,
+                        (fake_syntax_span.clone(), None),
                     );
-                    let fn_call_expr = Expr::App(Arc::new(fn_expr), Arc::new(params_expr), None);
+                    let fn_call_expr = Expr::App(
+                        Arc::new(fn_expr),
+                        Arc::new(params_expr),
+                        (fake_syntax_span.clone(), None),
+                    );
                     let res = eval_expr::eval_to_value(&env, &fn_call_expr)
                         .await
                         .unwrap()

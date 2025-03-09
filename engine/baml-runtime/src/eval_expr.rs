@@ -27,12 +27,12 @@ fn subst2<'a, T: Clone + std::fmt::Debug, U: Clone + std::fmt::Debug + Default>(
     val: &Expr<T, U>,
     env: &EvalEnv<'a, T, U>,
 ) -> anyhow::Result<Expr<T, U>> {
-    eprintln!(
-        "SUBST2:\n[{} -> {}] in {:?}",
-        var_name,
-        val.dump_str(),
-        expr
-    );
+    // eprintln!(
+    //     "SUBST2:\n[{} -> {}] in {:?}",
+    //     var_name,
+    //     val.dump_str(),
+    //     expr
+    // );
     let res: anyhow::Result<Expr<T, U>> = match expr {
         Expr::Var(expr_var_name, _) => {
             if expr_var_name == var_name {
@@ -81,13 +81,13 @@ fn subst2<'a, T: Clone + std::fmt::Debug, U: Clone + std::fmt::Debug + Default>(
         }
     };
     let res = res?;
-    eprintln!(
-        "SUBST2:\n[{} -> {}] in {:?} ===> {:?}",
-        var_name,
-        val.dump_str(),
-        expr,
-        res
-    );
+    // eprintln!(
+    //     "SUBST2:\n[{} -> {}] in {:?} ===> {:?}",
+    //     var_name,
+    //     val.dump_str(),
+    //     expr,
+    //     res
+    // );
     Ok(res)
 }
 
@@ -97,7 +97,7 @@ async fn beta_reduce<'a, T: Clone + std::fmt::Debug, U: Clone + std::fmt::Debug 
     env: &EvalEnv<'a, T, U>,
     expr: &Expr<T, U>,
 ) -> anyhow::Result<Expr<T, U>> {
-    eprintln!("BETA_REDUCE:\n{}\n", expr.dump_str());
+    // eprintln!("BETA_REDUCE:\n{}\n", expr.dump_str());
     match expr {
         Expr::Atom(_, _) => Ok(expr.clone()),
         Expr::Let(name, value, body, meta) => {
@@ -110,19 +110,19 @@ async fn beta_reduce<'a, T: Clone + std::fmt::Debug, U: Clone + std::fmt::Debug 
         Expr::App(f, x, meta) => {
             match (f.as_ref(), x.as_ref()) {
                 (Expr::Lambda(params, body, _), Expr::ArgsTuple(args, _)) => {
-                    eprintln!("About to beta reduce lambda");
+                    // eprintln!("About to beta reduce lambda");
                     let pairs = params
                         .iter()
                         .cloned()
                         .zip(args.iter().cloned())
                         .collect::<Vec<_>>();
-                    dbg!(&pairs);
+                    // dbg!(&pairs);
                     let new_body = pairs
                         .iter()
                         .fold(body.as_ref().clone(), |acc, (param, arg)| {
                             subst2(&acc, &param, &arg, env).as_ref().unwrap().clone()
                         });
-                    eprintln!("BETA_REDUCE_LAMBDA_RESULT1: {}\n", new_body.dump_str());
+                    // eprintln!("BETA_REDUCE_LAMBDA_RESULT1: {}\n", new_body.dump_str());
                     Box::pin(beta_reduce(env, &new_body)).await
                 }
                 (Expr::Lambda(params, body, _), arg) => {
@@ -133,17 +133,17 @@ async fn beta_reduce<'a, T: Clone + std::fmt::Debug, U: Clone + std::fmt::Debug 
                         ));
                     }
                     let new_body = subst2(body, &params[0], arg, env).as_ref().unwrap().clone();
-                    eprintln!("BETA_REDUCE_LAMBDA_RESULT2: {}\n", new_body.dump_str());
+                    // eprintln!("BETA_REDUCE_LAMBDA_RESULT2: {}\n", new_body.dump_str());
                     Box::pin(beta_reduce(env, &new_body)).await
                 }
                 (Expr::LLMFunction(name, arg_names, _), Expr::ArgsTuple(args, _)) => {
-                    dbg!(&args);
+                    // dbg!(&args);
                     // let args: Vec<BamlValue> = args.clone().into_iter().map(|arg| arg.as_atom().unwrap().clone().value()).collect();
                     // let evaluated_args: Vec<BamlValue> = args.clone().into_iter().map(|arg| Box::pin(eval_to_value(env, arg).await)).collect::<anyhow::Result<Vec<_>>>()?;
                     let mut evaluated_args: Vec<BamlValue> = Vec::new();
                     for arg in args {
                         let val = eval_to_value(env, arg).await;
-                        eprintln!("BETA_REDUCE_LLM_ARG: {:?}", val);
+                        // eprintln!("BETA_REDUCE_LLM_ARG: {:?}", val);
                         evaluated_args.push(val.unwrap().unwrap().clone().value());
                     }
 
@@ -172,7 +172,7 @@ async fn beta_reduce<'a, T: Clone + std::fmt::Debug, U: Clone + std::fmt::Debug 
                         .clone()
                         .0
                         .map_meta(|_| U::default());
-                    eprintln!("BETA_REDUCE_LLM_RESULT: {:?}\n", val);
+                    // eprintln!("BETA_REDUCE_LLM_RESULT: {:?}\n", val);
                     Ok(Expr::Atom(val, meta.clone()))
                 }
                 _ => Err(anyhow::anyhow!("Not a function: {:?}", f)),
@@ -187,7 +187,7 @@ pub async fn eval_to_value<'a, T: Clone + std::fmt::Debug, U: Clone + std::fmt::
     env: &EvalEnv<'a, T, U>,
     expr: &Expr<T, U>,
 ) -> anyhow::Result<Option<BamlValueWithMeta<U>>> {
-    eprintln!("called to_value: {}", expr.dump_str());
+    // eprintln!("called eval_to_value: {}", expr.dump_str());
     let max_steps = 1000;
     let mut current_expr = expr.clone();
 
@@ -413,7 +413,7 @@ mod tests {
             // .run_test("CompareHaikus", "Test", &ctx, Some(on_event))
             // .run_test("LlmParseInt", "TestParse", &ctx, Some(on_event))
             .await;
-        dbg!(res);
+        // dbg!(res);
         assert!(false);
     }
 

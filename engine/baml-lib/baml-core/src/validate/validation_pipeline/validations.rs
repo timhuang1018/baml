@@ -37,7 +37,7 @@ pub(super) fn validate(ctx: &mut Context<'_>) {
         .collect::<HashSet<_>>();
     classes::assert_no_field_name_collisions(ctx, &codegen_targets);
 
-    expr_typecheck::typecheck_exprs(ctx);
+    expr_typecheck::typecheck_exprs(ctx).expect("Typechecking panicked");
 
     if !ctx.diagnostics.has_errors() {
         cycle::validate(ctx);

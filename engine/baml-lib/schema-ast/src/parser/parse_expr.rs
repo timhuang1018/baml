@@ -157,7 +157,7 @@ pub fn parse_lambda(token: Pair<'_>, diagnostics: &mut Diagnostics) -> Option<ex
 pub fn parse_function_body(token: Pair<'_>, diagnostics: &mut Diagnostics) -> Option<FunctionBody> {
     assert_correct_parser!(token, Rule::expr_fn_body);
     let span = diagnostics.span(token.as_span());
-    dbg!(&token);
+    // dbg!(&token);
     let mut tokens = token.into_inner();
     let mut stmts = Vec::new();
     let mut expr = None;

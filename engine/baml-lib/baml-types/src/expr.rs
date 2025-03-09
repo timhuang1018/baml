@@ -78,7 +78,12 @@ impl <T: Clone + std::fmt::Debug, U: Clone + std::fmt::Debug> Expr<T,U> {
                     Expr::ArgsTuple(args, _) => args.iter().map(|arg| arg.dump_str()).collect::<Vec<_>>().join(", "),
                     _ => format!("(NON_ARGS_TUPLE {})", args.dump_str()),
                 };
-                format!("({})({})", func.dump_str(), args_str)
+                let func_str = match func.as_ref() {
+                    Expr::LLMFunction(name, _, _) => name.clone(),
+                    Expr::Var(name, _) => name.clone(),
+                    _ => format!("({})", func.dump_str()),
+                };
+                format!("{}({})", func_str, args_str)
             },
             Expr::Let(name, expr, body, _) => format!("Let {} = {} in {}", name, expr.dump_str(), body.dump_str()),
             Expr::ArgsTuple(args, _) => format!("ArgsTuple({:?})", args.iter().map(|arg| arg.dump_str()).collect::<Vec<_>>()),
@@ -119,6 +124,18 @@ pub enum ExprType {
 
 #[derive(Debug, Clone)]
 pub struct Arrow {
-    pub args: Vec<ExprType>,
-    pub body: ExprType,
+    pub param_types: Vec<ExprType>,
+    pub body_type: ExprType,
+}
+
+impl ExprType {
+    pub fn dump_str(&self) -> String {
+        match self {
+            ExprType::Atom(ft) => ft.to_string(),
+            ExprType::Arrow(arrow) => {
+                let param_types_str = arrow.param_types.iter().map(|t| t.dump_str()).collect::<Vec<_>>().join(", ");
+                format!("({}) -> {}", param_types_str, arrow.body_type.dump_str())
+            },
+        }
+    }
 }

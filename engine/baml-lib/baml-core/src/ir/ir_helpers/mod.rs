@@ -215,10 +215,10 @@ impl IRHelper for IntermediateRepr {
             .walk_expr_fns()
             .map(|f| f.item.elem.name.clone())
             .collect::<Vec<_>>();
-        eprintln!(
-            "find_expr_fn: {:?} among {:?}",
-            function_name, expr_fn_names
-        );
+        // eprintln!(
+        //     "find_expr_fn: {:?} among {:?}",
+        //     function_name, expr_fn_names
+        // );
         match self
             .walk_expr_fns()
             .find(|f| f.item.elem.name == function_name)

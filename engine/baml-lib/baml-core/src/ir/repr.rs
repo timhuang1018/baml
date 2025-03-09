@@ -11,7 +11,7 @@ use baml_types::{
 };
 use either::Either;
 use indexmap::{IndexMap, IndexSet};
-use internal_baml_diagnostics::Span;
+use internal_baml_diagnostics::{Diagnostics, Span};
 use internal_baml_parser_database::{
     walkers::{
         ClassWalker, ClientWalker, ConfigurationWalker, EnumValueWalker, EnumWalker, ExprFnWalker,
@@ -173,8 +173,8 @@ impl WithRepr<ExprFunction> for ExprFnWalker<'_> {
             .transpose()
             .expect("Grammar requires a return type");
         let lambda_type = ExprType::Arrow(Box::new(expr::Arrow {
-            args: arg_types,
-            body: ExprType::Atom(
+            param_types: arg_types,
+            body_type: ExprType::Atom(
                 return_type
                     .as_ref()
                     .expect("Grammar requires a return type")
@@ -188,10 +188,10 @@ impl WithRepr<ExprFunction> for ExprFnWalker<'_> {
                 .as_ref()
                 .expect("Grammar requires a return type")
                 .clone(),
-            body: Expr::Lambda(arg_names, Arc::new(body), (self.expr_fn().span.clone(), Some(lambda_type))),
+            expr: Expr::Lambda(arg_names, Arc::new(body), (self.expr_fn().span.clone(), Some(lambda_type))),
             tests,
         };
-        Ok(expr_fn)
+        Ok(expr_fn.assign_param_types_to_body_variables())
     }
 }
 
@@ -219,6 +219,7 @@ impl WithRepr<Function> for ExprFnWalker<'_> {
         Ok(function)
     }
 }
+
 
 /// Convert a function body to an expression.
 ///
@@ -1351,7 +1352,7 @@ pub struct ExprFunction {
     pub name: FunctionId,
     pub inputs: Vec<(String, FieldType)>,
     pub output: FieldType,
-    pub body: Expr<ExprMetadata, ()>,
+    pub expr: Expr<ExprMetadata, ()>,
     pub tests: Vec<Node<TestCase>>,
 }
 
@@ -1374,7 +1375,67 @@ impl ExprFunction {
     pub fn tests(&self) -> &Vec<Node<TestCase>> {
         &self.tests
     }
+
+    pub fn assign_param_types_to_body_variables(self) -> Self {
+        let new_expr = match &self.expr {
+            Expr::Lambda(params, body, meta) => {
+                let body = Arc::unwrap_or_clone(body.clone());
+                let new_body = self.inputs.iter().fold(body, |body, (name, r#type)| {
+                    annotate_variable(name, ExprType::Atom(r#type.clone()), body)
+                });
+                Expr::Lambda(params.clone(), Arc::new(new_body), meta.clone())
+            },
+            _ => self.expr,
+        };
+        ExprFunction {
+            expr: new_expr,
+            ..self
+        }
+    }
+
 }
+
+pub fn annotate_variable(name: &str, r#type: ExprType, expr: Expr<ExprMetadata, ()>) -> Expr<ExprMetadata, ()> {
+    match &expr {
+        Expr::Var(var_name, meta) => {
+            let mut new_expr = expr.clone();
+            if name == var_name {
+                new_expr.meta_mut().1 = Some(r#type);
+            }
+            new_expr
+        }
+        Expr::Lambda(params, body, meta) => {
+            if !params.contains(&name.to_string()) {
+                let new_body = annotate_variable(name, r#type.clone(), Arc::unwrap_or_clone(body.clone()));
+                // new_expr = annotate_variable(name, r#type.clone(), body);
+                Expr::Lambda(params.clone(), Arc::new(new_body), meta.clone())
+            } else {
+                expr
+            }
+        }
+        Expr::App(f, args, meta) => {
+            let new_f = annotate_variable(name, r#type.clone(), Arc::unwrap_or_clone(f.clone()));
+            let new_args = annotate_variable(name, r#type, Arc::unwrap_or_clone(args.clone()));
+            Expr::App(Arc::new(new_f), Arc::new(new_args), meta.clone())
+        }
+        Expr::Let(var_name, expr, body, meta) => {
+            let new_binding = annotate_variable(name, r#type.clone(), Arc::unwrap_or_clone(expr.clone()));
+            let new_body = 
+            if var_name != name {
+                Arc::new(annotate_variable(name, r#type.clone(), Arc::unwrap_or_clone(body.clone())))
+            } else {
+                body.clone()
+            };
+            Expr::Let(var_name.clone(), Arc::new(new_binding), new_body, meta.clone())
+        }
+        Expr::ArgsTuple(args, meta) => {
+            Expr::ArgsTuple(args.iter().map(|arg| annotate_variable(name, r#type.clone(), arg.clone())).collect(), meta.clone())
+        },
+        Expr::Atom(_,_) => expr,
+        Expr::LLMFunction(_,_,_) => expr,
+    }
+}
+
 
 // impl std::fmt::Display for ClientSpec {
 //     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -1710,6 +1771,14 @@ impl WithRepr<Prompt> for PromptAst<'_> {
 /// Generate an IntermediateRepr from a single block of BAML source code.
 /// This is useful for generating IR test fixtures.
 pub fn make_test_ir(source_code: &str) -> anyhow::Result<IntermediateRepr> {
+    let (ir, _diagnostics) = make_test_ir_and_diagnostics(source_code)?;
+    Ok(ir)
+}
+
+/// Generate an IntermediateRepr from a single block of BAML source code.
+/// This is useful for generating IR test fixtures. Also return the
+/// `Diagnostics`.
+pub fn make_test_ir_and_diagnostics(source_code: &str) ->  anyhow::Result<(IntermediateRepr, Diagnostics)> {
     use crate::validate;
     use crate::ValidatedSchema;
     use internal_baml_diagnostics::SourceFile;
@@ -1718,7 +1787,7 @@ pub fn make_test_ir(source_code: &str) -> anyhow::Result<IntermediateRepr> {
     let path: PathBuf = "fake_file.baml".into();
     let source_file: SourceFile = (path.clone(), source_code).into();
     let validated_schema: ValidatedSchema = validate(&path, vec![source_file]);
-    let diagnostics = &validated_schema.diagnostics;
+    let diagnostics = validated_schema.diagnostics;
     if diagnostics.has_errors() {
         return Err(anyhow::anyhow!(
             "Source code was invalid: \n{:?}",
@@ -1729,7 +1798,7 @@ pub fn make_test_ir(source_code: &str) -> anyhow::Result<IntermediateRepr> {
         &validated_schema.db,
         validated_schema.configuration,
     )?;
-    Ok(ir)
+    Ok((ir, diagnostics))
 }
 
 /// Pull out `StreamingBehavior` from `NodeAttributes`.
@@ -1748,11 +1817,11 @@ fn streaming_behavior_from_attributes(attributes: &NodeAttributes) -> StreamingB
 
 /// Create a context from the expr_functions, top_level_assignments, and
 /// functions in the IR.
-pub fn initial_context(ir: &IntermediateRepr) -> HashMap<Name, Expr<Option<ExprType>, ()>> {
+pub fn initial_context(ir: &IntermediateRepr) -> HashMap<Name, Expr<ExprMetadata, ()>> {
     let mut ctx = HashMap::new();
 
     for expr_fn in ir.expr_fns.iter() {
-        ctx.insert(expr_fn.elem.name.clone(), expr_fn.elem.body.clone());
+        ctx.insert(expr_fn.elem.name.clone(), expr_fn.elem.expr.clone());
     }
     for top_level_assignment in ir.toplevel_assignments.iter() {
         ctx.insert(
@@ -1775,12 +1844,12 @@ pub fn initial_context(ir: &IntermediateRepr) -> HashMap<Name, Expr<Option<ExprT
             .collect::<Vec<_>>();
         let body_type = ExprType::Atom(llm_function.elem.output.clone());
         let lambda_type = ExprType::Arrow(Box::new(Arrow {
-            args: params_type,
-            body: body_type,
+            param_types: params_type,
+            body_type: body_type,
         }));
         ctx.insert(
             llm_function.elem.name.clone(),
-            Expr::LLMFunction(llm_function.elem.name.clone(), params, (llm_function.span.clone(), Some(lambda_type))),
+            Expr::LLMFunction(llm_function.elem.name.clone(), params, (llm_function.attributes.span.as_ref().expect("LLM Functions have spans until we use dynamic types").clone(), Some(lambda_type))),
         );
     }
     ctx
