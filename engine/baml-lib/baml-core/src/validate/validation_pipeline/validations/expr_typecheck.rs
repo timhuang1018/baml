@@ -54,15 +54,15 @@ pub fn typecheck_in_context<U: Clone + std::fmt::Debug>(
             // Bare functions always typecheck.
             Ok(())
         }
-        Expr::Var(var, maybe_type) => {
-            if let (span, Some(ExprType::Atom(var_type))) = maybe_type {
+        Expr::Var(var, (var_span, maybe_type)) => {
+            if let Some(ExprType::Atom(var_type)) = maybe_type {
                 if let Some(ExprType::Atom(ctx_type)) = typing_context.get(var) {
                     if ir.is_subtype(&ctx_type, var_type) {
                         Ok(())
                     } else {
                         diagnostics.push_error(DatamodelError::new_validation_error(
-                            "Type mismatch",
-                            span.clone(),
+                            "A Type mismatch",
+                            var_span.clone(),
                         ));
                         Ok(())
                     }
@@ -84,17 +84,23 @@ pub fn typecheck_in_context<U: Clone + std::fmt::Debug>(
                 if !compatible_as_subtype(ir, &body.meta().1, &Some(arrow.body_type.clone())) {
                     diagnostics.push_error(DatamodelError::new_validation_error(
                         &format!(
-                            "Type mismatch in lambda: {:?} vs {:?}",
-                            body.meta().1,
-                            arrow.body_type
+                            "B Type mismatch in lambda: {} vs {}",
+                            body.meta()
+                                .1
+                                .as_ref()
+                                .map_or("?".to_string(), |t| t.dump_str()),
+                            arrow.body_type.dump_str()
                         ),
-                        span.clone(),
+                        body.meta().0.clone(),
                     ));
                 } else {
                     eprintln!(
-                        "Type MATCH in lambda: {:?} vs {:?}",
-                        body.meta().1,
-                        arrow.body_type
+                        "Type MATCH in lambda: {} vs {}",
+                        body.meta()
+                            .1
+                            .as_ref()
+                            .map_or("?".to_string(), |t| t.dump_str()),
+                        arrow.body_type.dump_str()
                     );
                 }
                 typecheck_in_context(ir, diagnostics, &inner_context, body)?;
@@ -122,13 +128,15 @@ pub fn typecheck_in_context<U: Clone + std::fmt::Debug>(
                                     &Some(arrow.body_type.clone()),
                                 ) {
                                     eprintln!(
-                                        "Type mismatch in app: {:?} vs {:?}",
-                                        app_type, arrow.body_type
+                                        "C Type mismatch in app: {} vs {}",
+                                        app_type.dump_str(),
+                                        arrow.body_type.dump_str()
                                     );
                                     diagnostics.push_error(DatamodelError::new_validation_error(
                                         &format!(
-                                            "Type mismatch in app: {:?} vs {:?}",
-                                            app_type, arrow.body_type
+                                            "D Type mismatch in app: {} vs {}",
+                                            app_type.dump_str(),
+                                            arrow.body_type.dump_str()
                                         ),
                                         span.clone(),
                                     ));
@@ -140,16 +148,22 @@ pub fn typecheck_in_context<U: Clone + std::fmt::Debug>(
                                         &Some(param_type.clone()),
                                     ) {
                                         eprintln!(
-                                            "Type mismatch in app: {:?} vs {:?}",
-                                            arg.meta().1,
-                                            param_type
+                                            "E Type mismatch in app: {} vs {}",
+                                            arg.meta()
+                                                .1
+                                                .as_ref()
+                                                .map_or("?".to_string(), |t| t.dump_str()),
+                                            param_type.dump_str()
                                         );
                                         diagnostics.push_error(
                                             DatamodelError::new_validation_error(
                                                 &format!(
-                                                    "Type mismatch in app: {:?} vs {:?}",
-                                                    arg.meta().1,
-                                                    param_type
+                                                    "F Type mismatch in app: {} vs {}",
+                                                    arg.meta()
+                                                        .1
+                                                        .as_ref()
+                                                        .map_or("?".to_string(), |t| t.dump_str()),
+                                                    param_type.dump_str()
                                                 ),
                                                 span.clone(),
                                             ),
