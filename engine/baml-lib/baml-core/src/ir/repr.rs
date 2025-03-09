@@ -116,17 +116,18 @@ impl WithRepr<Expr<ExprMetadata, ()>> for ast::ExprWithSpan {
                     .iter()
                     .filter_map(|arg| arg.value.as_string_value().map(|v| v.0.to_string()))
                     .collect();
-                let body = convert_function_body(*body.to_owned(), db)?;
-                Ok(Expr::Lambda(args, Arc::new(body), (
-                    self.span.clone(),
-                    None,
-                )))
+                let body = convert_function_body(*body.to_owned(), db);
+                Ok(Expr::Lambda(
+                    args,
+                    Arc::new(body),
+                    (self.span.clone(), None),
+                ))
             }
             ast::Expr::FnApp(func, args) => {
                 let func = Expr::Var(func.name().to_string(), (self.span.clone(), None));
                 let args = args
                     .iter()
-                    .map(|arg| arg.repr(db).expect("TODO: Handle errors"))
+                    .filter_map(|arg| arg.repr(db).ok()) // TODO: Handle errors, don't swallow them.
                     .collect();
                 Ok(Expr::App(
                     Arc::new(func),
@@ -140,16 +141,20 @@ impl WithRepr<Expr<ExprMetadata, ()>> for ast::ExprWithSpan {
 
 impl WithRepr<ExprFunction> for ExprFnWalker<'_> {
     fn repr(&self, db: &ParserDatabase) -> Result<ExprFunction> {
-        let body = convert_function_body(self.expr_fn().body.to_owned(), db)?;
+        let body = convert_function_body(self.expr_fn().body.to_owned(), db);
         let args: Vec<(String, FieldType)> = self
             .expr_fn()
             .args
             .args
             .iter()
             .map(|(arg_name, arg_type)| {
-                (arg_name.to_string(), arg_type.field_type.repr(db).unwrap())
+                arg_type
+                    .field_type
+                    .repr(db)
+                    .map(|ty| (arg_name.to_string(), ty))
             })
-            .collect();
+            .collect::<Result<Vec<_>>>()
+            .unwrap_or(vec![]); // TODO: weird default.
         let arg_names = self
             .expr_fn()
             .args
@@ -160,7 +165,8 @@ impl WithRepr<ExprFunction> for ExprFnWalker<'_> {
         let tests = self
             .walk_tests()
             .map(|e| e.node(db))
-            .collect::<Result<Vec<_>>>()?;
+            .collect::<Result<Vec<_>>>()
+            .unwrap_or(vec![]); // TODO: weird default.
         let arg_types = args
             .iter()
             .map(|(_, arg_type)| ExprType::Atom(arg_type.clone()))
@@ -171,46 +177,63 @@ impl WithRepr<ExprFunction> for ExprFnWalker<'_> {
             .clone()
             .map(|ret| ret.repr(db))
             .transpose()
-            .expect("Grammar requires a return type");
+            .unwrap_or(Some(weird_default()));
         let lambda_type = ExprType::Arrow(Box::new(expr::Arrow {
             param_types: arg_types,
             body_type: ExprType::Atom(
                 return_type
                     .as_ref()
-                    .expect("Grammar requires a return type")
-                    .clone(),
+                    .map_or(weird_default(), |ty| ty.clone()),
             ),
         }));
         let expr_fn = ExprFunction {
             name: self.expr_fn().name.to_string(),
             inputs: args,
-            output: return_type
-                .as_ref()
-                .expect("Grammar requires a return type")
-                .clone(),
-            expr: Expr::Lambda(arg_names, Arc::new(body), (self.expr_fn().span.clone(), Some(lambda_type))),
+            output: return_type.map_or(weird_default(), |ty| ty.clone()),
+            expr: Expr::Lambda(
+                arg_names,
+                Arc::new(body),
+                (self.expr_fn().span.clone(), Some(lambda_type)),
+            ),
             tests,
         };
         Ok(expr_fn.assign_param_types_to_body_variables())
     }
 }
 
+fn weird_default() -> FieldType {
+    FieldType::Primitive(TypeValue::Null)
+}
+
 impl WithRepr<Function> for ExprFnWalker<'_> {
     fn repr(&self, db: &ParserDatabase) -> Result<Function> {
-        let body = convert_function_body(self.expr_fn().body.to_owned(), db)?;
+        // TODO: Drop weird default (replace by better validation).
+        let body = convert_function_body(self.expr_fn().body.to_owned(), db);
         let args = self
             .expr_fn()
             .args
             .args
             .iter()
             .map(|(arg_name, arg_type)| {
-                (arg_name.to_string(), arg_type.field_type.repr(db).unwrap())
+                (
+                    arg_name.to_string(),
+                    arg_type
+                        .field_type
+                        .repr(db)
+                        // TODO: Drop weird default (replace by better validation).
+                        .unwrap_or(FieldType::Primitive(TypeValue::Null)),
+                )
             })
             .collect();
         let function = Function {
             name: self.expr_fn().name.to_string(),
             inputs: args,
-            output: self.expr_fn().return_type.clone().unwrap().repr(db)?,
+            output: self
+                .expr_fn()
+                .return_type
+                .clone()
+                .and_then(|ty| ty.repr(db).ok())
+                .unwrap_or(FieldType::Primitive(TypeValue::Null)),
             configs: vec![],
             default_config: "".to_string(),
             tests: vec![],
@@ -220,7 +243,6 @@ impl WithRepr<Function> for ExprFnWalker<'_> {
     }
 }
 
-
 /// Convert a function body to an expression.
 ///
 /// The function body is a list of statements, which are let bindings.
@@ -228,18 +250,28 @@ impl WithRepr<Function> for ExprFnWalker<'_> {
 fn convert_function_body(
     function_body: ast::expr::FunctionBody,
     db: &ParserDatabase,
-) -> Result<Expr<ExprMetadata, ()>> {
-    let last_expr = function_body.expr.repr(db)?;
-    let expr = function_body.stmts.iter().fold(last_expr, |acc, stmt| {
-        let stmt_expr = stmt.body.expr.repr(db).expect("TODO: Handle errors");
-        Expr::Let(
-            stmt.identifier.name().to_string(),
-            Arc::new(stmt_expr),
-            Arc::new(acc),
-            (stmt.body.expr.span.clone(), None),
-        )
-    });
-    Ok(expr)
+) -> Expr<ExprMetadata, ()> {
+    function_body
+        .expr
+        .repr(db)
+        .map(|fn_body| {
+            let expr = function_body.stmts.iter().fold(fn_body, |acc, stmt| {
+                match stmt.body.expr.repr(db) {
+                    Ok(stmt_expr) => Expr::Let(
+                        stmt.identifier.name().to_string(),
+                        Arc::new(stmt_expr),
+                        Arc::new(acc),
+                        (stmt.body.expr.span.clone(), None),
+                    ),
+                    Err(e) => acc,
+                }
+            });
+            expr
+        })
+        .unwrap_or(Expr::Atom(
+            BamlValueWithMeta::Null(()),
+            (Span::fake(), None),
+        ))
 }
 
 // TODO: This is a temporary implementation.
@@ -279,7 +311,10 @@ impl WithRepr<Expr<ExprMetadata, ()>> for ast::Expression {
                 }),
             ast::Expression::StringValue(val, span) => Ok(Expr::Atom(
                 BamlValueWithMeta::String(val.to_string(), ()),
-                (span.clone(), Some(ExprType::Atom(FieldType::Primitive(TypeValue::String)))),
+                (
+                    span.clone(),
+                    Some(ExprType::Atom(FieldType::Primitive(TypeValue::String))),
+                ),
             )),
             ast::Expression::RawStringValue(val) => Ok(Expr::Atom(
                 BamlValueWithMeta::String(val.value().to_string(), ()),
@@ -495,6 +530,7 @@ impl IntermediateRepr {
         db: &ParserDatabase,
         configuration: Configuration,
     ) -> Result<IntermediateRepr> {
+        eprintln!("FROM_PARSER_DATABASE");
         // TODO: We're iterating over the AST tops once for every property in
         // the IR. Easy performance optimization here by iterating only one time
         // and distributing the tops to the appropriate IR properties.
@@ -1384,7 +1420,7 @@ impl ExprFunction {
                     annotate_variable(name, ExprType::Atom(r#type.clone()), body)
                 });
                 Expr::Lambda(params.clone(), Arc::new(new_body), meta.clone())
-            },
+            }
             _ => self.expr,
         };
         ExprFunction {
@@ -1392,10 +1428,13 @@ impl ExprFunction {
             ..self
         }
     }
-
 }
 
-pub fn annotate_variable(name: &str, r#type: ExprType, expr: Expr<ExprMetadata, ()>) -> Expr<ExprMetadata, ()> {
+pub fn annotate_variable(
+    name: &str,
+    r#type: ExprType,
+    expr: Expr<ExprMetadata, ()>,
+) -> Expr<ExprMetadata, ()> {
     match &expr {
         Expr::Var(var_name, meta) => {
             let mut new_expr = expr.clone();
@@ -1406,7 +1445,8 @@ pub fn annotate_variable(name: &str, r#type: ExprType, expr: Expr<ExprMetadata, 
         }
         Expr::Lambda(params, body, meta) => {
             if !params.contains(&name.to_string()) {
-                let new_body = annotate_variable(name, r#type.clone(), Arc::unwrap_or_clone(body.clone()));
+                let new_body =
+                    annotate_variable(name, r#type.clone(), Arc::unwrap_or_clone(body.clone()));
                 // new_expr = annotate_variable(name, r#type.clone(), body);
                 Expr::Lambda(params.clone(), Arc::new(new_body), meta.clone())
             } else {
@@ -1419,23 +1459,34 @@ pub fn annotate_variable(name: &str, r#type: ExprType, expr: Expr<ExprMetadata, 
             Expr::App(Arc::new(new_f), Arc::new(new_args), meta.clone())
         }
         Expr::Let(var_name, expr, body, meta) => {
-            let new_binding = annotate_variable(name, r#type.clone(), Arc::unwrap_or_clone(expr.clone()));
-            let new_body = 
-            if var_name != name {
-                Arc::new(annotate_variable(name, r#type.clone(), Arc::unwrap_or_clone(body.clone())))
+            let new_binding =
+                annotate_variable(name, r#type.clone(), Arc::unwrap_or_clone(expr.clone()));
+            let new_body = if var_name != name {
+                Arc::new(annotate_variable(
+                    name,
+                    r#type.clone(),
+                    Arc::unwrap_or_clone(body.clone()),
+                ))
             } else {
                 body.clone()
             };
-            Expr::Let(var_name.clone(), Arc::new(new_binding), new_body, meta.clone())
+            Expr::Let(
+                var_name.clone(),
+                Arc::new(new_binding),
+                new_body,
+                meta.clone(),
+            )
         }
-        Expr::ArgsTuple(args, meta) => {
-            Expr::ArgsTuple(args.iter().map(|arg| annotate_variable(name, r#type.clone(), arg.clone())).collect(), meta.clone())
-        },
-        Expr::Atom(_,_) => expr,
-        Expr::LLMFunction(_,_,_) => expr,
+        Expr::ArgsTuple(args, meta) => Expr::ArgsTuple(
+            args.iter()
+                .map(|arg| annotate_variable(name, r#type.clone(), arg.clone()))
+                .collect(),
+            meta.clone(),
+        ),
+        Expr::Atom(_, _) => expr,
+        Expr::LLMFunction(_, _, _) => expr,
     }
 }
-
 
 // impl std::fmt::Display for ClientSpec {
 //     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -1778,7 +1829,9 @@ pub fn make_test_ir(source_code: &str) -> anyhow::Result<IntermediateRepr> {
 /// Generate an IntermediateRepr from a single block of BAML source code.
 /// This is useful for generating IR test fixtures. Also return the
 /// `Diagnostics`.
-pub fn make_test_ir_and_diagnostics(source_code: &str) ->  anyhow::Result<(IntermediateRepr, Diagnostics)> {
+pub fn make_test_ir_and_diagnostics(
+    source_code: &str,
+) -> anyhow::Result<(IntermediateRepr, Diagnostics)> {
     use crate::validate;
     use crate::ValidatedSchema;
     use internal_baml_diagnostics::SourceFile;
@@ -1849,7 +1902,19 @@ pub fn initial_context(ir: &IntermediateRepr) -> HashMap<Name, Expr<ExprMetadata
         }));
         ctx.insert(
             llm_function.elem.name.clone(),
-            Expr::LLMFunction(llm_function.elem.name.clone(), params, (llm_function.attributes.span.as_ref().expect("LLM Functions have spans until we use dynamic types").clone(), Some(lambda_type))),
+            Expr::LLMFunction(
+                llm_function.elem.name.clone(),
+                params,
+                (
+                    llm_function
+                        .attributes
+                        .span
+                        .as_ref()
+                        .expect("LLM Functions have spans until we use dynamic types")
+                        .clone(),
+                    Some(lambda_type),
+                ),
+            ),
         );
     }
     ctx

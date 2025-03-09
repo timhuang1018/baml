@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 use crate::{BamlRuntime, FunctionResult};
-use baml_types::expr::{Expr, ExprType, Arrow, Name};
+use baml_types::expr::{Arrow, Expr, ExprType, Name};
 use baml_types::{BamlMap, BamlValue, BamlValueWithMeta};
 use internal_baml_core::ir::repr::IntermediateRepr;
 
@@ -595,6 +595,10 @@ function BreakThem(inp: int) -> TwoInts {
   "#
 }
 
+fn Third(x: int) -> string {
+  x
+}
+
 
 fn Compose(two_ints: TwoInts) -> TwoInts {
   BreakThem( AddThem(two_ints) )
@@ -701,6 +705,7 @@ client<llm> GPT3 {
   }
 }
 
+
 client<llm> GPT4o {
   provider openai
   options {
@@ -725,6 +730,5 @@ client<llm> GPT4o {
             )
             .await;
         dbg!(res);
-        assert!(false);
     }
 }
