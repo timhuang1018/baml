@@ -398,16 +398,15 @@ impl BamlRuntime {
                         .call_function_impl(function_name, params, rctx)
                         .await
                 } else {
-                    let fn_expr = self
+                    let expr_fn = &self
                         .inner
                         .ir()
                         .expr_fns
                         .iter()
                         .find(|f| f.elem.name == function_name)
                         .unwrap()
-                        .elem
-                        .expr
-                        .clone();
+                        .elem;
+                    let fn_expr = expr_fn.expr.clone();
                     let context = initial_context(&self.inner.ir());
                     let env = EvalEnv {
                         context,
@@ -426,10 +425,11 @@ impl BamlRuntime {
                             .collect(),
                         (fake_syntax_span.clone(), None),
                     );
+                    let result_type = ExprType::Atom(expr_fn.output.clone());
                     let fn_call_expr = Expr::App(
                         Arc::new(fn_expr),
                         Arc::new(params_expr),
-                        (fake_syntax_span.clone(), None),
+                        (fake_syntax_span.clone(), Some(result_type)),
                     );
                     let res = eval_expr::eval_to_value(&env, &fn_call_expr)
                         .await

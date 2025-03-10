@@ -27,6 +27,7 @@ use internal_baml_schema_ast::ast::{
 use internal_llm_client::{ClientProvider, ClientSpec, UnresolvedClientProperty};
 use serde::Serialize;
 
+use crate::validate::validation_pipeline::validations::expr_typecheck::infer_types_in_context;
 use crate::Configuration;
 
 /// This class represents the intermediate representation of the BAML AST.
@@ -197,7 +198,7 @@ impl WithRepr<ExprFunction> for ExprFnWalker<'_> {
             ),
             tests,
         };
-        Ok(expr_fn.assign_param_types_to_body_variables())
+        Ok(expr_fn)
     }
 }
 
@@ -1383,7 +1384,7 @@ pub struct FunctionConfig {
 
 pub type ExprMetadata = (Span, Option<ExprType>);
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct ExprFunction {
     pub name: FunctionId,
     pub inputs: Vec<(String, FieldType)>,
@@ -1421,10 +1422,21 @@ impl ExprFunction {
                 });
                 Expr::Lambda(params.clone(), Arc::new(new_body), meta.clone())
             }
+            // TODO: Handle other cases - traverse the tree.
             _ => self.expr,
         };
         ExprFunction {
             expr: new_expr,
+            ..self
+        }
+    }
+
+    // TODO: I don't think this is used anymore.
+    pub fn infer_types(self) -> Self {
+        eprintln!("INFER_TYPES {:?}", self);
+        let new_expr = infer_types_in_context(&mut HashMap::new(), Arc::new(self.expr.clone()));
+        ExprFunction {
+            expr: Arc::unwrap_or_clone(new_expr),
             ..self
         }
     }
@@ -1822,8 +1834,15 @@ impl WithRepr<Prompt> for PromptAst<'_> {
 /// Generate an IntermediateRepr from a single block of BAML source code.
 /// This is useful for generating IR test fixtures.
 pub fn make_test_ir(source_code: &str) -> anyhow::Result<IntermediateRepr> {
-    let (ir, _diagnostics) = make_test_ir_and_diagnostics(source_code)?;
-    Ok(ir)
+    let (ir, diagnostics) = make_test_ir_and_diagnostics(source_code)?;
+    if diagnostics.has_errors() {
+        return Err(anyhow::anyhow!(
+            "Source code was invalid: \n{:?}",
+            diagnostics.errors()
+        ));
+    } else {
+        Ok(ir)
+    }
 }
 
 /// Generate an IntermediateRepr from a single block of BAML source code.
@@ -1841,12 +1860,6 @@ pub fn make_test_ir_and_diagnostics(
     let source_file: SourceFile = (path.clone(), source_code).into();
     let validated_schema: ValidatedSchema = validate(&path, vec![source_file]);
     let diagnostics = validated_schema.diagnostics;
-    if diagnostics.has_errors() {
-        return Err(anyhow::anyhow!(
-            "Source code was invalid: \n{:?}",
-            diagnostics.errors()
-        ));
-    }
     let ir = IntermediateRepr::from_parser_database(
         &validated_schema.db,
         validated_schema.configuration,

@@ -4,7 +4,7 @@ mod configurations;
 mod cycle;
 mod enums;
 mod expr_fns;
-mod expr_typecheck;
+pub mod expr_typecheck;
 mod functions;
 mod template_strings;
 mod tests;
