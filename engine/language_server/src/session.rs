@@ -214,6 +214,28 @@ impl Session {
         //     })?;
     }
 
+    pub(crate) fn set_unsaved_file(
+        &mut self,
+        url: &Url,
+        content_changes: Vec<TextDocumentContentChangeEvent>,
+    ) -> anyhow::Result<()> {
+        let new_contents: String = match content_changes.as_slice() {
+            [event] if event.range.is_none() => event.text.clone(),
+            _ => {
+                anyhow::bail!(
+                    "Only one change event, with full text, is supported for unsaved files"
+                )
+            }
+        };
+        for (_folder, project) in self.projects_by_workspace_folder.iter_mut() {
+            project
+                .baml_project
+                .unsaved_files
+                .insert(url.as_str().to_string(), new_contents.clone());
+        }
+        Ok(())
+    }
+
     /// Updates a text document at the associated `key`.
     ///
     /// The document key must point to a text document, or this will throw an error.

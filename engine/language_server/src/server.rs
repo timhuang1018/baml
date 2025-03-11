@@ -133,11 +133,11 @@ impl Server {
             global_settings,
             &workspaces,
         )?;
-        
+
         // Create a client and notifier to pass to reload
         let client = client::Client::new(connection.make_sender());
         let notifier = client.notifier();
-        
+
         // Reload the session with the notifier
         session.reload(Some(notifier))?;
 
@@ -213,11 +213,10 @@ impl Server {
         mut session: Session,
         worker_threads: NonZeroUsize,
     ) -> anyhow::Result<()> {
-
         // Ensure we have a notifier for reload operations
         let client = client::Client::new(connection.make_sender());
         let notifier = client.notifier();
-        
+
         // Make sure the session is properly loaded after initialization
         session.reload(Some(notifier.clone()))?;
 
@@ -326,7 +325,7 @@ impl Server {
             text_document_sync: Some(TextDocumentSyncCapability::Options(
                 TextDocumentSyncOptions {
                     open_close: Some(true),
-                    change: Some(TextDocumentSyncKind::INCREMENTAL),
+                    change: Some(TextDocumentSyncKind::FULL),
                     will_save: Some(true),
                     save: Some(TextDocumentSyncSaveOptions::SaveOptions(SaveOptions {
                         include_text: Some(false),

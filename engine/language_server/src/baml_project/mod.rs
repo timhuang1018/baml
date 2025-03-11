@@ -245,7 +245,7 @@ impl BamlProject {
                 Ok(e) => e,
                 Err(e) => {
                     log::debug!("Error: {:#?}", e);
-                    todo!()
+                    return Diagnostics::new(PathBuf::from(&self.root_dir_name));
                 }
             }
         })
@@ -786,9 +786,6 @@ impl Project {
         }
 
         if let Some(notifier) = runtime_notifier {
-            eprintln!("RUNTIME_UPDATED");
-            dbg!(&self.root_path());
-            dbg!(&file_map);
             notifier
                 .0
                 .send(lsp_server::Message::Notification(Notification::new(

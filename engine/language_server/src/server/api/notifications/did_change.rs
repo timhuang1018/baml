@@ -1,5 +1,6 @@
 use lsp_types::notification::DidChangeTextDocument;
 use lsp_types::{DidChangeTextDocumentParams, PublishDiagnosticsParams};
+use url::Url;
 
 use crate::server::api::diagnostics::session_lsp_diagnostics;
 use crate::server::api::traits::{NotificationHandler, SyncNotificationHandler};
@@ -8,7 +9,6 @@ use crate::server::client::{Notifier, Requester};
 use crate::server::Result;
 use crate::session::Session;
 use crate::DocumentKey;
-// use crate::system::{url_to_any_system_path, AnySystemPath};
 
 pub(crate) struct DidChangeTextDocumentHandler;
 
@@ -26,17 +26,10 @@ impl SyncNotificationHandler for DidChangeTextDocumentHandler {
         tracing::info!("DidChangeTextDocumentHandler");
 
         let url = params.text_document.uri;
-        let key = DocumentKey::Text(url.clone());
 
-        // session.reload().internal_error()?;
         session
-            .update_text_document(
-                &key,
-                params.content_changes,
-                params.text_document.version,
-                Some(notifier.clone()),
-            )
-            .expect("FAILED TO UPDATE");
+            .set_unsaved_file(&url, params.content_changes)
+            .internal_error()?;
 
         session
             .ensure_project_db_for_baml_file(&url)
@@ -49,7 +42,6 @@ impl SyncNotificationHandler for DidChangeTextDocumentHandler {
             .internal_error()?;
 
         let diagnostics = session_lsp_diagnostics(session, &url);
-        tracing::info!("DID_CHANGE DIAGNOSTICS: {:?}", diagnostics);
 
         // TODO: Only send this when clients do not support pull diagnostics?
         notifier

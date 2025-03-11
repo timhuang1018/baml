@@ -3,8 +3,10 @@ use crate::server::api::ResultExt;
 use crate::server::client::Requester;
 use crate::server::{client::Notifier, Result};
 use crate::Session;
+use baml_runtime::InternalRuntimeInterface;
 use baml_schema_build::runtime_wasm::WasmSpan;
 use lsp_types::{request, CodeLensParams, Command, Position, Range};
+use std::collections::HashMap;
 
 pub struct CodeLens;
 
@@ -26,6 +28,19 @@ impl SyncRequestHandler for CodeLens {
         let project = session
             .default_project_db_mut()
             .expect("Ensured that a project db exists");
+
+        let fake_env = HashMap::new();
+        let baml_diagnostics = match project.baml_project.runtime(fake_env) {
+            Ok(runtime) => {
+                runtime.internal().diagnostics().clone()
+            }
+            Err(err) => {
+                err
+            }
+        };
+        if baml_diagnostics.has_errors() {
+            return (Ok(None));
+        }
 
         let mk_range = |span: &WasmSpan| {
             Range::new(

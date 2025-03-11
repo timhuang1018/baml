@@ -28,7 +28,6 @@ pub(super) fn clear_diagnostics(uri: &Url, notifier: &Notifier) -> Result<()> {
 // TODO: Handle errors.
 pub fn session_lsp_diagnostics(session: &Session, file_url: &Url) -> Vec<lsp_types::Diagnostic> {
     let keys = session.index().documents.keys();
-    info!("session_lsp_diagnostics. index keys: {:?}", keys);
 
     let (root_path, proj) = match session.projects_by_workspace_folder.iter().next() {
         Some((root_path, proj)) => (root_path, proj),
@@ -38,21 +37,14 @@ pub fn session_lsp_diagnostics(session: &Session, file_url: &Url) -> Vec<lsp_typ
         }
     };
 
-    dbg!(&proj.current_runtime.is_some());
     let fake_env = HashMap::new();
-    info!("baml_project runtime on {:?}", proj.baml_project);
     let baml_diagnostics = match proj.baml_project.runtime(fake_env) {
         Ok(runtime) => {
-            tracing::info!("OK Diagnostics: {:?}", runtime.internal().diagnostics());
             runtime.internal().diagnostics().clone()
             // Diagnostics::new(PathBuf::from("/fake1"))
         }
         Err(err) => {
-            tracing::info!("Err Diagnostics: {:?}", err);
-            // let mut diagnostics = internal_baml_diagnostics::Diagnostics::new(PathBuf::new());
-            // diagnostics.push_error(err);
             err
-            // Diagnostics::new(PathBuf::from("/fake2"))
         }
     };
 
@@ -67,7 +59,6 @@ pub fn session_lsp_diagnostics(session: &Session, file_url: &Url) -> Vec<lsp_typ
                 .map(|warning| ("WARNING", warning.span())),
         )
         .collect::<Vec<_>>();
-    info!("SPANS: {:?}", spans);
 
     let errors = baml_diagnostics
         .errors()
@@ -120,9 +111,9 @@ fn matches_target(
 ///   - session: Pass the server session, we'll need it for getting the span's
 ///     document's line index.
 ///   - project_root: Root of the baml project, needed for augmenting span paths, which
-///     seem to sporadically be absolute paths.
+///     seem to sporadically be relative paths.
 ///   - file_url: The absolute file:/// url of the file whose diagnostics we care about.
-///     spans not related to this URL will be filtered out.
+///     Spans not related to this URL will be filtered out.
 ///   - span: The baml span to convert.
 fn span_to_range(
     session: &Session,
@@ -130,29 +121,12 @@ fn span_to_range(
     _file_url: &Url,
     span: &internal_baml_diagnostics::Span,
 ) -> Option<lsp_types::Range> {
-    info!("SPAN_TO_RANGE({:?},{:?})", project_root, span.file.path());
 
     let span_path_with_prefix = span.file.path();
     let span_path = span_path_with_prefix.strip_prefix("file://")?;
-    info!("span_path: {}", span_path);
-    info!(
-        "absolute_path = join {:?} with {:?}",
-        project_root, span_path
-    );
-    let absolute_path = project_root.join(span_path).clone();
-    dbg!(&absolute_path);
 
-    // info!("About to URL::parse {:?}", absolute_path);
-    // let url = Url::from_file_path(span_path)
-    //     .or(Url::from_file_path(absolute_path))
-    //     .expect("Should parse");
     let doc_key = Url::from_file_path(ensure_absolute(project_root, &PathBuf::from(span_path)))
         .expect("Should parse2");
-    info!(
-        "lookup {:?} from documents.keys: {:?}",
-        doc_key,
-        session.index.as_ref().unwrap().documents.keys()
-    );
     let doc = session
         .index
         .as_ref()
@@ -194,15 +168,8 @@ fn ensure_absolute(project_root: &Path, file_path: &Path) -> PathBuf {
         .unwrap()
         .starts_with(project_root.to_str().unwrap())
     {
-        info!("No joining needed, returning {:?}", file_path);
         PathBuf::from(file_path)
     } else {
-        info!(
-            "Joining {:?} with {:?} to get {:?}",
-            project_root,
-            file_path,
-            project_root.join(file_path)
-        );
         project_root.join(file_path_relative)
     }
 }
