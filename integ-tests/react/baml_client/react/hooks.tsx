@@ -385,13 +385,11 @@ export function useAaaSamOutputFormat(props?: HookInput<'AaaSamOutputFormat', { 
 export function useAaaSamOutputFormat(
   props: HookInput<'AaaSamOutputFormat', { stream?: boolean }> = {},
 ): HookOutput<'AaaSamOutputFormat', { stream: true }> | HookOutput<'AaaSamOutputFormat', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.AaaSamOutputFormat, props)
-  }
+  let action = Actions.AaaSamOutputFormat;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.AaaSamOutputFormat, props)
+    action = StreamingActions.AaaSamOutputFormat;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the AliasThatPointsToRecursiveType BAML function that supports both streaming and non‑streaming responses.
@@ -435,13 +433,11 @@ export function useAliasThatPointsToRecursiveType(props?: HookInput<'AliasThatPo
 export function useAliasThatPointsToRecursiveType(
   props: HookInput<'AliasThatPointsToRecursiveType', { stream?: boolean }> = {},
 ): HookOutput<'AliasThatPointsToRecursiveType', { stream: true }> | HookOutput<'AliasThatPointsToRecursiveType', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.AliasThatPointsToRecursiveType, props)
-  }
+  let action = Actions.AliasThatPointsToRecursiveType;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.AliasThatPointsToRecursiveType, props)
+    action = StreamingActions.AliasThatPointsToRecursiveType;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the AliasWithMultipleAttrs BAML function that supports both streaming and non‑streaming responses.
@@ -485,13 +481,11 @@ export function useAliasWithMultipleAttrs(props?: HookInput<'AliasWithMultipleAt
 export function useAliasWithMultipleAttrs(
   props: HookInput<'AliasWithMultipleAttrs', { stream?: boolean }> = {},
 ): HookOutput<'AliasWithMultipleAttrs', { stream: true }> | HookOutput<'AliasWithMultipleAttrs', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.AliasWithMultipleAttrs, props)
-  }
+  let action = Actions.AliasWithMultipleAttrs;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.AliasWithMultipleAttrs, props)
+    action = StreamingActions.AliasWithMultipleAttrs;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the AliasedInputClass BAML function that supports both streaming and non‑streaming responses.
@@ -535,13 +529,11 @@ export function useAliasedInputClass(props?: HookInput<'AliasedInputClass', { st
 export function useAliasedInputClass(
   props: HookInput<'AliasedInputClass', { stream?: boolean }> = {},
 ): HookOutput<'AliasedInputClass', { stream: true }> | HookOutput<'AliasedInputClass', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.AliasedInputClass, props)
-  }
+  let action = Actions.AliasedInputClass;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.AliasedInputClass, props)
+    action = StreamingActions.AliasedInputClass;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the AliasedInputClass2 BAML function that supports both streaming and non‑streaming responses.
@@ -585,13 +577,11 @@ export function useAliasedInputClass2(props?: HookInput<'AliasedInputClass2', { 
 export function useAliasedInputClass2(
   props: HookInput<'AliasedInputClass2', { stream?: boolean }> = {},
 ): HookOutput<'AliasedInputClass2', { stream: true }> | HookOutput<'AliasedInputClass2', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.AliasedInputClass2, props)
-  }
+  let action = Actions.AliasedInputClass2;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.AliasedInputClass2, props)
+    action = StreamingActions.AliasedInputClass2;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the AliasedInputClassNested BAML function that supports both streaming and non‑streaming responses.
@@ -635,13 +625,11 @@ export function useAliasedInputClassNested(props?: HookInput<'AliasedInputClassN
 export function useAliasedInputClassNested(
   props: HookInput<'AliasedInputClassNested', { stream?: boolean }> = {},
 ): HookOutput<'AliasedInputClassNested', { stream: true }> | HookOutput<'AliasedInputClassNested', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.AliasedInputClassNested, props)
-  }
+  let action = Actions.AliasedInputClassNested;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.AliasedInputClassNested, props)
+    action = StreamingActions.AliasedInputClassNested;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the AliasedInputEnum BAML function that supports both streaming and non‑streaming responses.
@@ -685,13 +673,11 @@ export function useAliasedInputEnum(props?: HookInput<'AliasedInputEnum', { stre
 export function useAliasedInputEnum(
   props: HookInput<'AliasedInputEnum', { stream?: boolean }> = {},
 ): HookOutput<'AliasedInputEnum', { stream: true }> | HookOutput<'AliasedInputEnum', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.AliasedInputEnum, props)
-  }
+  let action = Actions.AliasedInputEnum;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.AliasedInputEnum, props)
+    action = StreamingActions.AliasedInputEnum;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the AliasedInputList BAML function that supports both streaming and non‑streaming responses.
@@ -735,13 +721,11 @@ export function useAliasedInputList(props?: HookInput<'AliasedInputList', { stre
 export function useAliasedInputList(
   props: HookInput<'AliasedInputList', { stream?: boolean }> = {},
 ): HookOutput<'AliasedInputList', { stream: true }> | HookOutput<'AliasedInputList', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.AliasedInputList, props)
-  }
+  let action = Actions.AliasedInputList;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.AliasedInputList, props)
+    action = StreamingActions.AliasedInputList;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the AllowedOptionals BAML function that supports both streaming and non‑streaming responses.
@@ -785,13 +769,11 @@ export function useAllowedOptionals(props?: HookInput<'AllowedOptionals', { stre
 export function useAllowedOptionals(
   props: HookInput<'AllowedOptionals', { stream?: boolean }> = {},
 ): HookOutput<'AllowedOptionals', { stream: true }> | HookOutput<'AllowedOptionals', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.AllowedOptionals, props)
-  }
+  let action = Actions.AllowedOptionals;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.AllowedOptionals, props)
+    action = StreamingActions.AllowedOptionals;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the AssertFn BAML function that supports both streaming and non‑streaming responses.
@@ -835,13 +817,11 @@ export function useAssertFn(props?: HookInput<'AssertFn', { stream?: true }>): H
 export function useAssertFn(
   props: HookInput<'AssertFn', { stream?: boolean }> = {},
 ): HookOutput<'AssertFn', { stream: true }> | HookOutput<'AssertFn', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.AssertFn, props)
-  }
+  let action = Actions.AssertFn;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.AssertFn, props)
+    action = StreamingActions.AssertFn;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the AudioInput BAML function that supports both streaming and non‑streaming responses.
@@ -885,13 +865,11 @@ export function useAudioInput(props?: HookInput<'AudioInput', { stream?: true }>
 export function useAudioInput(
   props: HookInput<'AudioInput', { stream?: boolean }> = {},
 ): HookOutput<'AudioInput', { stream: true }> | HookOutput<'AudioInput', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.AudioInput, props)
-  }
+  let action = Actions.AudioInput;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.AudioInput, props)
+    action = StreamingActions.AudioInput;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the BuildLinkedList BAML function that supports both streaming and non‑streaming responses.
@@ -935,13 +913,11 @@ export function useBuildLinkedList(props?: HookInput<'BuildLinkedList', { stream
 export function useBuildLinkedList(
   props: HookInput<'BuildLinkedList', { stream?: boolean }> = {},
 ): HookOutput<'BuildLinkedList', { stream: true }> | HookOutput<'BuildLinkedList', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.BuildLinkedList, props)
-  }
+  let action = Actions.BuildLinkedList;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.BuildLinkedList, props)
+    action = StreamingActions.BuildLinkedList;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the BuildTree BAML function that supports both streaming and non‑streaming responses.
@@ -985,13 +961,11 @@ export function useBuildTree(props?: HookInput<'BuildTree', { stream?: true }>):
 export function useBuildTree(
   props: HookInput<'BuildTree', { stream?: boolean }> = {},
 ): HookOutput<'BuildTree', { stream: true }> | HookOutput<'BuildTree', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.BuildTree, props)
-  }
+  let action = Actions.BuildTree;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.BuildTree, props)
+    action = StreamingActions.BuildTree;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ClassThatPointsToRecursiveClassThroughAlias BAML function that supports both streaming and non‑streaming responses.
@@ -1035,13 +1009,11 @@ export function useClassThatPointsToRecursiveClassThroughAlias(props?: HookInput
 export function useClassThatPointsToRecursiveClassThroughAlias(
   props: HookInput<'ClassThatPointsToRecursiveClassThroughAlias', { stream?: boolean }> = {},
 ): HookOutput<'ClassThatPointsToRecursiveClassThroughAlias', { stream: true }> | HookOutput<'ClassThatPointsToRecursiveClassThroughAlias', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ClassThatPointsToRecursiveClassThroughAlias, props)
-  }
+  let action = Actions.ClassThatPointsToRecursiveClassThroughAlias;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ClassThatPointsToRecursiveClassThroughAlias, props)
+    action = StreamingActions.ClassThatPointsToRecursiveClassThroughAlias;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ClassifyDynEnumTwo BAML function that supports both streaming and non‑streaming responses.
@@ -1085,13 +1057,11 @@ export function useClassifyDynEnumTwo(props?: HookInput<'ClassifyDynEnumTwo', { 
 export function useClassifyDynEnumTwo(
   props: HookInput<'ClassifyDynEnumTwo', { stream?: boolean }> = {},
 ): HookOutput<'ClassifyDynEnumTwo', { stream: true }> | HookOutput<'ClassifyDynEnumTwo', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ClassifyDynEnumTwo, props)
-  }
+  let action = Actions.ClassifyDynEnumTwo;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ClassifyDynEnumTwo, props)
+    action = StreamingActions.ClassifyDynEnumTwo;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ClassifyMessage BAML function that supports both streaming and non‑streaming responses.
@@ -1135,13 +1105,11 @@ export function useClassifyMessage(props?: HookInput<'ClassifyMessage', { stream
 export function useClassifyMessage(
   props: HookInput<'ClassifyMessage', { stream?: boolean }> = {},
 ): HookOutput<'ClassifyMessage', { stream: true }> | HookOutput<'ClassifyMessage', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ClassifyMessage, props)
-  }
+  let action = Actions.ClassifyMessage;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ClassifyMessage, props)
+    action = StreamingActions.ClassifyMessage;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ClassifyMessage2 BAML function that supports both streaming and non‑streaming responses.
@@ -1185,13 +1153,11 @@ export function useClassifyMessage2(props?: HookInput<'ClassifyMessage2', { stre
 export function useClassifyMessage2(
   props: HookInput<'ClassifyMessage2', { stream?: boolean }> = {},
 ): HookOutput<'ClassifyMessage2', { stream: true }> | HookOutput<'ClassifyMessage2', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ClassifyMessage2, props)
-  }
+  let action = Actions.ClassifyMessage2;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ClassifyMessage2, props)
+    action = StreamingActions.ClassifyMessage2;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ClassifyMessage3 BAML function that supports both streaming and non‑streaming responses.
@@ -1235,13 +1201,11 @@ export function useClassifyMessage3(props?: HookInput<'ClassifyMessage3', { stre
 export function useClassifyMessage3(
   props: HookInput<'ClassifyMessage3', { stream?: boolean }> = {},
 ): HookOutput<'ClassifyMessage3', { stream: true }> | HookOutput<'ClassifyMessage3', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ClassifyMessage3, props)
-  }
+  let action = Actions.ClassifyMessage3;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ClassifyMessage3, props)
+    action = StreamingActions.ClassifyMessage3;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the Completion BAML function that supports both streaming and non‑streaming responses.
@@ -1289,13 +1253,11 @@ export function useCompletion(props?: HookInput<'Completion', { stream?: true }>
 export function useCompletion(
   props: HookInput<'Completion', { stream?: boolean }> = {},
 ): HookOutput<'Completion', { stream: true }> | HookOutput<'Completion', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.Completion, props)
-  }
+  let action = Actions.Completion;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.Completion, props)
+    action = StreamingActions.Completion;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the CustomTask BAML function that supports both streaming and non‑streaming responses.
@@ -1339,13 +1301,11 @@ export function useCustomTask(props?: HookInput<'CustomTask', { stream?: true }>
 export function useCustomTask(
   props: HookInput<'CustomTask', { stream?: boolean }> = {},
 ): HookOutput<'CustomTask', { stream: true }> | HookOutput<'CustomTask', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.CustomTask, props)
-  }
+  let action = Actions.CustomTask;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.CustomTask, props)
+    action = StreamingActions.CustomTask;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the DescribeImage BAML function that supports both streaming and non‑streaming responses.
@@ -1389,13 +1349,11 @@ export function useDescribeImage(props?: HookInput<'DescribeImage', { stream?: t
 export function useDescribeImage(
   props: HookInput<'DescribeImage', { stream?: boolean }> = {},
 ): HookOutput<'DescribeImage', { stream: true }> | HookOutput<'DescribeImage', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.DescribeImage, props)
-  }
+  let action = Actions.DescribeImage;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.DescribeImage, props)
+    action = StreamingActions.DescribeImage;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the DescribeImage2 BAML function that supports both streaming and non‑streaming responses.
@@ -1441,13 +1399,11 @@ export function useDescribeImage2(props?: HookInput<'DescribeImage2', { stream?:
 export function useDescribeImage2(
   props: HookInput<'DescribeImage2', { stream?: boolean }> = {},
 ): HookOutput<'DescribeImage2', { stream: true }> | HookOutput<'DescribeImage2', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.DescribeImage2, props)
-  }
+  let action = Actions.DescribeImage2;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.DescribeImage2, props)
+    action = StreamingActions.DescribeImage2;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the DescribeImage3 BAML function that supports both streaming and non‑streaming responses.
@@ -1493,13 +1449,11 @@ export function useDescribeImage3(props?: HookInput<'DescribeImage3', { stream?:
 export function useDescribeImage3(
   props: HookInput<'DescribeImage3', { stream?: boolean }> = {},
 ): HookOutput<'DescribeImage3', { stream: true }> | HookOutput<'DescribeImage3', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.DescribeImage3, props)
-  }
+  let action = Actions.DescribeImage3;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.DescribeImage3, props)
+    action = StreamingActions.DescribeImage3;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the DescribeImage4 BAML function that supports both streaming and non‑streaming responses.
@@ -1545,13 +1499,11 @@ export function useDescribeImage4(props?: HookInput<'DescribeImage4', { stream?:
 export function useDescribeImage4(
   props: HookInput<'DescribeImage4', { stream?: boolean }> = {},
 ): HookOutput<'DescribeImage4', { stream: true }> | HookOutput<'DescribeImage4', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.DescribeImage4, props)
-  }
+  let action = Actions.DescribeImage4;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.DescribeImage4, props)
+    action = StreamingActions.DescribeImage4;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the DescribeMedia1599 BAML function that supports both streaming and non‑streaming responses.
@@ -1599,13 +1551,11 @@ export function useDescribeMedia1599(props?: HookInput<'DescribeMedia1599', { st
 export function useDescribeMedia1599(
   props: HookInput<'DescribeMedia1599', { stream?: boolean }> = {},
 ): HookOutput<'DescribeMedia1599', { stream: true }> | HookOutput<'DescribeMedia1599', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.DescribeMedia1599, props)
-  }
+  let action = Actions.DescribeMedia1599;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.DescribeMedia1599, props)
+    action = StreamingActions.DescribeMedia1599;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the DifferentiateUnions BAML function that supports both streaming and non‑streaming responses.
@@ -1647,13 +1597,11 @@ export function useDifferentiateUnions(props?: HookInput<'DifferentiateUnions', 
 export function useDifferentiateUnions(
   props: HookInput<'DifferentiateUnions', { stream?: boolean }> = {},
 ): HookOutput<'DifferentiateUnions', { stream: true }> | HookOutput<'DifferentiateUnions', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.DifferentiateUnions, props)
-  }
+  let action = Actions.DifferentiateUnions;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.DifferentiateUnions, props)
+    action = StreamingActions.DifferentiateUnions;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the DummyOutputFunction BAML function that supports both streaming and non‑streaming responses.
@@ -1697,13 +1645,11 @@ export function useDummyOutputFunction(props?: HookInput<'DummyOutputFunction', 
 export function useDummyOutputFunction(
   props: HookInput<'DummyOutputFunction', { stream?: boolean }> = {},
 ): HookOutput<'DummyOutputFunction', { stream: true }> | HookOutput<'DummyOutputFunction', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.DummyOutputFunction, props)
-  }
+  let action = Actions.DummyOutputFunction;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.DummyOutputFunction, props)
+    action = StreamingActions.DummyOutputFunction;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the DynamicFunc BAML function that supports both streaming and non‑streaming responses.
@@ -1747,13 +1693,11 @@ export function useDynamicFunc(props?: HookInput<'DynamicFunc', { stream?: true 
 export function useDynamicFunc(
   props: HookInput<'DynamicFunc', { stream?: boolean }> = {},
 ): HookOutput<'DynamicFunc', { stream: true }> | HookOutput<'DynamicFunc', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.DynamicFunc, props)
-  }
+  let action = Actions.DynamicFunc;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.DynamicFunc, props)
+    action = StreamingActions.DynamicFunc;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the DynamicInputOutput BAML function that supports both streaming and non‑streaming responses.
@@ -1797,13 +1741,11 @@ export function useDynamicInputOutput(props?: HookInput<'DynamicInputOutput', { 
 export function useDynamicInputOutput(
   props: HookInput<'DynamicInputOutput', { stream?: boolean }> = {},
 ): HookOutput<'DynamicInputOutput', { stream: true }> | HookOutput<'DynamicInputOutput', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.DynamicInputOutput, props)
-  }
+  let action = Actions.DynamicInputOutput;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.DynamicInputOutput, props)
+    action = StreamingActions.DynamicInputOutput;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the DynamicListInputOutput BAML function that supports both streaming and non‑streaming responses.
@@ -1847,13 +1789,11 @@ export function useDynamicListInputOutput(props?: HookInput<'DynamicListInputOut
 export function useDynamicListInputOutput(
   props: HookInput<'DynamicListInputOutput', { stream?: boolean }> = {},
 ): HookOutput<'DynamicListInputOutput', { stream: true }> | HookOutput<'DynamicListInputOutput', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.DynamicListInputOutput, props)
-  }
+  let action = Actions.DynamicListInputOutput;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.DynamicListInputOutput, props)
+    action = StreamingActions.DynamicListInputOutput;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ExpectFailure BAML function that supports both streaming and non‑streaming responses.
@@ -1895,13 +1835,11 @@ export function useExpectFailure(props?: HookInput<'ExpectFailure', { stream?: t
 export function useExpectFailure(
   props: HookInput<'ExpectFailure', { stream?: boolean }> = {},
 ): HookOutput<'ExpectFailure', { stream: true }> | HookOutput<'ExpectFailure', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ExpectFailure, props)
-  }
+  let action = Actions.ExpectFailure;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ExpectFailure, props)
+    action = StreamingActions.ExpectFailure;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ExtractContactInfo BAML function that supports both streaming and non‑streaming responses.
@@ -1945,13 +1883,11 @@ export function useExtractContactInfo(props?: HookInput<'ExtractContactInfo', { 
 export function useExtractContactInfo(
   props: HookInput<'ExtractContactInfo', { stream?: boolean }> = {},
 ): HookOutput<'ExtractContactInfo', { stream: true }> | HookOutput<'ExtractContactInfo', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ExtractContactInfo, props)
-  }
+  let action = Actions.ExtractContactInfo;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ExtractContactInfo, props)
+    action = StreamingActions.ExtractContactInfo;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ExtractHobby BAML function that supports both streaming and non‑streaming responses.
@@ -1995,13 +1931,11 @@ export function useExtractHobby(props?: HookInput<'ExtractHobby', { stream?: tru
 export function useExtractHobby(
   props: HookInput<'ExtractHobby', { stream?: boolean }> = {},
 ): HookOutput<'ExtractHobby', { stream: true }> | HookOutput<'ExtractHobby', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ExtractHobby, props)
-  }
+  let action = Actions.ExtractHobby;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ExtractHobby, props)
+    action = StreamingActions.ExtractHobby;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ExtractNames BAML function that supports both streaming and non‑streaming responses.
@@ -2045,13 +1979,11 @@ export function useExtractNames(props?: HookInput<'ExtractNames', { stream?: tru
 export function useExtractNames(
   props: HookInput<'ExtractNames', { stream?: boolean }> = {},
 ): HookOutput<'ExtractNames', { stream: true }> | HookOutput<'ExtractNames', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ExtractNames, props)
-  }
+  let action = Actions.ExtractNames;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ExtractNames, props)
+    action = StreamingActions.ExtractNames;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ExtractPeople BAML function that supports both streaming and non‑streaming responses.
@@ -2095,13 +2027,11 @@ export function useExtractPeople(props?: HookInput<'ExtractPeople', { stream?: t
 export function useExtractPeople(
   props: HookInput<'ExtractPeople', { stream?: boolean }> = {},
 ): HookOutput<'ExtractPeople', { stream: true }> | HookOutput<'ExtractPeople', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ExtractPeople, props)
-  }
+  let action = Actions.ExtractPeople;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ExtractPeople, props)
+    action = StreamingActions.ExtractPeople;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ExtractReceiptInfo BAML function that supports both streaming and non‑streaming responses.
@@ -2147,13 +2077,11 @@ export function useExtractReceiptInfo(props?: HookInput<'ExtractReceiptInfo', { 
 export function useExtractReceiptInfo(
   props: HookInput<'ExtractReceiptInfo', { stream?: boolean }> = {},
 ): HookOutput<'ExtractReceiptInfo', { stream: true }> | HookOutput<'ExtractReceiptInfo', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ExtractReceiptInfo, props)
-  }
+  let action = Actions.ExtractReceiptInfo;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ExtractReceiptInfo, props)
+    action = StreamingActions.ExtractReceiptInfo;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ExtractResume BAML function that supports both streaming and non‑streaming responses.
@@ -2199,13 +2127,11 @@ export function useExtractResume(props?: HookInput<'ExtractResume', { stream?: t
 export function useExtractResume(
   props: HookInput<'ExtractResume', { stream?: boolean }> = {},
 ): HookOutput<'ExtractResume', { stream: true }> | HookOutput<'ExtractResume', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ExtractResume, props)
-  }
+  let action = Actions.ExtractResume;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ExtractResume, props)
+    action = StreamingActions.ExtractResume;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ExtractResume2 BAML function that supports both streaming and non‑streaming responses.
@@ -2249,13 +2175,11 @@ export function useExtractResume2(props?: HookInput<'ExtractResume2', { stream?:
 export function useExtractResume2(
   props: HookInput<'ExtractResume2', { stream?: boolean }> = {},
 ): HookOutput<'ExtractResume2', { stream: true }> | HookOutput<'ExtractResume2', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ExtractResume2, props)
-  }
+  let action = Actions.ExtractResume2;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ExtractResume2, props)
+    action = StreamingActions.ExtractResume2;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnClassOptionalOutput BAML function that supports both streaming and non‑streaming responses.
@@ -2299,13 +2223,11 @@ export function useFnClassOptionalOutput(props?: HookInput<'FnClassOptionalOutpu
 export function useFnClassOptionalOutput(
   props: HookInput<'FnClassOptionalOutput', { stream?: boolean }> = {},
 ): HookOutput<'FnClassOptionalOutput', { stream: true }> | HookOutput<'FnClassOptionalOutput', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnClassOptionalOutput, props)
-  }
+  let action = Actions.FnClassOptionalOutput;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnClassOptionalOutput, props)
+    action = StreamingActions.FnClassOptionalOutput;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnClassOptionalOutput2 BAML function that supports both streaming and non‑streaming responses.
@@ -2349,13 +2271,11 @@ export function useFnClassOptionalOutput2(props?: HookInput<'FnClassOptionalOutp
 export function useFnClassOptionalOutput2(
   props: HookInput<'FnClassOptionalOutput2', { stream?: boolean }> = {},
 ): HookOutput<'FnClassOptionalOutput2', { stream: true }> | HookOutput<'FnClassOptionalOutput2', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnClassOptionalOutput2, props)
-  }
+  let action = Actions.FnClassOptionalOutput2;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnClassOptionalOutput2, props)
+    action = StreamingActions.FnClassOptionalOutput2;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnEnumListOutput BAML function that supports both streaming and non‑streaming responses.
@@ -2399,13 +2319,11 @@ export function useFnEnumListOutput(props?: HookInput<'FnEnumListOutput', { stre
 export function useFnEnumListOutput(
   props: HookInput<'FnEnumListOutput', { stream?: boolean }> = {},
 ): HookOutput<'FnEnumListOutput', { stream: true }> | HookOutput<'FnEnumListOutput', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnEnumListOutput, props)
-  }
+  let action = Actions.FnEnumListOutput;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnEnumListOutput, props)
+    action = StreamingActions.FnEnumListOutput;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnEnumOutput BAML function that supports both streaming and non‑streaming responses.
@@ -2449,13 +2367,11 @@ export function useFnEnumOutput(props?: HookInput<'FnEnumOutput', { stream?: tru
 export function useFnEnumOutput(
   props: HookInput<'FnEnumOutput', { stream?: boolean }> = {},
 ): HookOutput<'FnEnumOutput', { stream: true }> | HookOutput<'FnEnumOutput', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnEnumOutput, props)
-  }
+  let action = Actions.FnEnumOutput;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnEnumOutput, props)
+    action = StreamingActions.FnEnumOutput;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnLiteralClassInputOutput BAML function that supports both streaming and non‑streaming responses.
@@ -2499,13 +2415,11 @@ export function useFnLiteralClassInputOutput(props?: HookInput<'FnLiteralClassIn
 export function useFnLiteralClassInputOutput(
   props: HookInput<'FnLiteralClassInputOutput', { stream?: boolean }> = {},
 ): HookOutput<'FnLiteralClassInputOutput', { stream: true }> | HookOutput<'FnLiteralClassInputOutput', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnLiteralClassInputOutput, props)
-  }
+  let action = Actions.FnLiteralClassInputOutput;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnLiteralClassInputOutput, props)
+    action = StreamingActions.FnLiteralClassInputOutput;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnLiteralUnionClassInputOutput BAML function that supports both streaming and non‑streaming responses.
@@ -2549,13 +2463,11 @@ export function useFnLiteralUnionClassInputOutput(props?: HookInput<'FnLiteralUn
 export function useFnLiteralUnionClassInputOutput(
   props: HookInput<'FnLiteralUnionClassInputOutput', { stream?: boolean }> = {},
 ): HookOutput<'FnLiteralUnionClassInputOutput', { stream: true }> | HookOutput<'FnLiteralUnionClassInputOutput', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnLiteralUnionClassInputOutput, props)
-  }
+  let action = Actions.FnLiteralUnionClassInputOutput;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnLiteralUnionClassInputOutput, props)
+    action = StreamingActions.FnLiteralUnionClassInputOutput;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnNamedArgsSingleStringOptional BAML function that supports both streaming and non‑streaming responses.
@@ -2599,13 +2511,11 @@ export function useFnNamedArgsSingleStringOptional(props?: HookInput<'FnNamedArg
 export function useFnNamedArgsSingleStringOptional(
   props: HookInput<'FnNamedArgsSingleStringOptional', { stream?: boolean }> = {},
 ): HookOutput<'FnNamedArgsSingleStringOptional', { stream: true }> | HookOutput<'FnNamedArgsSingleStringOptional', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnNamedArgsSingleStringOptional, props)
-  }
+  let action = Actions.FnNamedArgsSingleStringOptional;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnNamedArgsSingleStringOptional, props)
+    action = StreamingActions.FnNamedArgsSingleStringOptional;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnOutputBool BAML function that supports both streaming and non‑streaming responses.
@@ -2649,13 +2559,11 @@ export function useFnOutputBool(props?: HookInput<'FnOutputBool', { stream?: tru
 export function useFnOutputBool(
   props: HookInput<'FnOutputBool', { stream?: boolean }> = {},
 ): HookOutput<'FnOutputBool', { stream: true }> | HookOutput<'FnOutputBool', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnOutputBool, props)
-  }
+  let action = Actions.FnOutputBool;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnOutputBool, props)
+    action = StreamingActions.FnOutputBool;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnOutputClass BAML function that supports both streaming and non‑streaming responses.
@@ -2699,13 +2607,11 @@ export function useFnOutputClass(props?: HookInput<'FnOutputClass', { stream?: t
 export function useFnOutputClass(
   props: HookInput<'FnOutputClass', { stream?: boolean }> = {},
 ): HookOutput<'FnOutputClass', { stream: true }> | HookOutput<'FnOutputClass', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnOutputClass, props)
-  }
+  let action = Actions.FnOutputClass;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnOutputClass, props)
+    action = StreamingActions.FnOutputClass;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnOutputClassList BAML function that supports both streaming and non‑streaming responses.
@@ -2749,13 +2655,11 @@ export function useFnOutputClassList(props?: HookInput<'FnOutputClassList', { st
 export function useFnOutputClassList(
   props: HookInput<'FnOutputClassList', { stream?: boolean }> = {},
 ): HookOutput<'FnOutputClassList', { stream: true }> | HookOutput<'FnOutputClassList', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnOutputClassList, props)
-  }
+  let action = Actions.FnOutputClassList;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnOutputClassList, props)
+    action = StreamingActions.FnOutputClassList;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnOutputClassNested BAML function that supports both streaming and non‑streaming responses.
@@ -2799,13 +2703,11 @@ export function useFnOutputClassNested(props?: HookInput<'FnOutputClassNested', 
 export function useFnOutputClassNested(
   props: HookInput<'FnOutputClassNested', { stream?: boolean }> = {},
 ): HookOutput<'FnOutputClassNested', { stream: true }> | HookOutput<'FnOutputClassNested', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnOutputClassNested, props)
-  }
+  let action = Actions.FnOutputClassNested;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnOutputClassNested, props)
+    action = StreamingActions.FnOutputClassNested;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnOutputClassWithEnum BAML function that supports both streaming and non‑streaming responses.
@@ -2849,13 +2751,11 @@ export function useFnOutputClassWithEnum(props?: HookInput<'FnOutputClassWithEnu
 export function useFnOutputClassWithEnum(
   props: HookInput<'FnOutputClassWithEnum', { stream?: boolean }> = {},
 ): HookOutput<'FnOutputClassWithEnum', { stream: true }> | HookOutput<'FnOutputClassWithEnum', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnOutputClassWithEnum, props)
-  }
+  let action = Actions.FnOutputClassWithEnum;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnOutputClassWithEnum, props)
+    action = StreamingActions.FnOutputClassWithEnum;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnOutputInt BAML function that supports both streaming and non‑streaming responses.
@@ -2899,13 +2799,11 @@ export function useFnOutputInt(props?: HookInput<'FnOutputInt', { stream?: true 
 export function useFnOutputInt(
   props: HookInput<'FnOutputInt', { stream?: boolean }> = {},
 ): HookOutput<'FnOutputInt', { stream: true }> | HookOutput<'FnOutputInt', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnOutputInt, props)
-  }
+  let action = Actions.FnOutputInt;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnOutputInt, props)
+    action = StreamingActions.FnOutputInt;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnOutputLiteralBool BAML function that supports both streaming and non‑streaming responses.
@@ -2949,13 +2847,11 @@ export function useFnOutputLiteralBool(props?: HookInput<'FnOutputLiteralBool', 
 export function useFnOutputLiteralBool(
   props: HookInput<'FnOutputLiteralBool', { stream?: boolean }> = {},
 ): HookOutput<'FnOutputLiteralBool', { stream: true }> | HookOutput<'FnOutputLiteralBool', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnOutputLiteralBool, props)
-  }
+  let action = Actions.FnOutputLiteralBool;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnOutputLiteralBool, props)
+    action = StreamingActions.FnOutputLiteralBool;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnOutputLiteralInt BAML function that supports both streaming and non‑streaming responses.
@@ -2999,13 +2895,11 @@ export function useFnOutputLiteralInt(props?: HookInput<'FnOutputLiteralInt', { 
 export function useFnOutputLiteralInt(
   props: HookInput<'FnOutputLiteralInt', { stream?: boolean }> = {},
 ): HookOutput<'FnOutputLiteralInt', { stream: true }> | HookOutput<'FnOutputLiteralInt', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnOutputLiteralInt, props)
-  }
+  let action = Actions.FnOutputLiteralInt;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnOutputLiteralInt, props)
+    action = StreamingActions.FnOutputLiteralInt;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnOutputLiteralString BAML function that supports both streaming and non‑streaming responses.
@@ -3049,13 +2943,11 @@ export function useFnOutputLiteralString(props?: HookInput<'FnOutputLiteralStrin
 export function useFnOutputLiteralString(
   props: HookInput<'FnOutputLiteralString', { stream?: boolean }> = {},
 ): HookOutput<'FnOutputLiteralString', { stream: true }> | HookOutput<'FnOutputLiteralString', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnOutputLiteralString, props)
-  }
+  let action = Actions.FnOutputLiteralString;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnOutputLiteralString, props)
+    action = StreamingActions.FnOutputLiteralString;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnOutputStringList BAML function that supports both streaming and non‑streaming responses.
@@ -3099,13 +2991,11 @@ export function useFnOutputStringList(props?: HookInput<'FnOutputStringList', { 
 export function useFnOutputStringList(
   props: HookInput<'FnOutputStringList', { stream?: boolean }> = {},
 ): HookOutput<'FnOutputStringList', { stream: true }> | HookOutput<'FnOutputStringList', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnOutputStringList, props)
-  }
+  let action = Actions.FnOutputStringList;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnOutputStringList, props)
+    action = StreamingActions.FnOutputStringList;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnTestAliasedEnumOutput BAML function that supports both streaming and non‑streaming responses.
@@ -3149,13 +3039,11 @@ export function useFnTestAliasedEnumOutput(props?: HookInput<'FnTestAliasedEnumO
 export function useFnTestAliasedEnumOutput(
   props: HookInput<'FnTestAliasedEnumOutput', { stream?: boolean }> = {},
 ): HookOutput<'FnTestAliasedEnumOutput', { stream: true }> | HookOutput<'FnTestAliasedEnumOutput', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnTestAliasedEnumOutput, props)
-  }
+  let action = Actions.FnTestAliasedEnumOutput;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnTestAliasedEnumOutput, props)
+    action = StreamingActions.FnTestAliasedEnumOutput;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnTestClassAlias BAML function that supports both streaming and non‑streaming responses.
@@ -3199,13 +3087,11 @@ export function useFnTestClassAlias(props?: HookInput<'FnTestClassAlias', { stre
 export function useFnTestClassAlias(
   props: HookInput<'FnTestClassAlias', { stream?: boolean }> = {},
 ): HookOutput<'FnTestClassAlias', { stream: true }> | HookOutput<'FnTestClassAlias', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnTestClassAlias, props)
-  }
+  let action = Actions.FnTestClassAlias;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnTestClassAlias, props)
+    action = StreamingActions.FnTestClassAlias;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the FnTestNamedArgsSingleEnum BAML function that supports both streaming and non‑streaming responses.
@@ -3249,13 +3135,11 @@ export function useFnTestNamedArgsSingleEnum(props?: HookInput<'FnTestNamedArgsS
 export function useFnTestNamedArgsSingleEnum(
   props: HookInput<'FnTestNamedArgsSingleEnum', { stream?: boolean }> = {},
 ): HookOutput<'FnTestNamedArgsSingleEnum', { stream: true }> | HookOutput<'FnTestNamedArgsSingleEnum', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.FnTestNamedArgsSingleEnum, props)
-  }
+  let action = Actions.FnTestNamedArgsSingleEnum;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.FnTestNamedArgsSingleEnum, props)
+    action = StreamingActions.FnTestNamedArgsSingleEnum;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the GetDataType BAML function that supports both streaming and non‑streaming responses.
@@ -3299,13 +3183,11 @@ export function useGetDataType(props?: HookInput<'GetDataType', { stream?: true 
 export function useGetDataType(
   props: HookInput<'GetDataType', { stream?: boolean }> = {},
 ): HookOutput<'GetDataType', { stream: true }> | HookOutput<'GetDataType', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.GetDataType, props)
-  }
+  let action = Actions.GetDataType;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.GetDataType, props)
+    action = StreamingActions.GetDataType;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the GetOrderInfo BAML function that supports both streaming and non‑streaming responses.
@@ -3349,13 +3231,11 @@ export function useGetOrderInfo(props?: HookInput<'GetOrderInfo', { stream?: tru
 export function useGetOrderInfo(
   props: HookInput<'GetOrderInfo', { stream?: boolean }> = {},
 ): HookOutput<'GetOrderInfo', { stream: true }> | HookOutput<'GetOrderInfo', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.GetOrderInfo, props)
-  }
+  let action = Actions.GetOrderInfo;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.GetOrderInfo, props)
+    action = StreamingActions.GetOrderInfo;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the GetQuery BAML function that supports both streaming and non‑streaming responses.
@@ -3399,13 +3279,11 @@ export function useGetQuery(props?: HookInput<'GetQuery', { stream?: true }>): H
 export function useGetQuery(
   props: HookInput<'GetQuery', { stream?: boolean }> = {},
 ): HookOutput<'GetQuery', { stream: true }> | HookOutput<'GetQuery', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.GetQuery, props)
-  }
+  let action = Actions.GetQuery;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.GetQuery, props)
+    action = StreamingActions.GetQuery;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the InOutEnumMapKey BAML function that supports both streaming and non‑streaming responses.
@@ -3451,13 +3329,11 @@ export function useInOutEnumMapKey(props?: HookInput<'InOutEnumMapKey', { stream
 export function useInOutEnumMapKey(
   props: HookInput<'InOutEnumMapKey', { stream?: boolean }> = {},
 ): HookOutput<'InOutEnumMapKey', { stream: true }> | HookOutput<'InOutEnumMapKey', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.InOutEnumMapKey, props)
-  }
+  let action = Actions.InOutEnumMapKey;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.InOutEnumMapKey, props)
+    action = StreamingActions.InOutEnumMapKey;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the InOutLiteralStringUnionMapKey BAML function that supports both streaming and non‑streaming responses.
@@ -3503,13 +3379,11 @@ export function useInOutLiteralStringUnionMapKey(props?: HookInput<'InOutLiteral
 export function useInOutLiteralStringUnionMapKey(
   props: HookInput<'InOutLiteralStringUnionMapKey', { stream?: boolean }> = {},
 ): HookOutput<'InOutLiteralStringUnionMapKey', { stream: true }> | HookOutput<'InOutLiteralStringUnionMapKey', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.InOutLiteralStringUnionMapKey, props)
-  }
+  let action = Actions.InOutLiteralStringUnionMapKey;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.InOutLiteralStringUnionMapKey, props)
+    action = StreamingActions.InOutLiteralStringUnionMapKey;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the InOutSingleLiteralStringMapKey BAML function that supports both streaming and non‑streaming responses.
@@ -3553,13 +3427,11 @@ export function useInOutSingleLiteralStringMapKey(props?: HookInput<'InOutSingle
 export function useInOutSingleLiteralStringMapKey(
   props: HookInput<'InOutSingleLiteralStringMapKey', { stream?: boolean }> = {},
 ): HookOutput<'InOutSingleLiteralStringMapKey', { stream: true }> | HookOutput<'InOutSingleLiteralStringMapKey', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.InOutSingleLiteralStringMapKey, props)
-  }
+  let action = Actions.InOutSingleLiteralStringMapKey;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.InOutSingleLiteralStringMapKey, props)
+    action = StreamingActions.InOutSingleLiteralStringMapKey;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the JsonTypeAliasCycle BAML function that supports both streaming and non‑streaming responses.
@@ -3603,13 +3475,11 @@ export function useJsonTypeAliasCycle(props?: HookInput<'JsonTypeAliasCycle', { 
 export function useJsonTypeAliasCycle(
   props: HookInput<'JsonTypeAliasCycle', { stream?: boolean }> = {},
 ): HookOutput<'JsonTypeAliasCycle', { stream: true }> | HookOutput<'JsonTypeAliasCycle', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.JsonTypeAliasCycle, props)
-  }
+  let action = Actions.JsonTypeAliasCycle;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.JsonTypeAliasCycle, props)
+    action = StreamingActions.JsonTypeAliasCycle;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the LiteralUnionsTest BAML function that supports both streaming and non‑streaming responses.
@@ -3653,13 +3523,11 @@ export function useLiteralUnionsTest(props?: HookInput<'LiteralUnionsTest', { st
 export function useLiteralUnionsTest(
   props: HookInput<'LiteralUnionsTest', { stream?: boolean }> = {},
 ): HookOutput<'LiteralUnionsTest', { stream: true }> | HookOutput<'LiteralUnionsTest', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.LiteralUnionsTest, props)
-  }
+  let action = Actions.LiteralUnionsTest;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.LiteralUnionsTest, props)
+    action = StreamingActions.LiteralUnionsTest;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the MakeBlockConstraint BAML function that supports both streaming and non‑streaming responses.
@@ -3701,13 +3569,11 @@ export function useMakeBlockConstraint(props?: HookInput<'MakeBlockConstraint', 
 export function useMakeBlockConstraint(
   props: HookInput<'MakeBlockConstraint', { stream?: boolean }> = {},
 ): HookOutput<'MakeBlockConstraint', { stream: true }> | HookOutput<'MakeBlockConstraint', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.MakeBlockConstraint, props)
-  }
+  let action = Actions.MakeBlockConstraint;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.MakeBlockConstraint, props)
+    action = StreamingActions.MakeBlockConstraint;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the MakeNestedBlockConstraint BAML function that supports both streaming and non‑streaming responses.
@@ -3749,13 +3615,11 @@ export function useMakeNestedBlockConstraint(props?: HookInput<'MakeNestedBlockC
 export function useMakeNestedBlockConstraint(
   props: HookInput<'MakeNestedBlockConstraint', { stream?: boolean }> = {},
 ): HookOutput<'MakeNestedBlockConstraint', { stream: true }> | HookOutput<'MakeNestedBlockConstraint', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.MakeNestedBlockConstraint, props)
-  }
+  let action = Actions.MakeNestedBlockConstraint;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.MakeNestedBlockConstraint, props)
+    action = StreamingActions.MakeNestedBlockConstraint;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the MakeSemanticContainer BAML function that supports both streaming and non‑streaming responses.
@@ -3797,13 +3661,11 @@ export function useMakeSemanticContainer(props?: HookInput<'MakeSemanticContaine
 export function useMakeSemanticContainer(
   props: HookInput<'MakeSemanticContainer', { stream?: boolean }> = {},
 ): HookOutput<'MakeSemanticContainer', { stream: true }> | HookOutput<'MakeSemanticContainer', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.MakeSemanticContainer, props)
-  }
+  let action = Actions.MakeSemanticContainer;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.MakeSemanticContainer, props)
+    action = StreamingActions.MakeSemanticContainer;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the MapAlias BAML function that supports both streaming and non‑streaming responses.
@@ -3847,13 +3709,11 @@ export function useMapAlias(props?: HookInput<'MapAlias', { stream?: true }>): H
 export function useMapAlias(
   props: HookInput<'MapAlias', { stream?: boolean }> = {},
 ): HookOutput<'MapAlias', { stream: true }> | HookOutput<'MapAlias', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.MapAlias, props)
-  }
+  let action = Actions.MapAlias;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.MapAlias, props)
+    action = StreamingActions.MapAlias;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the MergeAliasAttributes BAML function that supports both streaming and non‑streaming responses.
@@ -3897,13 +3757,11 @@ export function useMergeAliasAttributes(props?: HookInput<'MergeAliasAttributes'
 export function useMergeAliasAttributes(
   props: HookInput<'MergeAliasAttributes', { stream?: boolean }> = {},
 ): HookOutput<'MergeAliasAttributes', { stream: true }> | HookOutput<'MergeAliasAttributes', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.MergeAliasAttributes, props)
-  }
+  let action = Actions.MergeAliasAttributes;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.MergeAliasAttributes, props)
+    action = StreamingActions.MergeAliasAttributes;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the MyFunc BAML function that supports both streaming and non‑streaming responses.
@@ -3947,13 +3805,11 @@ export function useMyFunc(props?: HookInput<'MyFunc', { stream?: true }>): HookO
 export function useMyFunc(
   props: HookInput<'MyFunc', { stream?: boolean }> = {},
 ): HookOutput<'MyFunc', { stream: true }> | HookOutput<'MyFunc', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.MyFunc, props)
-  }
+  let action = Actions.MyFunc;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.MyFunc, props)
+    action = StreamingActions.MyFunc;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the NestedAlias BAML function that supports both streaming and non‑streaming responses.
@@ -3997,13 +3853,11 @@ export function useNestedAlias(props?: HookInput<'NestedAlias', { stream?: true 
 export function useNestedAlias(
   props: HookInput<'NestedAlias', { stream?: boolean }> = {},
 ): HookOutput<'NestedAlias', { stream: true }> | HookOutput<'NestedAlias', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.NestedAlias, props)
-  }
+  let action = Actions.NestedAlias;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.NestedAlias, props)
+    action = StreamingActions.NestedAlias;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the NullLiteralClassHello BAML function that supports both streaming and non‑streaming responses.
@@ -4047,13 +3901,11 @@ export function useNullLiteralClassHello(props?: HookInput<'NullLiteralClassHell
 export function useNullLiteralClassHello(
   props: HookInput<'NullLiteralClassHello', { stream?: boolean }> = {},
 ): HookOutput<'NullLiteralClassHello', { stream: true }> | HookOutput<'NullLiteralClassHello', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.NullLiteralClassHello, props)
-  }
+  let action = Actions.NullLiteralClassHello;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.NullLiteralClassHello, props)
+    action = StreamingActions.NullLiteralClassHello;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the OptionalTest_Function BAML function that supports both streaming and non‑streaming responses.
@@ -4097,13 +3949,11 @@ export function useOptionalTest_Function(props?: HookInput<'OptionalTest_Functio
 export function useOptionalTest_Function(
   props: HookInput<'OptionalTest_Function', { stream?: boolean }> = {},
 ): HookOutput<'OptionalTest_Function', { stream: true }> | HookOutput<'OptionalTest_Function', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.OptionalTest_Function, props)
-  }
+  let action = Actions.OptionalTest_Function;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.OptionalTest_Function, props)
+    action = StreamingActions.OptionalTest_Function;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the PredictAge BAML function that supports both streaming and non‑streaming responses.
@@ -4147,13 +3997,11 @@ export function usePredictAge(props?: HookInput<'PredictAge', { stream?: true }>
 export function usePredictAge(
   props: HookInput<'PredictAge', { stream?: boolean }> = {},
 ): HookOutput<'PredictAge', { stream: true }> | HookOutput<'PredictAge', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.PredictAge, props)
-  }
+  let action = Actions.PredictAge;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.PredictAge, props)
+    action = StreamingActions.PredictAge;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the PredictAgeBare BAML function that supports both streaming and non‑streaming responses.
@@ -4197,13 +4045,11 @@ export function usePredictAgeBare(props?: HookInput<'PredictAgeBare', { stream?:
 export function usePredictAgeBare(
   props: HookInput<'PredictAgeBare', { stream?: boolean }> = {},
 ): HookOutput<'PredictAgeBare', { stream: true }> | HookOutput<'PredictAgeBare', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.PredictAgeBare, props)
-  }
+  let action = Actions.PredictAgeBare;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.PredictAgeBare, props)
+    action = StreamingActions.PredictAgeBare;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the PrimitiveAlias BAML function that supports both streaming and non‑streaming responses.
@@ -4247,13 +4093,11 @@ export function usePrimitiveAlias(props?: HookInput<'PrimitiveAlias', { stream?:
 export function usePrimitiveAlias(
   props: HookInput<'PrimitiveAlias', { stream?: boolean }> = {},
 ): HookOutput<'PrimitiveAlias', { stream: true }> | HookOutput<'PrimitiveAlias', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.PrimitiveAlias, props)
-  }
+  let action = Actions.PrimitiveAlias;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.PrimitiveAlias, props)
+    action = StreamingActions.PrimitiveAlias;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the PromptTestClaude BAML function that supports both streaming and non‑streaming responses.
@@ -4297,13 +4141,11 @@ export function usePromptTestClaude(props?: HookInput<'PromptTestClaude', { stre
 export function usePromptTestClaude(
   props: HookInput<'PromptTestClaude', { stream?: boolean }> = {},
 ): HookOutput<'PromptTestClaude', { stream: true }> | HookOutput<'PromptTestClaude', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.PromptTestClaude, props)
-  }
+  let action = Actions.PromptTestClaude;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.PromptTestClaude, props)
+    action = StreamingActions.PromptTestClaude;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the PromptTestClaudeChat BAML function that supports both streaming and non‑streaming responses.
@@ -4347,13 +4189,11 @@ export function usePromptTestClaudeChat(props?: HookInput<'PromptTestClaudeChat'
 export function usePromptTestClaudeChat(
   props: HookInput<'PromptTestClaudeChat', { stream?: boolean }> = {},
 ): HookOutput<'PromptTestClaudeChat', { stream: true }> | HookOutput<'PromptTestClaudeChat', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.PromptTestClaudeChat, props)
-  }
+  let action = Actions.PromptTestClaudeChat;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.PromptTestClaudeChat, props)
+    action = StreamingActions.PromptTestClaudeChat;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the PromptTestClaudeChatNoSystem BAML function that supports both streaming and non‑streaming responses.
@@ -4397,13 +4237,11 @@ export function usePromptTestClaudeChatNoSystem(props?: HookInput<'PromptTestCla
 export function usePromptTestClaudeChatNoSystem(
   props: HookInput<'PromptTestClaudeChatNoSystem', { stream?: boolean }> = {},
 ): HookOutput<'PromptTestClaudeChatNoSystem', { stream: true }> | HookOutput<'PromptTestClaudeChatNoSystem', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.PromptTestClaudeChatNoSystem, props)
-  }
+  let action = Actions.PromptTestClaudeChatNoSystem;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.PromptTestClaudeChatNoSystem, props)
+    action = StreamingActions.PromptTestClaudeChatNoSystem;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the PromptTestOpenAI BAML function that supports both streaming and non‑streaming responses.
@@ -4447,13 +4285,11 @@ export function usePromptTestOpenAI(props?: HookInput<'PromptTestOpenAI', { stre
 export function usePromptTestOpenAI(
   props: HookInput<'PromptTestOpenAI', { stream?: boolean }> = {},
 ): HookOutput<'PromptTestOpenAI', { stream: true }> | HookOutput<'PromptTestOpenAI', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.PromptTestOpenAI, props)
-  }
+  let action = Actions.PromptTestOpenAI;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.PromptTestOpenAI, props)
+    action = StreamingActions.PromptTestOpenAI;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the PromptTestOpenAIChat BAML function that supports both streaming and non‑streaming responses.
@@ -4497,13 +4333,11 @@ export function usePromptTestOpenAIChat(props?: HookInput<'PromptTestOpenAIChat'
 export function usePromptTestOpenAIChat(
   props: HookInput<'PromptTestOpenAIChat', { stream?: boolean }> = {},
 ): HookOutput<'PromptTestOpenAIChat', { stream: true }> | HookOutput<'PromptTestOpenAIChat', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.PromptTestOpenAIChat, props)
-  }
+  let action = Actions.PromptTestOpenAIChat;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.PromptTestOpenAIChat, props)
+    action = StreamingActions.PromptTestOpenAIChat;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the PromptTestOpenAIChatNoSystem BAML function that supports both streaming and non‑streaming responses.
@@ -4547,13 +4381,11 @@ export function usePromptTestOpenAIChatNoSystem(props?: HookInput<'PromptTestOpe
 export function usePromptTestOpenAIChatNoSystem(
   props: HookInput<'PromptTestOpenAIChatNoSystem', { stream?: boolean }> = {},
 ): HookOutput<'PromptTestOpenAIChatNoSystem', { stream: true }> | HookOutput<'PromptTestOpenAIChatNoSystem', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.PromptTestOpenAIChatNoSystem, props)
-  }
+  let action = Actions.PromptTestOpenAIChatNoSystem;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.PromptTestOpenAIChatNoSystem, props)
+    action = StreamingActions.PromptTestOpenAIChatNoSystem;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the PromptTestStreaming BAML function that supports both streaming and non‑streaming responses.
@@ -4597,13 +4429,11 @@ export function usePromptTestStreaming(props?: HookInput<'PromptTestStreaming', 
 export function usePromptTestStreaming(
   props: HookInput<'PromptTestStreaming', { stream?: boolean }> = {},
 ): HookOutput<'PromptTestStreaming', { stream: true }> | HookOutput<'PromptTestStreaming', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.PromptTestStreaming, props)
-  }
+  let action = Actions.PromptTestStreaming;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.PromptTestStreaming, props)
+    action = StreamingActions.PromptTestStreaming;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the RecursiveAliasCycle BAML function that supports both streaming and non‑streaming responses.
@@ -4647,13 +4477,11 @@ export function useRecursiveAliasCycle(props?: HookInput<'RecursiveAliasCycle', 
 export function useRecursiveAliasCycle(
   props: HookInput<'RecursiveAliasCycle', { stream?: boolean }> = {},
 ): HookOutput<'RecursiveAliasCycle', { stream: true }> | HookOutput<'RecursiveAliasCycle', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.RecursiveAliasCycle, props)
-  }
+  let action = Actions.RecursiveAliasCycle;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.RecursiveAliasCycle, props)
+    action = StreamingActions.RecursiveAliasCycle;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the RecursiveClassWithAliasIndirection BAML function that supports both streaming and non‑streaming responses.
@@ -4697,13 +4525,11 @@ export function useRecursiveClassWithAliasIndirection(props?: HookInput<'Recursi
 export function useRecursiveClassWithAliasIndirection(
   props: HookInput<'RecursiveClassWithAliasIndirection', { stream?: boolean }> = {},
 ): HookOutput<'RecursiveClassWithAliasIndirection', { stream: true }> | HookOutput<'RecursiveClassWithAliasIndirection', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.RecursiveClassWithAliasIndirection, props)
-  }
+  let action = Actions.RecursiveClassWithAliasIndirection;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.RecursiveClassWithAliasIndirection, props)
+    action = StreamingActions.RecursiveClassWithAliasIndirection;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ReturnAliasWithMergedAttributes BAML function that supports both streaming and non‑streaming responses.
@@ -4747,13 +4573,11 @@ export function useReturnAliasWithMergedAttributes(props?: HookInput<'ReturnAlia
 export function useReturnAliasWithMergedAttributes(
   props: HookInput<'ReturnAliasWithMergedAttributes', { stream?: boolean }> = {},
 ): HookOutput<'ReturnAliasWithMergedAttributes', { stream: true }> | HookOutput<'ReturnAliasWithMergedAttributes', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ReturnAliasWithMergedAttributes, props)
-  }
+  let action = Actions.ReturnAliasWithMergedAttributes;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ReturnAliasWithMergedAttributes, props)
+    action = StreamingActions.ReturnAliasWithMergedAttributes;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ReturnFailingAssert BAML function that supports both streaming and non‑streaming responses.
@@ -4797,13 +4621,11 @@ export function useReturnFailingAssert(props?: HookInput<'ReturnFailingAssert', 
 export function useReturnFailingAssert(
   props: HookInput<'ReturnFailingAssert', { stream?: boolean }> = {},
 ): HookOutput<'ReturnFailingAssert', { stream: true }> | HookOutput<'ReturnFailingAssert', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ReturnFailingAssert, props)
-  }
+  let action = Actions.ReturnFailingAssert;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ReturnFailingAssert, props)
+    action = StreamingActions.ReturnFailingAssert;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ReturnJsonEntry BAML function that supports both streaming and non‑streaming responses.
@@ -4847,13 +4669,11 @@ export function useReturnJsonEntry(props?: HookInput<'ReturnJsonEntry', { stream
 export function useReturnJsonEntry(
   props: HookInput<'ReturnJsonEntry', { stream?: boolean }> = {},
 ): HookOutput<'ReturnJsonEntry', { stream: true }> | HookOutput<'ReturnJsonEntry', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ReturnJsonEntry, props)
-  }
+  let action = Actions.ReturnJsonEntry;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ReturnJsonEntry, props)
+    action = StreamingActions.ReturnJsonEntry;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the ReturnMalformedConstraints BAML function that supports both streaming and non‑streaming responses.
@@ -4897,13 +4717,11 @@ export function useReturnMalformedConstraints(props?: HookInput<'ReturnMalformed
 export function useReturnMalformedConstraints(
   props: HookInput<'ReturnMalformedConstraints', { stream?: boolean }> = {},
 ): HookOutput<'ReturnMalformedConstraints', { stream: true }> | HookOutput<'ReturnMalformedConstraints', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.ReturnMalformedConstraints, props)
-  }
+  let action = Actions.ReturnMalformedConstraints;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.ReturnMalformedConstraints, props)
+    action = StreamingActions.ReturnMalformedConstraints;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the SchemaDescriptions BAML function that supports both streaming and non‑streaming responses.
@@ -4947,13 +4765,11 @@ export function useSchemaDescriptions(props?: HookInput<'SchemaDescriptions', { 
 export function useSchemaDescriptions(
   props: HookInput<'SchemaDescriptions', { stream?: boolean }> = {},
 ): HookOutput<'SchemaDescriptions', { stream: true }> | HookOutput<'SchemaDescriptions', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.SchemaDescriptions, props)
-  }
+  let action = Actions.SchemaDescriptions;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.SchemaDescriptions, props)
+    action = StreamingActions.SchemaDescriptions;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the SimpleRecursiveListAlias BAML function that supports both streaming and non‑streaming responses.
@@ -4997,13 +4813,11 @@ export function useSimpleRecursiveListAlias(props?: HookInput<'SimpleRecursiveLi
 export function useSimpleRecursiveListAlias(
   props: HookInput<'SimpleRecursiveListAlias', { stream?: boolean }> = {},
 ): HookOutput<'SimpleRecursiveListAlias', { stream: true }> | HookOutput<'SimpleRecursiveListAlias', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.SimpleRecursiveListAlias, props)
-  }
+  let action = Actions.SimpleRecursiveListAlias;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.SimpleRecursiveListAlias, props)
+    action = StreamingActions.SimpleRecursiveListAlias;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the SimpleRecursiveMapAlias BAML function that supports both streaming and non‑streaming responses.
@@ -5047,13 +4861,11 @@ export function useSimpleRecursiveMapAlias(props?: HookInput<'SimpleRecursiveMap
 export function useSimpleRecursiveMapAlias(
   props: HookInput<'SimpleRecursiveMapAlias', { stream?: boolean }> = {},
 ): HookOutput<'SimpleRecursiveMapAlias', { stream: true }> | HookOutput<'SimpleRecursiveMapAlias', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.SimpleRecursiveMapAlias, props)
-  }
+  let action = Actions.SimpleRecursiveMapAlias;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.SimpleRecursiveMapAlias, props)
+    action = StreamingActions.SimpleRecursiveMapAlias;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the StreamBigNumbers BAML function that supports both streaming and non‑streaming responses.
@@ -5097,13 +4909,11 @@ export function useStreamBigNumbers(props?: HookInput<'StreamBigNumbers', { stre
 export function useStreamBigNumbers(
   props: HookInput<'StreamBigNumbers', { stream?: boolean }> = {},
 ): HookOutput<'StreamBigNumbers', { stream: true }> | HookOutput<'StreamBigNumbers', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.StreamBigNumbers, props)
-  }
+  let action = Actions.StreamBigNumbers;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.StreamBigNumbers, props)
+    action = StreamingActions.StreamBigNumbers;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the StreamFailingAssertion BAML function that supports both streaming and non‑streaming responses.
@@ -5149,13 +4959,11 @@ export function useStreamFailingAssertion(props?: HookInput<'StreamFailingAssert
 export function useStreamFailingAssertion(
   props: HookInput<'StreamFailingAssertion', { stream?: boolean }> = {},
 ): HookOutput<'StreamFailingAssertion', { stream: true }> | HookOutput<'StreamFailingAssertion', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.StreamFailingAssertion, props)
-  }
+  let action = Actions.StreamFailingAssertion;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.StreamFailingAssertion, props)
+    action = StreamingActions.StreamFailingAssertion;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the StreamOneBigNumber BAML function that supports both streaming and non‑streaming responses.
@@ -5199,13 +5007,11 @@ export function useStreamOneBigNumber(props?: HookInput<'StreamOneBigNumber', { 
 export function useStreamOneBigNumber(
   props: HookInput<'StreamOneBigNumber', { stream?: boolean }> = {},
 ): HookOutput<'StreamOneBigNumber', { stream: true }> | HookOutput<'StreamOneBigNumber', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.StreamOneBigNumber, props)
-  }
+  let action = Actions.StreamOneBigNumber;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.StreamOneBigNumber, props)
+    action = StreamingActions.StreamOneBigNumber;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the StreamUnionIntegers BAML function that supports both streaming and non‑streaming responses.
@@ -5249,13 +5055,11 @@ export function useStreamUnionIntegers(props?: HookInput<'StreamUnionIntegers', 
 export function useStreamUnionIntegers(
   props: HookInput<'StreamUnionIntegers', { stream?: boolean }> = {},
 ): HookOutput<'StreamUnionIntegers', { stream: true }> | HookOutput<'StreamUnionIntegers', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.StreamUnionIntegers, props)
-  }
+  let action = Actions.StreamUnionIntegers;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.StreamUnionIntegers, props)
+    action = StreamingActions.StreamUnionIntegers;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the StreamingCompoundNumbers BAML function that supports both streaming and non‑streaming responses.
@@ -5301,13 +5105,11 @@ export function useStreamingCompoundNumbers(props?: HookInput<'StreamingCompound
 export function useStreamingCompoundNumbers(
   props: HookInput<'StreamingCompoundNumbers', { stream?: boolean }> = {},
 ): HookOutput<'StreamingCompoundNumbers', { stream: true }> | HookOutput<'StreamingCompoundNumbers', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.StreamingCompoundNumbers, props)
-  }
+  let action = Actions.StreamingCompoundNumbers;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.StreamingCompoundNumbers, props)
+    action = StreamingActions.StreamingCompoundNumbers;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the StructureDocument1559 BAML function that supports both streaming and non‑streaming responses.
@@ -5351,13 +5153,11 @@ export function useStructureDocument1559(props?: HookInput<'StructureDocument155
 export function useStructureDocument1559(
   props: HookInput<'StructureDocument1559', { stream?: boolean }> = {},
 ): HookOutput<'StructureDocument1559', { stream: true }> | HookOutput<'StructureDocument1559', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.StructureDocument1559, props)
-  }
+  let action = Actions.StructureDocument1559;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.StructureDocument1559, props)
+    action = StreamingActions.StructureDocument1559;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TakeRecAliasDep BAML function that supports both streaming and non‑streaming responses.
@@ -5401,13 +5201,11 @@ export function useTakeRecAliasDep(props?: HookInput<'TakeRecAliasDep', { stream
 export function useTakeRecAliasDep(
   props: HookInput<'TakeRecAliasDep', { stream?: boolean }> = {},
 ): HookOutput<'TakeRecAliasDep', { stream: true }> | HookOutput<'TakeRecAliasDep', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TakeRecAliasDep, props)
-  }
+  let action = Actions.TakeRecAliasDep;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TakeRecAliasDep, props)
+    action = StreamingActions.TakeRecAliasDep;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TellStory BAML function that supports both streaming and non‑streaming responses.
@@ -5451,13 +5249,11 @@ export function useTellStory(props?: HookInput<'TellStory', { stream?: true }>):
 export function useTellStory(
   props: HookInput<'TellStory', { stream?: boolean }> = {},
 ): HookOutput<'TellStory', { stream: true }> | HookOutput<'TellStory', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TellStory, props)
-  }
+  let action = Actions.TellStory;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TellStory, props)
+    action = StreamingActions.TellStory;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAnthropic BAML function that supports both streaming and non‑streaming responses.
@@ -5501,13 +5297,11 @@ export function useTestAnthropic(props?: HookInput<'TestAnthropic', { stream?: t
 export function useTestAnthropic(
   props: HookInput<'TestAnthropic', { stream?: boolean }> = {},
 ): HookOutput<'TestAnthropic', { stream: true }> | HookOutput<'TestAnthropic', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAnthropic, props)
-  }
+  let action = Actions.TestAnthropic;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAnthropic, props)
+    action = StreamingActions.TestAnthropic;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAnthropicShorthand BAML function that supports both streaming and non‑streaming responses.
@@ -5551,13 +5345,11 @@ export function useTestAnthropicShorthand(props?: HookInput<'TestAnthropicShorth
 export function useTestAnthropicShorthand(
   props: HookInput<'TestAnthropicShorthand', { stream?: boolean }> = {},
 ): HookOutput<'TestAnthropicShorthand', { stream: true }> | HookOutput<'TestAnthropicShorthand', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAnthropicShorthand, props)
-  }
+  let action = Actions.TestAnthropicShorthand;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAnthropicShorthand, props)
+    action = StreamingActions.TestAnthropicShorthand;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAws BAML function that supports both streaming and non‑streaming responses.
@@ -5601,13 +5393,11 @@ export function useTestAws(props?: HookInput<'TestAws', { stream?: true }>): Hoo
 export function useTestAws(
   props: HookInput<'TestAws', { stream?: boolean }> = {},
 ): HookOutput<'TestAws', { stream: true }> | HookOutput<'TestAws', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAws, props)
-  }
+  let action = Actions.TestAws;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAws, props)
+    action = StreamingActions.TestAws;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAwsInvalidAccessKey BAML function that supports both streaming and non‑streaming responses.
@@ -5651,13 +5441,11 @@ export function useTestAwsInvalidAccessKey(props?: HookInput<'TestAwsInvalidAcce
 export function useTestAwsInvalidAccessKey(
   props: HookInput<'TestAwsInvalidAccessKey', { stream?: boolean }> = {},
 ): HookOutput<'TestAwsInvalidAccessKey', { stream: true }> | HookOutput<'TestAwsInvalidAccessKey', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAwsInvalidAccessKey, props)
-  }
+  let action = Actions.TestAwsInvalidAccessKey;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAwsInvalidAccessKey, props)
+    action = StreamingActions.TestAwsInvalidAccessKey;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAwsInvalidProfile BAML function that supports both streaming and non‑streaming responses.
@@ -5701,13 +5489,11 @@ export function useTestAwsInvalidProfile(props?: HookInput<'TestAwsInvalidProfil
 export function useTestAwsInvalidProfile(
   props: HookInput<'TestAwsInvalidProfile', { stream?: boolean }> = {},
 ): HookOutput<'TestAwsInvalidProfile', { stream: true }> | HookOutput<'TestAwsInvalidProfile', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAwsInvalidProfile, props)
-  }
+  let action = Actions.TestAwsInvalidProfile;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAwsInvalidProfile, props)
+    action = StreamingActions.TestAwsInvalidProfile;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAwsInvalidRegion BAML function that supports both streaming and non‑streaming responses.
@@ -5751,13 +5537,11 @@ export function useTestAwsInvalidRegion(props?: HookInput<'TestAwsInvalidRegion'
 export function useTestAwsInvalidRegion(
   props: HookInput<'TestAwsInvalidRegion', { stream?: boolean }> = {},
 ): HookOutput<'TestAwsInvalidRegion', { stream: true }> | HookOutput<'TestAwsInvalidRegion', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAwsInvalidRegion, props)
-  }
+  let action = Actions.TestAwsInvalidRegion;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAwsInvalidRegion, props)
+    action = StreamingActions.TestAwsInvalidRegion;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAwsInvalidSessionToken BAML function that supports both streaming and non‑streaming responses.
@@ -5801,13 +5585,11 @@ export function useTestAwsInvalidSessionToken(props?: HookInput<'TestAwsInvalidS
 export function useTestAwsInvalidSessionToken(
   props: HookInput<'TestAwsInvalidSessionToken', { stream?: boolean }> = {},
 ): HookOutput<'TestAwsInvalidSessionToken', { stream: true }> | HookOutput<'TestAwsInvalidSessionToken', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAwsInvalidSessionToken, props)
-  }
+  let action = Actions.TestAwsInvalidSessionToken;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAwsInvalidSessionToken, props)
+    action = StreamingActions.TestAwsInvalidSessionToken;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAzure BAML function that supports both streaming and non‑streaming responses.
@@ -5851,13 +5633,11 @@ export function useTestAzure(props?: HookInput<'TestAzure', { stream?: true }>):
 export function useTestAzure(
   props: HookInput<'TestAzure', { stream?: boolean }> = {},
 ): HookOutput<'TestAzure', { stream: true }> | HookOutput<'TestAzure', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAzure, props)
-  }
+  let action = Actions.TestAzure;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAzure, props)
+    action = StreamingActions.TestAzure;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAzureFailure BAML function that supports both streaming and non‑streaming responses.
@@ -5901,13 +5681,11 @@ export function useTestAzureFailure(props?: HookInput<'TestAzureFailure', { stre
 export function useTestAzureFailure(
   props: HookInput<'TestAzureFailure', { stream?: boolean }> = {},
 ): HookOutput<'TestAzureFailure', { stream: true }> | HookOutput<'TestAzureFailure', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAzureFailure, props)
-  }
+  let action = Actions.TestAzureFailure;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAzureFailure, props)
+    action = StreamingActions.TestAzureFailure;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAzureO1NoMaxTokens BAML function that supports both streaming and non‑streaming responses.
@@ -5951,13 +5729,11 @@ export function useTestAzureO1NoMaxTokens(props?: HookInput<'TestAzureO1NoMaxTok
 export function useTestAzureO1NoMaxTokens(
   props: HookInput<'TestAzureO1NoMaxTokens', { stream?: boolean }> = {},
 ): HookOutput<'TestAzureO1NoMaxTokens', { stream: true }> | HookOutput<'TestAzureO1NoMaxTokens', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAzureO1NoMaxTokens, props)
-  }
+  let action = Actions.TestAzureO1NoMaxTokens;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAzureO1NoMaxTokens, props)
+    action = StreamingActions.TestAzureO1NoMaxTokens;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAzureO1WithMaxCompletionTokens BAML function that supports both streaming and non‑streaming responses.
@@ -6001,13 +5777,11 @@ export function useTestAzureO1WithMaxCompletionTokens(props?: HookInput<'TestAzu
 export function useTestAzureO1WithMaxCompletionTokens(
   props: HookInput<'TestAzureO1WithMaxCompletionTokens', { stream?: boolean }> = {},
 ): HookOutput<'TestAzureO1WithMaxCompletionTokens', { stream: true }> | HookOutput<'TestAzureO1WithMaxCompletionTokens', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAzureO1WithMaxCompletionTokens, props)
-  }
+  let action = Actions.TestAzureO1WithMaxCompletionTokens;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAzureO1WithMaxCompletionTokens, props)
+    action = StreamingActions.TestAzureO1WithMaxCompletionTokens;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAzureO1WithMaxTokens BAML function that supports both streaming and non‑streaming responses.
@@ -6051,13 +5825,11 @@ export function useTestAzureO1WithMaxTokens(props?: HookInput<'TestAzureO1WithMa
 export function useTestAzureO1WithMaxTokens(
   props: HookInput<'TestAzureO1WithMaxTokens', { stream?: boolean }> = {},
 ): HookOutput<'TestAzureO1WithMaxTokens', { stream: true }> | HookOutput<'TestAzureO1WithMaxTokens', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAzureO1WithMaxTokens, props)
-  }
+  let action = Actions.TestAzureO1WithMaxTokens;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAzureO1WithMaxTokens, props)
+    action = StreamingActions.TestAzureO1WithMaxTokens;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAzureO3NoMaxTokens BAML function that supports both streaming and non‑streaming responses.
@@ -6101,13 +5873,11 @@ export function useTestAzureO3NoMaxTokens(props?: HookInput<'TestAzureO3NoMaxTok
 export function useTestAzureO3NoMaxTokens(
   props: HookInput<'TestAzureO3NoMaxTokens', { stream?: boolean }> = {},
 ): HookOutput<'TestAzureO3NoMaxTokens', { stream: true }> | HookOutput<'TestAzureO3NoMaxTokens', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAzureO3NoMaxTokens, props)
-  }
+  let action = Actions.TestAzureO3NoMaxTokens;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAzureO3NoMaxTokens, props)
+    action = StreamingActions.TestAzureO3NoMaxTokens;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAzureO3WithMaxCompletionTokens BAML function that supports both streaming and non‑streaming responses.
@@ -6151,13 +5921,11 @@ export function useTestAzureO3WithMaxCompletionTokens(props?: HookInput<'TestAzu
 export function useTestAzureO3WithMaxCompletionTokens(
   props: HookInput<'TestAzureO3WithMaxCompletionTokens', { stream?: boolean }> = {},
 ): HookOutput<'TestAzureO3WithMaxCompletionTokens', { stream: true }> | HookOutput<'TestAzureO3WithMaxCompletionTokens', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAzureO3WithMaxCompletionTokens, props)
-  }
+  let action = Actions.TestAzureO3WithMaxCompletionTokens;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAzureO3WithMaxCompletionTokens, props)
+    action = StreamingActions.TestAzureO3WithMaxCompletionTokens;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestAzureWithMaxTokens BAML function that supports both streaming and non‑streaming responses.
@@ -6201,13 +5969,11 @@ export function useTestAzureWithMaxTokens(props?: HookInput<'TestAzureWithMaxTok
 export function useTestAzureWithMaxTokens(
   props: HookInput<'TestAzureWithMaxTokens', { stream?: boolean }> = {},
 ): HookOutput<'TestAzureWithMaxTokens', { stream: true }> | HookOutput<'TestAzureWithMaxTokens', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestAzureWithMaxTokens, props)
-  }
+  let action = Actions.TestAzureWithMaxTokens;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestAzureWithMaxTokens, props)
+    action = StreamingActions.TestAzureWithMaxTokens;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestCaching BAML function that supports both streaming and non‑streaming responses.
@@ -6253,13 +6019,11 @@ export function useTestCaching(props?: HookInput<'TestCaching', { stream?: true 
 export function useTestCaching(
   props: HookInput<'TestCaching', { stream?: boolean }> = {},
 ): HookOutput<'TestCaching', { stream: true }> | HookOutput<'TestCaching', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestCaching, props)
-  }
+  let action = Actions.TestCaching;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestCaching, props)
+    action = StreamingActions.TestCaching;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestFallbackClient BAML function that supports both streaming and non‑streaming responses.
@@ -6301,13 +6065,11 @@ export function useTestFallbackClient(props?: HookInput<'TestFallbackClient', { 
 export function useTestFallbackClient(
   props: HookInput<'TestFallbackClient', { stream?: boolean }> = {},
 ): HookOutput<'TestFallbackClient', { stream: true }> | HookOutput<'TestFallbackClient', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestFallbackClient, props)
-  }
+  let action = Actions.TestFallbackClient;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestFallbackClient, props)
+    action = StreamingActions.TestFallbackClient;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestFallbackToShorthand BAML function that supports both streaming and non‑streaming responses.
@@ -6351,13 +6113,11 @@ export function useTestFallbackToShorthand(props?: HookInput<'TestFallbackToShor
 export function useTestFallbackToShorthand(
   props: HookInput<'TestFallbackToShorthand', { stream?: boolean }> = {},
 ): HookOutput<'TestFallbackToShorthand', { stream: true }> | HookOutput<'TestFallbackToShorthand', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestFallbackToShorthand, props)
-  }
+  let action = Actions.TestFallbackToShorthand;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestFallbackToShorthand, props)
+    action = StreamingActions.TestFallbackToShorthand;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestFnNamedArgsSingleBool BAML function that supports both streaming and non‑streaming responses.
@@ -6401,13 +6161,11 @@ export function useTestFnNamedArgsSingleBool(props?: HookInput<'TestFnNamedArgsS
 export function useTestFnNamedArgsSingleBool(
   props: HookInput<'TestFnNamedArgsSingleBool', { stream?: boolean }> = {},
 ): HookOutput<'TestFnNamedArgsSingleBool', { stream: true }> | HookOutput<'TestFnNamedArgsSingleBool', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestFnNamedArgsSingleBool, props)
-  }
+  let action = Actions.TestFnNamedArgsSingleBool;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestFnNamedArgsSingleBool, props)
+    action = StreamingActions.TestFnNamedArgsSingleBool;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestFnNamedArgsSingleClass BAML function that supports both streaming and non‑streaming responses.
@@ -6451,13 +6209,11 @@ export function useTestFnNamedArgsSingleClass(props?: HookInput<'TestFnNamedArgs
 export function useTestFnNamedArgsSingleClass(
   props: HookInput<'TestFnNamedArgsSingleClass', { stream?: boolean }> = {},
 ): HookOutput<'TestFnNamedArgsSingleClass', { stream: true }> | HookOutput<'TestFnNamedArgsSingleClass', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestFnNamedArgsSingleClass, props)
-  }
+  let action = Actions.TestFnNamedArgsSingleClass;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestFnNamedArgsSingleClass, props)
+    action = StreamingActions.TestFnNamedArgsSingleClass;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestFnNamedArgsSingleEnumList BAML function that supports both streaming and non‑streaming responses.
@@ -6501,13 +6257,11 @@ export function useTestFnNamedArgsSingleEnumList(props?: HookInput<'TestFnNamedA
 export function useTestFnNamedArgsSingleEnumList(
   props: HookInput<'TestFnNamedArgsSingleEnumList', { stream?: boolean }> = {},
 ): HookOutput<'TestFnNamedArgsSingleEnumList', { stream: true }> | HookOutput<'TestFnNamedArgsSingleEnumList', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestFnNamedArgsSingleEnumList, props)
-  }
+  let action = Actions.TestFnNamedArgsSingleEnumList;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestFnNamedArgsSingleEnumList, props)
+    action = StreamingActions.TestFnNamedArgsSingleEnumList;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestFnNamedArgsSingleFloat BAML function that supports both streaming and non‑streaming responses.
@@ -6551,13 +6305,11 @@ export function useTestFnNamedArgsSingleFloat(props?: HookInput<'TestFnNamedArgs
 export function useTestFnNamedArgsSingleFloat(
   props: HookInput<'TestFnNamedArgsSingleFloat', { stream?: boolean }> = {},
 ): HookOutput<'TestFnNamedArgsSingleFloat', { stream: true }> | HookOutput<'TestFnNamedArgsSingleFloat', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestFnNamedArgsSingleFloat, props)
-  }
+  let action = Actions.TestFnNamedArgsSingleFloat;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestFnNamedArgsSingleFloat, props)
+    action = StreamingActions.TestFnNamedArgsSingleFloat;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestFnNamedArgsSingleInt BAML function that supports both streaming and non‑streaming responses.
@@ -6601,13 +6353,11 @@ export function useTestFnNamedArgsSingleInt(props?: HookInput<'TestFnNamedArgsSi
 export function useTestFnNamedArgsSingleInt(
   props: HookInput<'TestFnNamedArgsSingleInt', { stream?: boolean }> = {},
 ): HookOutput<'TestFnNamedArgsSingleInt', { stream: true }> | HookOutput<'TestFnNamedArgsSingleInt', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestFnNamedArgsSingleInt, props)
-  }
+  let action = Actions.TestFnNamedArgsSingleInt;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestFnNamedArgsSingleInt, props)
+    action = StreamingActions.TestFnNamedArgsSingleInt;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestFnNamedArgsSingleMapStringToClass BAML function that supports both streaming and non‑streaming responses.
@@ -6651,13 +6401,11 @@ export function useTestFnNamedArgsSingleMapStringToClass(props?: HookInput<'Test
 export function useTestFnNamedArgsSingleMapStringToClass(
   props: HookInput<'TestFnNamedArgsSingleMapStringToClass', { stream?: boolean }> = {},
 ): HookOutput<'TestFnNamedArgsSingleMapStringToClass', { stream: true }> | HookOutput<'TestFnNamedArgsSingleMapStringToClass', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestFnNamedArgsSingleMapStringToClass, props)
-  }
+  let action = Actions.TestFnNamedArgsSingleMapStringToClass;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestFnNamedArgsSingleMapStringToClass, props)
+    action = StreamingActions.TestFnNamedArgsSingleMapStringToClass;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestFnNamedArgsSingleMapStringToMap BAML function that supports both streaming and non‑streaming responses.
@@ -6701,13 +6449,11 @@ export function useTestFnNamedArgsSingleMapStringToMap(props?: HookInput<'TestFn
 export function useTestFnNamedArgsSingleMapStringToMap(
   props: HookInput<'TestFnNamedArgsSingleMapStringToMap', { stream?: boolean }> = {},
 ): HookOutput<'TestFnNamedArgsSingleMapStringToMap', { stream: true }> | HookOutput<'TestFnNamedArgsSingleMapStringToMap', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestFnNamedArgsSingleMapStringToMap, props)
-  }
+  let action = Actions.TestFnNamedArgsSingleMapStringToMap;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestFnNamedArgsSingleMapStringToMap, props)
+    action = StreamingActions.TestFnNamedArgsSingleMapStringToMap;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestFnNamedArgsSingleMapStringToString BAML function that supports both streaming and non‑streaming responses.
@@ -6751,13 +6497,11 @@ export function useTestFnNamedArgsSingleMapStringToString(props?: HookInput<'Tes
 export function useTestFnNamedArgsSingleMapStringToString(
   props: HookInput<'TestFnNamedArgsSingleMapStringToString', { stream?: boolean }> = {},
 ): HookOutput<'TestFnNamedArgsSingleMapStringToString', { stream: true }> | HookOutput<'TestFnNamedArgsSingleMapStringToString', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestFnNamedArgsSingleMapStringToString, props)
-  }
+  let action = Actions.TestFnNamedArgsSingleMapStringToString;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestFnNamedArgsSingleMapStringToString, props)
+    action = StreamingActions.TestFnNamedArgsSingleMapStringToString;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestFnNamedArgsSingleString BAML function that supports both streaming and non‑streaming responses.
@@ -6801,13 +6545,11 @@ export function useTestFnNamedArgsSingleString(props?: HookInput<'TestFnNamedArg
 export function useTestFnNamedArgsSingleString(
   props: HookInput<'TestFnNamedArgsSingleString', { stream?: boolean }> = {},
 ): HookOutput<'TestFnNamedArgsSingleString', { stream: true }> | HookOutput<'TestFnNamedArgsSingleString', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestFnNamedArgsSingleString, props)
-  }
+  let action = Actions.TestFnNamedArgsSingleString;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestFnNamedArgsSingleString, props)
+    action = StreamingActions.TestFnNamedArgsSingleString;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestFnNamedArgsSingleStringArray BAML function that supports both streaming and non‑streaming responses.
@@ -6851,13 +6593,11 @@ export function useTestFnNamedArgsSingleStringArray(props?: HookInput<'TestFnNam
 export function useTestFnNamedArgsSingleStringArray(
   props: HookInput<'TestFnNamedArgsSingleStringArray', { stream?: boolean }> = {},
 ): HookOutput<'TestFnNamedArgsSingleStringArray', { stream: true }> | HookOutput<'TestFnNamedArgsSingleStringArray', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestFnNamedArgsSingleStringArray, props)
-  }
+  let action = Actions.TestFnNamedArgsSingleStringArray;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestFnNamedArgsSingleStringArray, props)
+    action = StreamingActions.TestFnNamedArgsSingleStringArray;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestFnNamedArgsSingleStringList BAML function that supports both streaming and non‑streaming responses.
@@ -6901,13 +6641,11 @@ export function useTestFnNamedArgsSingleStringList(props?: HookInput<'TestFnName
 export function useTestFnNamedArgsSingleStringList(
   props: HookInput<'TestFnNamedArgsSingleStringList', { stream?: boolean }> = {},
 ): HookOutput<'TestFnNamedArgsSingleStringList', { stream: true }> | HookOutput<'TestFnNamedArgsSingleStringList', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestFnNamedArgsSingleStringList, props)
-  }
+  let action = Actions.TestFnNamedArgsSingleStringList;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestFnNamedArgsSingleStringList, props)
+    action = StreamingActions.TestFnNamedArgsSingleStringList;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestGemini BAML function that supports both streaming and non‑streaming responses.
@@ -6951,13 +6689,11 @@ export function useTestGemini(props?: HookInput<'TestGemini', { stream?: true }>
 export function useTestGemini(
   props: HookInput<'TestGemini', { stream?: boolean }> = {},
 ): HookOutput<'TestGemini', { stream: true }> | HookOutput<'TestGemini', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestGemini, props)
-  }
+  let action = Actions.TestGemini;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestGemini, props)
+    action = StreamingActions.TestGemini;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestGeminiOpenAiGeneric BAML function that supports both streaming and non‑streaming responses.
@@ -6999,13 +6735,11 @@ export function useTestGeminiOpenAiGeneric(props?: HookInput<'TestGeminiOpenAiGe
 export function useTestGeminiOpenAiGeneric(
   props: HookInput<'TestGeminiOpenAiGeneric', { stream?: boolean }> = {},
 ): HookOutput<'TestGeminiOpenAiGeneric', { stream: true }> | HookOutput<'TestGeminiOpenAiGeneric', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestGeminiOpenAiGeneric, props)
-  }
+  let action = Actions.TestGeminiOpenAiGeneric;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestGeminiOpenAiGeneric, props)
+    action = StreamingActions.TestGeminiOpenAiGeneric;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestGeminiSystem BAML function that supports both streaming and non‑streaming responses.
@@ -7049,13 +6783,11 @@ export function useTestGeminiSystem(props?: HookInput<'TestGeminiSystem', { stre
 export function useTestGeminiSystem(
   props: HookInput<'TestGeminiSystem', { stream?: boolean }> = {},
 ): HookOutput<'TestGeminiSystem', { stream: true }> | HookOutput<'TestGeminiSystem', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestGeminiSystem, props)
-  }
+  let action = Actions.TestGeminiSystem;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestGeminiSystem, props)
+    action = StreamingActions.TestGeminiSystem;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestGeminiSystemAsChat BAML function that supports both streaming and non‑streaming responses.
@@ -7099,13 +6831,11 @@ export function useTestGeminiSystemAsChat(props?: HookInput<'TestGeminiSystemAsC
 export function useTestGeminiSystemAsChat(
   props: HookInput<'TestGeminiSystemAsChat', { stream?: boolean }> = {},
 ): HookOutput<'TestGeminiSystemAsChat', { stream: true }> | HookOutput<'TestGeminiSystemAsChat', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestGeminiSystemAsChat, props)
-  }
+  let action = Actions.TestGeminiSystemAsChat;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestGeminiSystemAsChat, props)
+    action = StreamingActions.TestGeminiSystemAsChat;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestImageInput BAML function that supports both streaming and non‑streaming responses.
@@ -7149,13 +6879,11 @@ export function useTestImageInput(props?: HookInput<'TestImageInput', { stream?:
 export function useTestImageInput(
   props: HookInput<'TestImageInput', { stream?: boolean }> = {},
 ): HookOutput<'TestImageInput', { stream: true }> | HookOutput<'TestImageInput', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestImageInput, props)
-  }
+  let action = Actions.TestImageInput;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestImageInput, props)
+    action = StreamingActions.TestImageInput;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestImageInputAnthropic BAML function that supports both streaming and non‑streaming responses.
@@ -7199,13 +6927,11 @@ export function useTestImageInputAnthropic(props?: HookInput<'TestImageInputAnth
 export function useTestImageInputAnthropic(
   props: HookInput<'TestImageInputAnthropic', { stream?: boolean }> = {},
 ): HookOutput<'TestImageInputAnthropic', { stream: true }> | HookOutput<'TestImageInputAnthropic', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestImageInputAnthropic, props)
-  }
+  let action = Actions.TestImageInputAnthropic;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestImageInputAnthropic, props)
+    action = StreamingActions.TestImageInputAnthropic;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestImageListInput BAML function that supports both streaming and non‑streaming responses.
@@ -7249,13 +6975,11 @@ export function useTestImageListInput(props?: HookInput<'TestImageListInput', { 
 export function useTestImageListInput(
   props: HookInput<'TestImageListInput', { stream?: boolean }> = {},
 ): HookOutput<'TestImageListInput', { stream: true }> | HookOutput<'TestImageListInput', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestImageListInput, props)
-  }
+  let action = Actions.TestImageListInput;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestImageListInput, props)
+    action = StreamingActions.TestImageListInput;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestMemory BAML function that supports both streaming and non‑streaming responses.
@@ -7299,13 +7023,11 @@ export function useTestMemory(props?: HookInput<'TestMemory', { stream?: true }>
 export function useTestMemory(
   props: HookInput<'TestMemory', { stream?: boolean }> = {},
 ): HookOutput<'TestMemory', { stream: true }> | HookOutput<'TestMemory', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestMemory, props)
-  }
+  let action = Actions.TestMemory;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestMemory, props)
+    action = StreamingActions.TestMemory;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestMulticlassNamedArgs BAML function that supports both streaming and non‑streaming responses.
@@ -7351,13 +7073,11 @@ export function useTestMulticlassNamedArgs(props?: HookInput<'TestMulticlassName
 export function useTestMulticlassNamedArgs(
   props: HookInput<'TestMulticlassNamedArgs', { stream?: boolean }> = {},
 ): HookOutput<'TestMulticlassNamedArgs', { stream: true }> | HookOutput<'TestMulticlassNamedArgs', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestMulticlassNamedArgs, props)
-  }
+  let action = Actions.TestMulticlassNamedArgs;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestMulticlassNamedArgs, props)
+    action = StreamingActions.TestMulticlassNamedArgs;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestNamedArgsLiteralBool BAML function that supports both streaming and non‑streaming responses.
@@ -7401,13 +7121,11 @@ export function useTestNamedArgsLiteralBool(props?: HookInput<'TestNamedArgsLite
 export function useTestNamedArgsLiteralBool(
   props: HookInput<'TestNamedArgsLiteralBool', { stream?: boolean }> = {},
 ): HookOutput<'TestNamedArgsLiteralBool', { stream: true }> | HookOutput<'TestNamedArgsLiteralBool', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestNamedArgsLiteralBool, props)
-  }
+  let action = Actions.TestNamedArgsLiteralBool;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestNamedArgsLiteralBool, props)
+    action = StreamingActions.TestNamedArgsLiteralBool;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestNamedArgsLiteralInt BAML function that supports both streaming and non‑streaming responses.
@@ -7451,13 +7169,11 @@ export function useTestNamedArgsLiteralInt(props?: HookInput<'TestNamedArgsLiter
 export function useTestNamedArgsLiteralInt(
   props: HookInput<'TestNamedArgsLiteralInt', { stream?: boolean }> = {},
 ): HookOutput<'TestNamedArgsLiteralInt', { stream: true }> | HookOutput<'TestNamedArgsLiteralInt', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestNamedArgsLiteralInt, props)
-  }
+  let action = Actions.TestNamedArgsLiteralInt;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestNamedArgsLiteralInt, props)
+    action = StreamingActions.TestNamedArgsLiteralInt;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestNamedArgsLiteralString BAML function that supports both streaming and non‑streaming responses.
@@ -7501,13 +7217,11 @@ export function useTestNamedArgsLiteralString(props?: HookInput<'TestNamedArgsLi
 export function useTestNamedArgsLiteralString(
   props: HookInput<'TestNamedArgsLiteralString', { stream?: boolean }> = {},
 ): HookOutput<'TestNamedArgsLiteralString', { stream: true }> | HookOutput<'TestNamedArgsLiteralString', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestNamedArgsLiteralString, props)
-  }
+  let action = Actions.TestNamedArgsLiteralString;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestNamedArgsLiteralString, props)
+    action = StreamingActions.TestNamedArgsLiteralString;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestOllama BAML function that supports both streaming and non‑streaming responses.
@@ -7551,13 +7265,11 @@ export function useTestOllama(props?: HookInput<'TestOllama', { stream?: true }>
 export function useTestOllama(
   props: HookInput<'TestOllama', { stream?: boolean }> = {},
 ): HookOutput<'TestOllama', { stream: true }> | HookOutput<'TestOllama', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestOllama, props)
-  }
+  let action = Actions.TestOllama;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestOllama, props)
+    action = StreamingActions.TestOllama;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestOpenAI BAML function that supports both streaming and non‑streaming responses.
@@ -7601,13 +7313,11 @@ export function useTestOpenAI(props?: HookInput<'TestOpenAI', { stream?: true }>
 export function useTestOpenAI(
   props: HookInput<'TestOpenAI', { stream?: boolean }> = {},
 ): HookOutput<'TestOpenAI', { stream: true }> | HookOutput<'TestOpenAI', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestOpenAI, props)
-  }
+  let action = Actions.TestOpenAI;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestOpenAI, props)
+    action = StreamingActions.TestOpenAI;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestOpenAIGPT4oMini BAML function that supports both streaming and non‑streaming responses.
@@ -7651,13 +7361,11 @@ export function useTestOpenAIGPT4oMini(props?: HookInput<'TestOpenAIGPT4oMini', 
 export function useTestOpenAIGPT4oMini(
   props: HookInput<'TestOpenAIGPT4oMini', { stream?: boolean }> = {},
 ): HookOutput<'TestOpenAIGPT4oMini', { stream: true }> | HookOutput<'TestOpenAIGPT4oMini', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestOpenAIGPT4oMini, props)
-  }
+  let action = Actions.TestOpenAIGPT4oMini;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestOpenAIGPT4oMini, props)
+    action = StreamingActions.TestOpenAIGPT4oMini;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestOpenAILegacyProvider BAML function that supports both streaming and non‑streaming responses.
@@ -7701,13 +7409,11 @@ export function useTestOpenAILegacyProvider(props?: HookInput<'TestOpenAILegacyP
 export function useTestOpenAILegacyProvider(
   props: HookInput<'TestOpenAILegacyProvider', { stream?: boolean }> = {},
 ): HookOutput<'TestOpenAILegacyProvider', { stream: true }> | HookOutput<'TestOpenAILegacyProvider', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestOpenAILegacyProvider, props)
-  }
+  let action = Actions.TestOpenAILegacyProvider;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestOpenAILegacyProvider, props)
+    action = StreamingActions.TestOpenAILegacyProvider;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestOpenAIO1NoMaxTokens BAML function that supports both streaming and non‑streaming responses.
@@ -7751,13 +7457,11 @@ export function useTestOpenAIO1NoMaxTokens(props?: HookInput<'TestOpenAIO1NoMaxT
 export function useTestOpenAIO1NoMaxTokens(
   props: HookInput<'TestOpenAIO1NoMaxTokens', { stream?: boolean }> = {},
 ): HookOutput<'TestOpenAIO1NoMaxTokens', { stream: true }> | HookOutput<'TestOpenAIO1NoMaxTokens', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestOpenAIO1NoMaxTokens, props)
-  }
+  let action = Actions.TestOpenAIO1NoMaxTokens;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestOpenAIO1NoMaxTokens, props)
+    action = StreamingActions.TestOpenAIO1NoMaxTokens;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestOpenAIO1WithMaxCompletionTokens BAML function that supports both streaming and non‑streaming responses.
@@ -7801,13 +7505,11 @@ export function useTestOpenAIO1WithMaxCompletionTokens(props?: HookInput<'TestOp
 export function useTestOpenAIO1WithMaxCompletionTokens(
   props: HookInput<'TestOpenAIO1WithMaxCompletionTokens', { stream?: boolean }> = {},
 ): HookOutput<'TestOpenAIO1WithMaxCompletionTokens', { stream: true }> | HookOutput<'TestOpenAIO1WithMaxCompletionTokens', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestOpenAIO1WithMaxCompletionTokens, props)
-  }
+  let action = Actions.TestOpenAIO1WithMaxCompletionTokens;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestOpenAIO1WithMaxCompletionTokens, props)
+    action = StreamingActions.TestOpenAIO1WithMaxCompletionTokens;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestOpenAIO1WithMaxTokens BAML function that supports both streaming and non‑streaming responses.
@@ -7851,13 +7553,11 @@ export function useTestOpenAIO1WithMaxTokens(props?: HookInput<'TestOpenAIO1With
 export function useTestOpenAIO1WithMaxTokens(
   props: HookInput<'TestOpenAIO1WithMaxTokens', { stream?: boolean }> = {},
 ): HookOutput<'TestOpenAIO1WithMaxTokens', { stream: true }> | HookOutput<'TestOpenAIO1WithMaxTokens', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestOpenAIO1WithMaxTokens, props)
-  }
+  let action = Actions.TestOpenAIO1WithMaxTokens;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestOpenAIO1WithMaxTokens, props)
+    action = StreamingActions.TestOpenAIO1WithMaxTokens;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestOpenAIShorthand BAML function that supports both streaming and non‑streaming responses.
@@ -7901,13 +7601,11 @@ export function useTestOpenAIShorthand(props?: HookInput<'TestOpenAIShorthand', 
 export function useTestOpenAIShorthand(
   props: HookInput<'TestOpenAIShorthand', { stream?: boolean }> = {},
 ): HookOutput<'TestOpenAIShorthand', { stream: true }> | HookOutput<'TestOpenAIShorthand', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestOpenAIShorthand, props)
-  }
+  let action = Actions.TestOpenAIShorthand;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestOpenAIShorthand, props)
+    action = StreamingActions.TestOpenAIShorthand;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestOpenAIWithMaxTokens BAML function that supports both streaming and non‑streaming responses.
@@ -7951,13 +7649,11 @@ export function useTestOpenAIWithMaxTokens(props?: HookInput<'TestOpenAIWithMaxT
 export function useTestOpenAIWithMaxTokens(
   props: HookInput<'TestOpenAIWithMaxTokens', { stream?: boolean }> = {},
 ): HookOutput<'TestOpenAIWithMaxTokens', { stream: true }> | HookOutput<'TestOpenAIWithMaxTokens', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestOpenAIWithMaxTokens, props)
-  }
+  let action = Actions.TestOpenAIWithMaxTokens;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestOpenAIWithMaxTokens, props)
+    action = StreamingActions.TestOpenAIWithMaxTokens;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestOpenAIWithNullMaxTokens BAML function that supports both streaming and non‑streaming responses.
@@ -8001,13 +7697,11 @@ export function useTestOpenAIWithNullMaxTokens(props?: HookInput<'TestOpenAIWith
 export function useTestOpenAIWithNullMaxTokens(
   props: HookInput<'TestOpenAIWithNullMaxTokens', { stream?: boolean }> = {},
 ): HookOutput<'TestOpenAIWithNullMaxTokens', { stream: true }> | HookOutput<'TestOpenAIWithNullMaxTokens', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestOpenAIWithNullMaxTokens, props)
-  }
+  let action = Actions.TestOpenAIWithNullMaxTokens;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestOpenAIWithNullMaxTokens, props)
+    action = StreamingActions.TestOpenAIWithNullMaxTokens;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestRetryConstant BAML function that supports both streaming and non‑streaming responses.
@@ -8049,13 +7743,11 @@ export function useTestRetryConstant(props?: HookInput<'TestRetryConstant', { st
 export function useTestRetryConstant(
   props: HookInput<'TestRetryConstant', { stream?: boolean }> = {},
 ): HookOutput<'TestRetryConstant', { stream: true }> | HookOutput<'TestRetryConstant', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestRetryConstant, props)
-  }
+  let action = Actions.TestRetryConstant;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestRetryConstant, props)
+    action = StreamingActions.TestRetryConstant;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestRetryExponential BAML function that supports both streaming and non‑streaming responses.
@@ -8097,13 +7789,11 @@ export function useTestRetryExponential(props?: HookInput<'TestRetryExponential'
 export function useTestRetryExponential(
   props: HookInput<'TestRetryExponential', { stream?: boolean }> = {},
 ): HookOutput<'TestRetryExponential', { stream: true }> | HookOutput<'TestRetryExponential', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestRetryExponential, props)
-  }
+  let action = Actions.TestRetryExponential;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestRetryExponential, props)
+    action = StreamingActions.TestRetryExponential;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestSingleFallbackClient BAML function that supports both streaming and non‑streaming responses.
@@ -8145,13 +7835,11 @@ export function useTestSingleFallbackClient(props?: HookInput<'TestSingleFallbac
 export function useTestSingleFallbackClient(
   props: HookInput<'TestSingleFallbackClient', { stream?: boolean }> = {},
 ): HookOutput<'TestSingleFallbackClient', { stream: true }> | HookOutput<'TestSingleFallbackClient', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestSingleFallbackClient, props)
-  }
+  let action = Actions.TestSingleFallbackClient;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestSingleFallbackClient, props)
+    action = StreamingActions.TestSingleFallbackClient;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestThinking BAML function that supports both streaming and non‑streaming responses.
@@ -8195,13 +7883,11 @@ export function useTestThinking(props?: HookInput<'TestThinking', { stream?: tru
 export function useTestThinking(
   props: HookInput<'TestThinking', { stream?: boolean }> = {},
 ): HookOutput<'TestThinking', { stream: true }> | HookOutput<'TestThinking', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestThinking, props)
-  }
+  let action = Actions.TestThinking;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestThinking, props)
+    action = StreamingActions.TestThinking;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestUniverseQuestion BAML function that supports both streaming and non‑streaming responses.
@@ -8245,13 +7931,11 @@ export function useTestUniverseQuestion(props?: HookInput<'TestUniverseQuestion'
 export function useTestUniverseQuestion(
   props: HookInput<'TestUniverseQuestion', { stream?: boolean }> = {},
 ): HookOutput<'TestUniverseQuestion', { stream: true }> | HookOutput<'TestUniverseQuestion', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestUniverseQuestion, props)
-  }
+  let action = Actions.TestUniverseQuestion;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestUniverseQuestion, props)
+    action = StreamingActions.TestUniverseQuestion;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestVertex BAML function that supports both streaming and non‑streaming responses.
@@ -8295,13 +7979,11 @@ export function useTestVertex(props?: HookInput<'TestVertex', { stream?: true }>
 export function useTestVertex(
   props: HookInput<'TestVertex', { stream?: boolean }> = {},
 ): HookOutput<'TestVertex', { stream: true }> | HookOutput<'TestVertex', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestVertex, props)
-  }
+  let action = Actions.TestVertex;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestVertex, props)
+    action = StreamingActions.TestVertex;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the TestVertexWithSystemInstructions BAML function that supports both streaming and non‑streaming responses.
@@ -8343,13 +8025,11 @@ export function useTestVertexWithSystemInstructions(props?: HookInput<'TestVerte
 export function useTestVertexWithSystemInstructions(
   props: HookInput<'TestVertexWithSystemInstructions', { stream?: boolean }> = {},
 ): HookOutput<'TestVertexWithSystemInstructions', { stream: true }> | HookOutput<'TestVertexWithSystemInstructions', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.TestVertexWithSystemInstructions, props)
-  }
+  let action = Actions.TestVertexWithSystemInstructions;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.TestVertexWithSystemInstructions, props)
+    action = StreamingActions.TestVertexWithSystemInstructions;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the UnionTest_Function BAML function that supports both streaming and non‑streaming responses.
@@ -8393,13 +8073,11 @@ export function useUnionTest_Function(props?: HookInput<'UnionTest_Function', { 
 export function useUnionTest_Function(
   props: HookInput<'UnionTest_Function', { stream?: boolean }> = {},
 ): HookOutput<'UnionTest_Function', { stream: true }> | HookOutput<'UnionTest_Function', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.UnionTest_Function, props)
-  }
+  let action = Actions.UnionTest_Function;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.UnionTest_Function, props)
+    action = StreamingActions.UnionTest_Function;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the UseBlockConstraint BAML function that supports both streaming and non‑streaming responses.
@@ -8443,13 +8121,11 @@ export function useUseBlockConstraint(props?: HookInput<'UseBlockConstraint', { 
 export function useUseBlockConstraint(
   props: HookInput<'UseBlockConstraint', { stream?: boolean }> = {},
 ): HookOutput<'UseBlockConstraint', { stream: true }> | HookOutput<'UseBlockConstraint', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.UseBlockConstraint, props)
-  }
+  let action = Actions.UseBlockConstraint;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.UseBlockConstraint, props)
+    action = StreamingActions.UseBlockConstraint;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the UseMalformedConstraints BAML function that supports both streaming and non‑streaming responses.
@@ -8493,13 +8169,11 @@ export function useUseMalformedConstraints(props?: HookInput<'UseMalformedConstr
 export function useUseMalformedConstraints(
   props: HookInput<'UseMalformedConstraints', { stream?: boolean }> = {},
 ): HookOutput<'UseMalformedConstraints', { stream: true }> | HookOutput<'UseMalformedConstraints', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.UseMalformedConstraints, props)
-  }
+  let action = Actions.UseMalformedConstraints;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.UseMalformedConstraints, props)
+    action = StreamingActions.UseMalformedConstraints;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
 /**
  * A specialized hook for the UseNestedBlockConstraint BAML function that supports both streaming and non‑streaming responses.
@@ -8543,11 +8217,9 @@ export function useUseNestedBlockConstraint(props?: HookInput<'UseNestedBlockCon
 export function useUseNestedBlockConstraint(
   props: HookInput<'UseNestedBlockConstraint', { stream?: boolean }> = {},
 ): HookOutput<'UseNestedBlockConstraint', { stream: true }> | HookOutput<'UseNestedBlockConstraint', { stream: false }> {
-  if (isNotStreamingProps(props)) {
-    return useBamlAction(Actions.UseNestedBlockConstraint, props)
-  }
+  let action = Actions.UseNestedBlockConstraint;
   if (isStreamingProps(props)) {
-    return useBamlAction(StreamingActions.UseNestedBlockConstraint, props)
+    action = StreamingActions.UseNestedBlockConstraint;
   }
-  throw new Error('Invalid props')
+  return useBamlAction(action, props)
 }
