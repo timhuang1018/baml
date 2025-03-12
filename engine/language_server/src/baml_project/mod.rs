@@ -34,7 +34,6 @@ use lsp_types::{
     Position,
     Range,
     TextDocumentItem,
-    Url,
 };
 use position_utils::get_word_at_position;
 // use rustc_hash::FxHashSet;
@@ -45,7 +44,7 @@ use std::path::{Path, PathBuf};
 use std::time::Instant;
 
 use crate::server::client::Notifier;
-use crate::TextDocument;
+use crate::{TextDocument, DocumentKey};
 
 pub mod file_utils;
 pub mod metadata;
@@ -154,10 +153,10 @@ pub fn trim_line(s: &str) -> String {
 pub struct BamlProject {
     pub root_dir_name: String,
     // This is the version of the file on disk
-    pub files: HashMap<String, String>,
+    pub files: HashMap<DocumentKey, String>,
     // This is the version of the file that is currently being edited
     // (unsaved changes)
-    pub unsaved_files: HashMap<String, String>,
+    pub unsaved_files: HashMap<DocumentKey, String>,
 }
 
 impl BamlProject {
@@ -170,8 +169,8 @@ impl BamlProject {
         let all_files = self
             .files
             .iter()
-            .map(|(file_name, contents)| {
-                let path_buf = file_name.strip_prefix("file://").unwrap_or(file_name);
+            .map(|(document_key, contents)| {
+                let path_buf = document_key.url().path();
                 (PathBuf::from(path_buf), contents.clone())
             })
             .collect();
@@ -194,43 +193,41 @@ impl BamlProject {
         Ok(generated)
     }
 
-    pub fn set_unsaved_file(&mut self, name: &str, content: Option<String>) {
+    pub fn set_unsaved_file(&mut self, document_key: &DocumentKey, content: Option<String>) {
         if let Some(content) = content {
-            self.unsaved_files.insert(name.to_string(), content);
+            self.unsaved_files.insert(document_key.clone(), content);
         } else {
-            self.unsaved_files.remove(name);
+            self.unsaved_files.remove(document_key);
         }
     }
-    pub fn save_file(&mut self, name: &str, content: &str) {
-        self.files.insert(name.to_string(), content.to_string());
-        self.unsaved_files.remove(name);
+    pub fn save_file(&mut self, document_key: &DocumentKey, content: &str) {
+        self.files.insert(document_key.clone(), content.to_string());
+        self.unsaved_files.remove(document_key);
     }
 
-    pub fn update_file(&mut self, name: &str, content: Option<String>) {
+    pub fn update_file(&mut self, document_key: &DocumentKey, content: Option<String>) {
         if let Some(content) = content {
-            self.files.insert(name.to_string(), content);
+            self.files.insert(document_key.clone(), content);
         } else {
-            self.files.remove(name);
+            self.files.remove(document_key);
         }
     }
 
     /// Load files into the current state. Also return the newly loaded files.
-    pub fn load_files(&mut self) -> anyhow::Result<HashMap<Url, String>> {
+    pub fn load_files(&mut self) -> anyhow::Result<HashMap<DocumentKey, String>> {
         let workspace_file_paths = gather_files(&PathBuf::from(&self.root_dir_name), false)?;
         let workspace_files = workspace_file_paths
             .into_iter()
             .map(|file_path| {
                 let contents =
                     std::fs::read_to_string(&file_path).context("Failed to read file")?;
-                let file_url = Url::from_file_path(&file_path).expect("TODO");
-                Ok((file_url, contents))
+                // let file_url = Url::from_file_path(&file_path).expect("TODO");
+                let document_key = DocumentKey::from_path(&PathBuf::from(&self.root_dir_name), &file_path)?;
+                Ok((document_key, contents))
             })
             .collect::<anyhow::Result<HashMap<_, _>>>()?;
 
-        let project_files = workspace_files
-            .iter()
-            .map(|(file_path, contents)| (file_path.to_string(), contents.clone()))
-            .collect();
+        let project_files = workspace_files.clone();
 
         self.files = project_files;
         Ok(workspace_files)
@@ -240,7 +237,9 @@ impl BamlProject {
         let mut hm = self.files.iter().collect::<HashMap<_, _>>();
         hm.extend(self.unsaved_files.iter());
 
-        BamlRuntime::from_file_content(&self.root_dir_name, &hm, env_vars).map_err(|e| {
+        let files_for_runtime = hm.into_iter().map(|(k, v)| (k.url().path().to_string(), v.clone())).collect::<HashMap<_, _>>();
+
+        BamlRuntime::from_file_content(&self.root_dir_name, &files_for_runtime, env_vars).map_err(|e| {
             match e.downcast::<DiagnosticsError>() {
                 Ok(e) => e,
                 Err(e) => {
@@ -252,11 +251,11 @@ impl BamlProject {
     }
 
     pub fn files(&self) -> Vec<String> {
-        let mut saved_files = self.files.clone();
+        let mut all_files = self.files.clone();
         self.unsaved_files.iter().for_each(|(k, v)| {
-            saved_files.insert(k.clone(), v.clone());
+            all_files.insert(k.clone(), v.clone());
         });
-        let formatted_files = saved_files
+        let formatted_files = all_files
             .iter()
             .map(|(k, v)| format!("{}BAML_PATH_SPLTTER{}", k, v))
             .collect::<Vec<String>>();
@@ -855,20 +854,20 @@ impl Project {
         self.last_successful_runtime = self.current_runtime.take();
     }
 
-    /// Records an update to a file that has not yet been saved.
-    pub fn update_unsaved_file(&mut self, file_path: &str, content: String) {
-        self.baml_project.set_unsaved_file(file_path, Some(content));
-        // Force runtime update when file changes
-        self.current_runtime = None;
-    }
+    // /// Records an update to a file that has not yet been saved.
+    // pub fn update_unsaved_file(&mut self, file_path: &str, content: String) {
+    //     self.baml_project.set_unsaved_file(file_path, Some(content));
+    //     // Force runtime update when file changes
+    //     self.current_runtime = None;
+    // }
 
     /// Saves a file and marks the runtime as stale.
-    pub fn save_file<P: AsRef<Path>, S: AsRef<str>>(&mut self, file_path: P, content: S) {
-        self.baml_project
-            .save_file(file_path.as_ref().to_str().unwrap(), content.as_ref());
-        // Force runtime update when file is saved
-        self.current_runtime = None;
-    }
+    // pub fn save_file<P: AsRef<Path>, S: AsRef<str>>(&mut self, file_path: P, content: S) {
+    //     self.baml_project
+    //         .save_file(file_path.as_ref().to_str().unwrap(), content.as_ref());
+    //     // Force runtime update when file is saved
+    //     self.current_runtime = None;
+    // }
 
     /// Reads a file and converts it into a text document.
     pub fn get_file(&self, uri: &str) -> io::Result<TextDocumentItem> {
@@ -877,13 +876,13 @@ impl Project {
         file_utils::convert_to_text_document(path)
     }
 
-    /// Updates (or inserts) the file content in the WASM project.
-    pub fn upsert_file(&mut self, file_path: &str, content: Option<String>) {
-        self.baml_project.update_file(file_path, content);
-        if self.current_runtime.is_some() {
-            self.last_successful_runtime = self.current_runtime.take();
-        }
-    }
+    // /// Updates (or inserts) the file content in the WASM project.
+    // pub fn upsert_file(&mut self, file_path: &str, content: Option<String>) {
+    //     self.baml_project.update_file(file_path, content);
+    //     if self.current_runtime.is_some() {
+    //         self.last_successful_runtime = self.current_runtime.take();
+    //     }
+    // }
 
     pub fn handle_hover_request(
         &mut self,

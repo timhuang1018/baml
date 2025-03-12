@@ -1,5 +1,4 @@
 use baml_runtime::InternalRuntimeInterface;
-use log::info;
 use lsp_server::ErrorCode;
 use lsp_types::DiagnosticSeverity;
 use lsp_types::{notification::PublishDiagnostics, PublishDiagnosticsParams, Url};
@@ -9,7 +8,7 @@ use std::path::{Path, PathBuf};
 use crate::baml_text_size::TextSize;
 use crate::server::client::Notifier;
 use crate::server::Result;
-use crate::Session;
+use crate::{DocumentKey, Session};
 
 use super::LSPResult;
 
@@ -27,7 +26,8 @@ pub(super) fn clear_diagnostics(uri: &Url, notifier: &Notifier) -> Result<()> {
 // TODO: This assumes a single project. Fix.
 // TODO: Handle errors.
 pub fn session_lsp_diagnostics(session: &Session, file_url: &Url) -> Vec<lsp_types::Diagnostic> {
-    let keys = session.index().documents.keys();
+
+    // let keys = session.index().documents.keys();
 
     let (root_path, proj) = match session.projects_by_workspace_folder.iter().next() {
         Some((root_path, proj)) => (root_path, proj),
@@ -48,17 +48,17 @@ pub fn session_lsp_diagnostics(session: &Session, file_url: &Url) -> Vec<lsp_typ
         }
     };
 
-    let spans = baml_diagnostics
-        .errors()
-        .iter()
-        .map(|error| ("ERROR", error.span()))
-        .chain(
-            baml_diagnostics
-                .warnings()
-                .iter()
-                .map(|warning| ("WARNING", warning.span())),
-        )
-        .collect::<Vec<_>>();
+    // let spans = baml_diagnostics
+    //     .errors()
+    //     .iter()
+    //     .map(|error| ("ERROR", error.span()))
+    //     .chain(
+    //         baml_diagnostics
+    //             .warnings()
+    //             .iter()
+    //             .map(|warning| ("WARNING", warning.span())),
+    //     )
+    //     .collect::<Vec<_>>();
 
     let errors = baml_diagnostics
         .errors()
@@ -125,8 +125,7 @@ fn span_to_range(
     let span_path_with_prefix = span.file.path();
     let span_path = span_path_with_prefix.strip_prefix("file://")?;
 
-    let doc_key = Url::from_file_path(ensure_absolute(project_root, &PathBuf::from(span_path)))
-        .expect("Should parse2");
+    let doc_key = DocumentKey::from_path(project_root, &PathBuf::from(span_path)).expect("Should parse2");
     let doc = session
         .index
         .as_ref()

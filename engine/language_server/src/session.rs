@@ -128,9 +128,9 @@ impl Session {
         self.projects_by_workspace_folder.values_mut().next()
     }
 
-    pub fn key_from_url(&self, url: Url) -> DocumentKey {
-        self.index().key_from_url(url)
-    }
+    // pub fn key_from_url(&self, url: Url) -> DocumentKey {
+    //     self.index().key_from_url(url)
+    // }
 
     /// Ensures that a project database exists for the given BAML file,
     /// creating one if it doesn't exist.
@@ -168,7 +168,7 @@ impl Session {
                 Ok(files_map)
             })
             .collect::<anyhow::Result<Vec<_>>>()?;
-        let files: Vec<(Url, String)> = project_updates
+        let files: Vec<(DocumentKey, String)> = project_updates
             .into_iter()
             .map(|project_files| project_files.into_iter().collect::<Vec<_>>())
             .flatten()
@@ -185,19 +185,21 @@ impl Session {
 
     /// Creates a document snapshot with the URL referencing the document to snapshot.
     pub fn take_snapshot(&self, url: Url) -> Option<DocumentSnapshot> {
-        let key = self.key_from_url(url);
+        // let key = self.key_from_url(url);
+        let project = self.default_project_db()?;
+        let document_key = DocumentKey::from_url(&PathBuf::from(project.root_path()), &url).ok()?;
         Some(DocumentSnapshot {
             resolved_client_capabilities: self.resolved_client_capabilities.clone(),
-            document_ref: self.index().make_document_ref(key)?,
+            document_ref: self.index().make_document_ref(document_key)?,
             position_encoding: self.position_encoding,
         })
     }
 
     /// Registers a text document at the provided `url`.
     /// If a document is already open here, it will be overwritten.
-    pub(crate) fn open_text_document(&mut self, url: Url, document: TextDocument) {
+    pub(crate) fn open_text_document(&mut self, document_key: DocumentKey, document: TextDocument) {
         self.index_mut()
-            .open_text_document(url.clone(), document.clone());
+            .open_text_document(document_key.clone(), document.clone());
         // self.projects_by_workspace_folder
         //     .iter_mut()
         //     .for_each(|(folder, project)| {
@@ -216,7 +218,7 @@ impl Session {
 
     pub(crate) fn set_unsaved_file(
         &mut self,
-        url: &Url,
+        document_key: &DocumentKey,
         content_changes: Vec<TextDocumentContentChangeEvent>,
     ) -> anyhow::Result<()> {
         let new_contents: String = match content_changes.as_slice() {
@@ -231,7 +233,7 @@ impl Session {
             project
                 .baml_project
                 .unsaved_files
-                .insert(url.as_str().to_string(), new_contents.clone());
+                .insert(document_key.clone(), new_contents.clone());
         }
         Ok(())
     }
@@ -248,9 +250,10 @@ impl Session {
     ) -> anyhow::Result<()> {
         let position_encoding = self.position_encoding;
 
-        let doc_key = match key {
-            DocumentKey::Text(url) => url,
-        };
+        // let doc_key = match key {
+        //     DocumentKey::Text(url) => url,
+        // };
+        let doc_key = key;
         let doc_contents = {
             let mut index = self.index_mut();
             index.update_text_document(key, content_changes, new_version, position_encoding)?;
@@ -270,12 +273,11 @@ impl Session {
         self.projects_by_workspace_folder
             .iter_mut()
             .try_for_each(|(_folder, project)| {
-                let key_str = doc_key.to_string();
-                if project.baml_project.files.get(&key_str).is_some() {
+                if project.baml_project.files.get(&doc_key).is_some() {
                     project
                         .baml_project
                         .files
-                        .insert(key_str, doc_contents.to_string());
+                        .insert(doc_key.clone(), doc_contents.to_string());
 
                     project
                         .update_runtime(notifier.clone())
@@ -396,9 +398,9 @@ impl DocumentSnapshot {
     ///
     pub(crate) fn file(&self, db: &Project) -> Option<File> {
         let url = self.document_ref.file_url();
-        let path = url.to_file_path().ok()?;
-        let path_str = path.to_str()?.to_string();
-        let file_is_in_db = db.baml_project.files.contains_key(&path_str);
+        let document_key = self.document_ref.file_document_key();
+        let path_str = url.as_str().to_string();
+        let file_is_in_db = db.baml_project.files.contains_key(&document_key);
         if file_is_in_db {
             Some(File {
                 path: path_str,

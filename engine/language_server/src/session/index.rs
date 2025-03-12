@@ -16,7 +16,7 @@ use super::ClientSettings;
 #[derive(Default, Debug)]
 pub struct Index {
     /// Maps all document file URLs to the associated document controller
-    pub documents: FxHashMap<Url, DocumentController>,
+    pub documents: FxHashMap<DocumentKey, DocumentController>,
 
     /// Global settings provided by the client.
     pub global_settings: ClientSettings,
@@ -30,7 +30,7 @@ impl Index {
         }
     }
 
-    pub fn text_document_urls(&self) -> impl Iterator<Item = &Url> + '_ {
+    pub fn text_document_urls(&self) -> impl Iterator<Item = &DocumentKey> + '_ {
         self.documents
             .iter()
             .filter_map(|(url, doc)| doc.as_text().and(Some(url)))
@@ -58,54 +58,51 @@ impl Index {
         Ok(())
     }
 
-    pub fn key_from_url(&self, url: Url) -> DocumentKey {
-        DocumentKey::Text(url)
-    }
+    // pub fn key_from_url(&self, url: Url) -> DocumentKey {
+    //     DocumentKey::Text(url)
+    // }
 
     pub fn num_documents(&self) -> usize {
         self.documents.len()
     }
 
-    pub fn make_document_ref(&self, key: DocumentKey) -> Option<DocumentQuery> {
-        let url = self.url_for_key(&key)?.clone();
-        let controller = self.documents.get(&url)?;
-        Some(controller.make_ref(url))
+    pub fn make_document_ref(&self, document_key: DocumentKey) -> Option<DocumentQuery> {
+        // let url = self.url_for_key(&key)?.clone();
+        let controller = self.documents.get(&document_key)?;
+        Some(controller.make_ref(document_key))
     }
 
-    pub fn open_text_document(&mut self, url: Url, document: TextDocument) {
+    pub fn open_text_document(&mut self, document_key: DocumentKey, document: TextDocument) {
         self.documents
-            .insert(url, DocumentController::new_text(document));
+            .insert(document_key, DocumentController::new_text(document));
     }
 
-    pub fn close_document(&mut self, key: &DocumentKey) -> anyhow::Result<()> {
-        let Some(url) = self.url_for_key(key).cloned() else {
-            anyhow::bail!("Tried to close unavailable document `{key}`");
-        };
+    pub fn close_document(&mut self, document_key: &DocumentKey) -> anyhow::Result<()> {
+        // let Some(url) = self.url_for_key(key).cloned() else {
+        //     anyhow::bail!("Tried to close unavailable document `{key}`");
+        // };
 
-        let Some(_) = self.documents.remove(&url) else {
-            anyhow::bail!("tried to close document that didn't exist at {}", url)
+        let Some(_) = self.documents.remove(&document_key) else {
+            anyhow::bail!("tried to close document that didn't exist at {}", document_key)
         };
         Ok(())
     }
 
     pub fn document_controller_for_key(
         &mut self,
-        key: &DocumentKey,
+        document_key: &DocumentKey,
     ) -> anyhow::Result<&mut DocumentController> {
-        let Some(url) = self.url_for_key(key).cloned() else {
-            anyhow::bail!("Tried to open unavailable document `{key}`");
-        };
-        let Some(controller) = self.documents.get_mut(&url) else {
-            anyhow::bail!("Document controller not available at `{}`", url);
+        let Some(controller) = self.documents.get_mut(&document_key) else {
+            anyhow::bail!("Document controller not available at `{}`", document_key);
         };
         Ok(controller)
     }
 
-    fn url_for_key<'a>(&'a self, key: &'a DocumentKey) -> Option<&'a Url> {
-        match key {
-            DocumentKey::Text(path) => Some(path),
-        }
-    }
+    // fn url_for_key<'a>(&'a self, key: &'a DocumentKey) -> Option<&'a Url> {
+    //     match key {
+    //         DocumentKey::Text(path) => Some(path),
+    //     }
+    // }
 }
 
 /// A mutable handler to an underlying document.
@@ -120,10 +117,10 @@ impl DocumentController {
         Self::Text(Arc::new(document))
     }
 
-    fn make_ref(&self, file_url: Url) -> DocumentQuery {
+    fn make_ref(&self, document_key: DocumentKey) -> DocumentQuery {
         match &self {
             Self::Text(document) => DocumentQuery::Text {
-                file_url,
+                document_key,
                 document: document.clone(),
             },
         }
@@ -151,18 +148,18 @@ impl DocumentController {
 #[derive(Debug, Clone)]
 pub enum DocumentQuery {
     Text {
-        file_url: Url,
+        document_key: DocumentKey,
         document: Arc<TextDocument>,
     },
 }
 
 impl DocumentQuery {
     /// Retrieve the original key that describes this document query.
-    pub(crate) fn make_key(&self) -> DocumentKey {
-        match self {
-            Self::Text { file_url, .. } => DocumentKey::Text(file_url.clone()),
-        }
-    }
+    // pub(crate) fn make_key(&self) -> DocumentKey {
+    //     match self {
+    //         Self::Text { file_url, .. } => DocumentKey::Text(file_url.clone()),
+    //     }
+    // }
 
     /// Get the version of document selected by this query.
     pub(crate) fn version(&self) -> DocumentVersion {
@@ -175,8 +172,14 @@ impl DocumentQuery {
     /// Get the URL for the document selected by this query.
     pub(crate) fn file_url(&self) -> &Url {
         match self {
-            Self::Text { file_url, .. } => file_url,
+            Self::Text { document_key, .. } => document_key.url(),
             // Self::Notebook { file_url, .. } => file_url,
+        }
+    }
+
+    pub (crate) fn file_document_key(&self) -> &DocumentKey {
+        match self {
+            Self::Text { document_key, .. } => document_key,
         }
     }
 

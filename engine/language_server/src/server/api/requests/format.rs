@@ -3,10 +3,10 @@ use crate::server::api::traits::{RequestHandler, SyncRequestHandler};
 use crate::server::api::ResultExt;
 use crate::server::client::Requester;
 use crate::server::{client::Notifier, Result};
-use crate::Session;
+use crate::{DocumentKey, Session};
 use internal_baml_core::internal_baml_schema_ast::{format_schema, FormatOptions};
 use lsp_types::{request, DocumentFormattingParams, TextEdit};
-
+use std::path::PathBuf;
 pub(crate) struct DocumentFormatting;
 
 impl RequestHandler for DocumentFormatting {
@@ -27,7 +27,8 @@ impl SyncRequestHandler for DocumentFormatting {
         let project = session
             .default_project_db_mut()
             .expect("Ensured that a project db exists");
-        let doc_contents = match project.baml_project.files.get(&url.to_string()) {
+        let document_key = DocumentKey::from_url(&PathBuf::from(project.root_path()), &url).internal_error()?;
+        let doc_contents = match project.baml_project.files.get(&document_key) {
             None => {
                 tracing::warn!("Failed to find doc {:?}", url);
                 Err(anyhow::anyhow!(

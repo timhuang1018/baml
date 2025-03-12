@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use lsp_server::ErrorCode;
 use lsp_types::notification::DidCloseTextDocument;
 use lsp_types::DidCloseTextDocumentParams;
@@ -9,6 +10,8 @@ use crate::server::api::LSPResult;
 use crate::server::client::{Notifier, Requester};
 use crate::server::Result;
 use crate::session::Session;
+use crate::server::api::ResultExt;
+use crate::DocumentKey;
 // use crate::system::{url_to_any_system_path, AnySystemPath};
 
 pub(crate) struct DidCloseTextDocumentHandler;
@@ -29,10 +32,17 @@ impl SyncNotificationHandler for DidCloseTextDocumentHandler {
         //     return Ok(());
         // };
 
-        let key = session.key_from_url(params.text_document.uri);
-        session
-            .close_document(&key)
-            .with_failure_code(ErrorCode::InternalError)?;
+        match session.default_project_db() {
+            None => {},
+            Some(project) => {
+
+                // let key = session.key_from_url(params.text_document.uri);
+                let document_key = DocumentKey::from_url(&PathBuf::from(project.root_path()),&params.text_document.uri).internal_error()?;
+                session
+                    .close_document(&document_key)
+                    .with_failure_code(ErrorCode::InternalError)?;
+            }
+        }
 
         // if let AnySystemPath::SystemVirtual(virtual_path) = path {
         //     let db = session.default_project_db_mut();

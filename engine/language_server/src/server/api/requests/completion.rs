@@ -4,9 +4,9 @@ use crate::server::api::traits::{RequestHandler, SyncRequestHandler};
 use crate::server::api::ResultExt;
 use crate::server::client::Requester;
 use crate::server::{client::Notifier, Result};
-use crate::Session;
+use crate::{DocumentKey, Session};
 use lsp_types::{request, CompletionItem, CompletionList, CompletionParams, CompletionResponse};
-
+use std::path::PathBuf;
 pub(crate) struct Completion;
 
 impl RequestHandler for Completion {
@@ -27,7 +27,17 @@ impl SyncRequestHandler for Completion {
         let project = session
             .default_project_db()
             .expect("Ensured that a project db exists");
-        let doc = project.baml_project.files.get(&url.to_string()).unwrap();
+        let document_key =
+            DocumentKey::from_url(&PathBuf::from(project.root_path()), &url).internal_error()?;
+        let doc = project
+            .baml_project
+            .files
+            .get(&document_key)
+            .ok_or(anyhow::anyhow!(
+                "File {} was not present in the project",
+                document_key
+            ))
+            .internal_error()?;
         let word = get_word_at_position(&doc, &params.text_document_position.position);
         let cleaned_word = trim_line(&word);
         // let cleaned_word = word;

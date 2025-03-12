@@ -1,10 +1,11 @@
+use std::path::PathBuf;
 use crate::baml_project::position_utils::get_word_at_position;
 use crate::baml_project::{trim_line, BamlRuntimeExt};
 use crate::server::api::traits::{RequestHandler, SyncRequestHandler};
 use crate::server::api::ResultExt;
 use crate::server::client::Requester;
 use crate::server::{client::Notifier, Result};
-use crate::Session;
+use crate::{DocumentKey, Session};
 use lsp_types::{
     self, request as req, GotoDefinitionParams, GotoDefinitionResponse, Location, Position, Range,
     Url,
@@ -33,14 +34,15 @@ impl SyncRequestHandler for GotoDefinition {
             .expect("Ensured that a project db exists");
         project.update_runtime(Some(notifier)).internal_error()?;
 
-        let doc_url = params.text_document_position_params.text_document.uri;
+        let document_key = DocumentKey::from_url(&PathBuf::from(project.root_path()), &params.text_document_position_params.text_document.uri)
+            .internal_error()?;
         let doc = project
             .baml_project
             .files
-            .get(&doc_url.to_string())
+            .get(&document_key)
             .ok_or(anyhow::anyhow!(
                 "File {} was not present in the project",
-                doc_url
+                document_key
             ))
             .internal_error()?;
         let word = get_word_at_position(&doc, &params.text_document_position_params.position);

@@ -39,7 +39,7 @@ impl SyncRequestHandler for CodeLens {
             }
         };
         if baml_diagnostics.has_errors() {
-            return (Ok(None));
+            return Ok(None);
         }
 
         let mk_range = |span: &WasmSpan| {

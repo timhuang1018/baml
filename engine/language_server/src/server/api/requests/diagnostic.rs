@@ -10,8 +10,6 @@ use crate::baml_project::Project;
 use crate::server::api::traits::{BackgroundDocumentRequestHandler, RequestHandler};
 use crate::server::{client::Notifier, Result};
 use crate::session::DocumentSnapshot;
-// use red_knot_project::{Db, ProjectDatabase};
-// use ruff_db::source::{line_index, source_text};
 
 pub(crate) struct DocumentDiagnosticRequestHandler;
 

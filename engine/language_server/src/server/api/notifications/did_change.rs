@@ -1,6 +1,6 @@
 use lsp_types::notification::DidChangeTextDocument;
 use lsp_types::{DidChangeTextDocumentParams, PublishDiagnosticsParams};
-use url::Url;
+use std::path::PathBuf;
 
 use crate::server::api::diagnostics::session_lsp_diagnostics;
 use crate::server::api::traits::{NotificationHandler, SyncNotificationHandler};
@@ -26,9 +26,10 @@ impl SyncNotificationHandler for DidChangeTextDocumentHandler {
         tracing::info!("DidChangeTextDocumentHandler");
 
         let url = params.text_document.uri;
+        let document_key = DocumentKey::from_url(&PathBuf::from(session.default_project_db().unwrap().root_path()), &url).internal_error()?;
 
         session
-            .set_unsaved_file(&url, params.content_changes)
+            .set_unsaved_file(&document_key, params.content_changes)
             .internal_error()?;
 
         session

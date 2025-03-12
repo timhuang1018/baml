@@ -160,25 +160,27 @@ fn local_notification_task<'a, N: traits::SyncNotificationHandler>(
     }))
 }
 
-#[allow(dead_code)]
-fn background_notification_thread<'a, N: traits::BackgroundDocumentNotificationHandler>(
-    req: lsp_server::Notification,
-    schedule: BackgroundSchedule,
-) -> super::Result<Task<'a>> {
-    let (_id, params) = cast_notification::<N>(req)?;
-    Ok(Task::background(schedule, move |session: &Session| {
-        // TODO(jane): we should log an error if we can't take a snapshot.
-        let Some(_snapshot) = session.take_snapshot(N::document_url(&params).into_owned()) else {
-            return Box::new(|_, _| {});
-        };
-        Box::new(move |_notifier, _| {
-            // if let Err(err) = N::run_with_snapshot(snapshot, notifier, params) {
-            //     tracing::error!("An error occurred while running {id}: {err}");
-            //     show_err_msg!("Ruff encountered a problem. Check the logs for more details.");
-            // }
-        })
-    }))
-}
+// #[allow(dead_code)]
+// fn background_notification_thread<'a, N: traits::BackgroundDocumentNotificationHandler>(
+//     req: lsp_server::Notification,
+//     schedule: BackgroundSchedule,
+// ) -> super::Result<Task<'a>> {
+//     let (_id, params) = cast_notification::<N>(req)?;
+//     Ok(Task::background(schedule, move |session: &Session| {
+//         let project = session.default_project_db()?;
+//         let document_key = DocumentKey::from_path(project.root_path(), params)?;
+//         // TODO(jane): we should log an error if we can't take a snapshot.
+//         let Some(_snapshot) = session.take_snapshot(document_key) else {
+//             return Box::new(|_, _| {});
+//         };
+//         Box::new(move |_notifier, _| {
+//             // if let Err(err) = N::run_with_snapshot(snapshot, notifier, params) {
+//             //     tracing::error!("An error occurred while running {id}: {err}");
+//             //     show_err_msg!("Ruff encountered a problem. Check the logs for more details.");
+//             // }
+//         })
+//     }))
+// }
 
 /// Tries to cast a serialized request from the server into
 /// a parameter type for a specific request handler.
