@@ -98,7 +98,7 @@
             }; };
 
             # Add build-time environment variables
-            RUSTFLAGS = "-C target-feature=+crt-static --cfg tracing_unstable";
+            RUSTFLAGS = "-C target-feature=+crt-static --cfg tracing_unstable -C linker=lld --cfg tracing_unstable";
 
             # Modify the test phase to only run library tests
             checkPhase = ''
@@ -134,6 +134,7 @@
             inherit buildInputs;
             PATH="${clang}/bin:$PATH";
             LIBCLANG_PATH = pkgs.libclang.lib + "/lib/";
+            RUSTFLAGS = "-C target-feature=+crt-static --cfg tracing_unstable -C linker=lld --cfg tracing_unstable";
           };
         }
     );
