@@ -44,7 +44,7 @@ use std::path::{Path, PathBuf};
 use std::time::Instant;
 
 use crate::server::client::Notifier;
-use crate::{TextDocument, DocumentKey};
+use crate::{DocumentKey, TextDocument};
 
 pub mod file_utils;
 pub mod metadata;
@@ -145,7 +145,6 @@ pub fn trim_line(s: &str) -> String {
     let res = s
         .trim_matches(|c: char| !c.is_alphanumeric() && c != '_' && c != '.')
         .to_string();
-    tracing::info!("trim_line: {:?} -> {:?}", s, res);
     res
 }
 
@@ -222,7 +221,8 @@ impl BamlProject {
                 let contents =
                     std::fs::read_to_string(&file_path).context("Failed to read file")?;
                 // let file_url = Url::from_file_path(&file_path).expect("TODO");
-                let document_key = DocumentKey::from_path(&PathBuf::from(&self.root_dir_name), &file_path)?;
+                let document_key =
+                    DocumentKey::from_path(&PathBuf::from(&self.root_dir_name), &file_path)?;
                 Ok((document_key, contents))
             })
             .collect::<anyhow::Result<HashMap<_, _>>>()?;
@@ -237,17 +237,20 @@ impl BamlProject {
         let mut hm = self.files.iter().collect::<HashMap<_, _>>();
         hm.extend(self.unsaved_files.iter());
 
-        let files_for_runtime = hm.into_iter().map(|(k, v)| (k.url().path().to_string(), v.clone())).collect::<HashMap<_, _>>();
+        let files_for_runtime = hm
+            .into_iter()
+            .map(|(k, v)| (k.url().path().to_string(), v.clone()))
+            .collect::<HashMap<_, _>>();
 
-        BamlRuntime::from_file_content(&self.root_dir_name, &files_for_runtime, env_vars).map_err(|e| {
-            match e.downcast::<DiagnosticsError>() {
+        BamlRuntime::from_file_content(&self.root_dir_name, &files_for_runtime, env_vars).map_err(
+            |e| match e.downcast::<DiagnosticsError>() {
                 Ok(e) => e,
                 Err(e) => {
                     log::debug!("Error: {:#?}", e);
                     return Diagnostics::new(PathBuf::from(&self.root_dir_name));
                 }
-            }
-        })
+            },
+        )
     }
 
     pub fn files(&self) -> Vec<String> {
@@ -257,7 +260,7 @@ impl BamlProject {
         });
         let formatted_files = all_files
             .iter()
-            .map(|(k, v)| format!("{}BAML_PATH_SPLTTER{}", k, v))
+            .map(|(k, v)| format!("{}BAML_PATH_SPLTTER{}", k.url().path(), v))
             .collect::<Vec<String>>();
         formatted_files
     }
@@ -775,6 +778,7 @@ impl Project {
         }
 
         let files = self.baml_project.files();
+        // dbg!(&files);
         let mut file_map = HashMap::new();
         for file in files {
             // Expecting files to be in the format: "pathBAML_PATH_SPLTTERcontent"
@@ -917,6 +921,10 @@ impl Project {
                     },
                 };
 
+                let document_key = DocumentKey::from_path(
+                    &PathBuf::from(self.root_path()),
+                    &PathBuf::from(&symbol_location.uri),
+                )?;
                 let symbol_doc = self
                     .files()
                     .get(&symbol_location.uri)

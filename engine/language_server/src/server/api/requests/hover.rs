@@ -1,10 +1,10 @@
-use std::path::PathBuf;
 use crate::server::api::traits::{RequestHandler, SyncRequestHandler};
 use crate::server::api::ResultExt;
 use crate::server::client::Requester;
 use crate::server::{client::Notifier, Result};
 use crate::{DocumentKey, Session};
 use lsp_types::{self as types, request as req, HoverParams, TextDocumentItem};
+use std::path::PathBuf;
 
 pub(crate) struct Hover;
 
@@ -26,8 +26,8 @@ impl SyncRequestHandler for Hover {
         let project = session
             .default_project_db_mut()
             .expect("Ensured that a project db exists");
-        let document_key = DocumentKey::from_url(&PathBuf::from(project.root_path()), &url)
-            .internal_error()?;
+        let document_key =
+            DocumentKey::from_url(&PathBuf::from(project.root_path()), &url).internal_error()?;
         let text_document_item = match project.baml_project.files.get(&document_key) {
             None => {
                 tracing::warn!("Failed to find doc {:?}", url);

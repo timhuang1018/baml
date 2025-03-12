@@ -31,12 +31,8 @@ impl SyncRequestHandler for CodeLens {
 
         let fake_env = HashMap::new();
         let baml_diagnostics = match project.baml_project.runtime(fake_env) {
-            Ok(runtime) => {
-                runtime.internal().diagnostics().clone()
-            }
-            Err(err) => {
-                err
-            }
+            Ok(runtime) => runtime.internal().diagnostics().clone(),
+            Err(err) => err,
         };
         if baml_diagnostics.has_errors() {
             return Ok(None);
@@ -50,8 +46,9 @@ impl SyncRequestHandler for CodeLens {
         };
 
         let doc_matches = |span: &WasmSpan| {
-            let matches =
-                Some(params.text_document.uri.path()) == span.file_path.strip_prefix("file://");
+            let matches = Some(params.text_document.uri.path())
+                == span.file_path.strip_prefix("file://")
+                || params.text_document.uri.path() == span.file_path;
             matches
         };
 
