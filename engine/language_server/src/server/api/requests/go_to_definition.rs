@@ -1,3 +1,4 @@
+use anyhow::Context;
 use std::path::PathBuf;
 use crate::baml_project::position_utils::get_word_at_position;
 use crate::baml_project::{trim_line, BamlRuntimeExt};
@@ -52,24 +53,47 @@ impl SyncRequestHandler for GotoDefinition {
         }
         let rt = project.runtime().internal_error()?;
         let maybe_symbol = rt.search_for_symbol(&cleaned_word);
-        let goto_definition_response = maybe_symbol.map(|symbol_location| {
-            let range = Range {
-                start: Position {
-                    line: symbol_location.start_line as u32,
-                    character: symbol_location.start_character as u32,
-                },
-                end: Position {
-                    line: symbol_location.end_line as u32,
-                    character: symbol_location.end_character as u32,
-                },
-            };
-            let target_uri = Url::parse(&symbol_location.uri).unwrap();
-            lsp_types::GotoDefinitionResponse::Scalar(Location {
-                uri: target_uri,
-                range,
-            })
-        });
-        Ok(goto_definition_response)
+        match maybe_symbol {
+            None => Ok(None),
+            Some(symbol_location) => {
+
+                let range = Range {
+                    start: Position {
+                        line: symbol_location.start_line as u32,
+                        character: symbol_location.start_character as u32,
+                    },
+                    end: Position {
+                        line: symbol_location.end_line as u32,
+                        character: symbol_location.end_character as u32,
+                    },
+                };
+                let target_uri = Url::from_file_path(&symbol_location.uri).map_err(|_| anyhow::anyhow!("Failed to parse target URI")).internal_error()?;
+                let goto_definition_response = GotoDefinitionResponse::Scalar(Location {
+                    uri: target_uri,
+                    range,
+                });
+                Ok(Some(goto_definition_response))
+            }
+        }
+
+        //     // let target_uri = Url::from_file_path(&symbol_location.uri).unwrap();
+        //     // lsp_types::GotoDefinitionResponse::Scalar(Location {
+        //     //     uri: target_uri,
+        //     //     range,
+        //     // })
+        //     let maybe_target_uri = Url::parse(&symbol_location.uri);
+        //     match maybe_target_uri {
+        //         Ok(target_uri) => {
+        //             Some(Location { uri: target_uri, range })
+        //         }
+        //         Err(_) => {
+        //             eprintln!("Error parsing target URI: {:?}", symbol_location.uri);
+        //             None
+        //         },
+        //     }
+
+        // }).ok();
+        // Ok(goto_definition_response)
     }
 }
 

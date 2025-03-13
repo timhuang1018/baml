@@ -24,10 +24,14 @@ impl SyncRequestHandler for CodeLens {
         session
             .ensure_project_db_for_baml_file(&params.text_document.uri)
             .internal_error()?;
+        eprintln!("CODELENS ABOUT TO RELOAD ENV");
         session.reload(Some(notifier)).internal_error()?;
+        eprintln!("CODELENS FINISHED RELOADING ENV");
         let project = session
             .default_project_db_mut()
             .expect("Ensured that a project db exists");
+        eprintln!("CODELENS FILES: {:?}", project.baml_project.files.keys());
+        eprintln!("CODELENS RUNTIME is_ok(): {:?}", project.baml_project.runtime(HashMap::new()).is_ok());
 
         let fake_env = HashMap::new();
         let baml_diagnostics = match project.baml_project.runtime(fake_env) {
