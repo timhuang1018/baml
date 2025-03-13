@@ -219,10 +219,5 @@ jobs:
       - name: Upload VSIX artifact
         uses: actions/upload-artifact@v4
         with:
-          name: vscode-extension
-          path: baml.vsix
-      # - name: Upload VSIX artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: baml-vscode-extension
-      #     path: typescript/vscode-ext/packages/vscode/*.vsix
+          name: baml.vsix
+          path: typescript/vscode-ext/packages/vscode/baml-client-*.vsix
