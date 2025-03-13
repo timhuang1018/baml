@@ -51,18 +51,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "683d7910e743518b0e34f1186f92494becacb047c7b6bf616c96772180fef923"
 
 [[package]]
-name = "ambassador"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "06baa18a48752d8177eca1bafa9970b2dc649a81b98d6dde9ae83bea1867030b"
-dependencies = [
- "itertools 0.10.5",
- "proc-macro2",
- "quote",
- "syn 1.0.109",
-]
-
-[[package]]
 name = "android-tzdata"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -811,7 +799,6 @@ dependencies = [
 name = "baml-cli"
 version = "0.78.0"
 dependencies = [
- "ambassador",
  "anyhow",
  "assert_cmd",
  "async-std",
@@ -946,7 +933,6 @@ dependencies = [
 name = "baml-runtime"
 version = "0.78.0"
 dependencies = [
- "ambassador",
  "anyhow",
  "assert_cmd",
  "async-std",

@@ -58,6 +58,7 @@
           uv
           wasm-pack
           wasm-bindgen-cli
+          pkgs.gcc
         ]) ++ (if pkgs.stdenv.isDarwin then appleDeps else []);
         nativeBuildInputs = [
           pkgs.openssl
@@ -65,6 +66,9 @@
           pkgs.ruby
           pythonEnv
           pkgs.maturin
+          pkgs.perl
+          pkgs.lld_19
+          pkgs.gcc
         ];
         
         bamlCliInitData = pkgs.runCommand "baml-cli-init-data" {} ''
@@ -84,6 +88,9 @@
             # Disable tests in this build - FFI is a little tricky.
             doCheck = false;
 
+            # Temporary: do a debug build instead of a release build, to speed up the dev cycle.
+            buildType = "debug";
+
             pname = "baml-cli";
             version = version;
             src = ./engine;
@@ -93,12 +100,23 @@
             else
               "-isystem ${pkgs.llvmPackages_19.libclang.lib}/lib/clang/19/include -isystem ${pkgs.glibc.dev}/include";
 
+            cargoBuildFlags = "--bin baml-cli";
+
             cargoLock = { lockFile = ./engine/Cargo.lock; outputHashes = {
               "serde_magnus-0.9.0" = "sha256-+iIHleftJ+Yl9QHEBVI91NOhBw9qtUZfgooHKoyY1w4=";
             }; };
 
             # Add build-time environment variables
-            RUSTFLAGS = "-C target-feature=+crt-static --cfg tracing_unstable -C linker=lld --cfg tracing_unstable";
+            RUSTFLAGS = if pkgs.stdenv.isDarwin
+              then
+                "-C target-feature=+crt-static --cfg tracing_unstable -C linker=lld --cfg tracing_unstable"
+              else
+                "-C target-feature=+crt-static --cfg tracing_unstable --cfg tracing_unstable -Zlinker-features=+lld -C linker=gcc";
+
+            OPENSSL_STATIC = "1";
+            OPENSSL_DIR = "${pkgs.openssl.dev}";
+            OPENSSL_LIB_DIR = "${pkgs.openssl.out}/lib";
+            OPENSSL_INCLUDE_DIR = "${pkgs.openssl.dev}/include";
 
             # Modify the test phase to only run library tests
             checkPhase = ''
@@ -127,7 +145,7 @@
             PYTHON_SYS_EXECUTABLE="${pythonEnv}/bin/python3";
             LD_LIBRARY_PATH="${pythonEnv}/lib";
             PYTHONPATH="${pythonEnv}/${pythonEnv.sitePackages}";
-            CC="${clang}/bin/clang";
+            # CC="${clang}/bin/clang"; # Temporarily commented out for linux testing.
 
           };
           devShell = pkgs.mkShell rec {
