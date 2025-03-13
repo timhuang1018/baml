@@ -144,7 +144,7 @@ jobs:
           cd integ-tests/python
           ./run_tests.sh
   build-cli:
-    if: github.event_name == 'release'
+          # if: github.event_name == 'release'
     strategy:
       fail-fast: false
       matrix:
