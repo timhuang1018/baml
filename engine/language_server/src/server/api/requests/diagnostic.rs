@@ -10,6 +10,7 @@ use crate::baml_project::Project;
 use crate::server::api::traits::{BackgroundDocumentRequestHandler, RequestHandler};
 use crate::server::{client::Notifier, Result};
 use crate::session::DocumentSnapshot;
+use crate::server::api::diagnostics::session_lsp_diagnostics;
 
 pub(crate) struct DocumentDiagnosticRequestHandler;
 

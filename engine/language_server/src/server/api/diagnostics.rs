@@ -48,18 +48,6 @@ pub fn session_lsp_diagnostics(session: &Session, file_url: &Url) -> Vec<lsp_typ
         }
     };
 
-    // let spans = baml_diagnostics
-    //     .errors()
-    //     .iter()
-    //     .map(|error| ("ERROR", error.span()))
-    //     .chain(
-    //         baml_diagnostics
-    //             .warnings()
-    //             .iter()
-    //             .map(|warning| ("WARNING", warning.span())),
-    //     )
-    //     .collect::<Vec<_>>();
-
     let errors = baml_diagnostics
         .errors()
         .iter()
