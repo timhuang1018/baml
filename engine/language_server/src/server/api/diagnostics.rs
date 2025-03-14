@@ -5,6 +5,7 @@ use lsp_types::{notification::PublishDiagnostics, PublishDiagnosticsParams, Url}
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
+use crate::baml_project::Project;
 use crate::baml_text_size::TextSize;
 use crate::server::client::Notifier;
 use crate::server::Result;
@@ -25,20 +26,22 @@ pub(super) fn clear_diagnostics(uri: &Url, notifier: &Notifier) -> Result<()> {
 
 // TODO: This assumes a single project. Fix.
 // TODO: Handle errors.
-pub fn session_lsp_diagnostics(session: &Session, file_url: &Url) -> Vec<lsp_types::Diagnostic> {
+pub fn session_lsp_diagnostics(session: &mut Session, file_url: &Url) -> Vec<lsp_types::Diagnostic> {
 
     // let keys = session.index().documents.keys();
+    let _ = session.ensure_project_db_for_baml_file(file_url).map_err(|e| {
+        tracing::error!("Failed to ensure project db for baml file: {}", e);
+    });
+    let project = session.default_project_db().expect("We just ensured the session is valid");
 
-    let (root_path, proj) = match session.projects_by_workspace_folder.iter().next() {
-        Some((root_path, proj)) => (root_path, proj),
-        None => {
-            tracing::warn!("No project found in session");
-            return vec![];
-        }
-    };
+    project_diagnostics(project, file_url)
+}
 
+pub fn project_diagnostics(project: &Project, file_url: &Url) -> Vec<lsp_types::Diagnostic> {
+
+    let root_path = PathBuf::from(project.root_path());
     let fake_env = HashMap::new();
-    let baml_diagnostics = match proj.baml_project.runtime(fake_env) {
+    let baml_diagnostics = match project.baml_project.runtime(fake_env) {
         Ok(runtime) => {
             runtime.internal().diagnostics().clone()
             // Diagnostics::new(PathBuf::from("/fake1"))
@@ -51,32 +54,32 @@ pub fn session_lsp_diagnostics(session: &Session, file_url: &Url) -> Vec<lsp_typ
     let errors = baml_diagnostics
         .errors()
         .iter()
-        .filter(|e| matches_target(root_path, file_url, &e.span()))
-        .map(|error| {
-            lsp_types::Diagnostic::new(
-                span_to_range(session, root_path, file_url, error.span()).expect("Need a range"),
+        .filter(|e| matches_target(&root_path, file_url, &e.span()))
+        .filter_map(|error| {
+            Some(lsp_types::Diagnostic::new(
+                span_to_range(project, &root_path, file_url, error.span())?,
                 Some(DiagnosticSeverity::ERROR),
                 None,
                 None,
                 error.message().to_string(),
                 None,
                 None,
-            )
+            ))
         });
     let warnings = baml_diagnostics
         .warnings()
         .iter()
-        .filter(|w| matches_target(root_path, file_url, &w.span()))
-        .map(|warning| {
-            lsp_types::Diagnostic::new(
-                span_to_range(session, root_path, file_url, warning.span()).expect("Need a range"),
+        .filter(|w| matches_target(&root_path, file_url, &w.span()))
+        .filter_map(|warning| {
+            Some(lsp_types::Diagnostic::new(
+                span_to_range(project, &root_path, file_url, warning.span())?,
                 Some(DiagnosticSeverity::WARNING),
                 None,
                 None,
                 warning.message().to_string(),
                 None,
                 None,
-            )
+            ))
         });
     errors.chain(warnings).collect()
 }
@@ -86,17 +89,13 @@ fn matches_target(
     target: &Url,
     span: &internal_baml_diagnostics::Span,
 ) -> bool {
-    if let Some(span_path) = span.file.path().strip_prefix("file://") {
-        PathBuf::from(target.path()) == ensure_absolute(project_root, &PathBuf::from(span_path))
-    } else {
-        tracing::warn!("Encountered a span with non-url path: {:?}", span);
-        false
-    }
+    let span_path = span.file.path().strip_prefix("file://").map_or(span.file.path(), |s| s.to_string());
+    PathBuf::from(target.path()) == ensure_absolute(project_root, &PathBuf::from(span_path))
 }
 
 /// Convert a baml Span into a lsp_types::Range for use in an `lsp_types::Diagnostic.
 /// Params:
-///   - session: Pass the server session, we'll need it for getting the span's
+///   - project: Pass the baml project, we'll need it for getting the span's
 ///     document's line index.
 ///   - project_root: Root of the baml project, needed for augmenting span paths, which
 ///     seem to sporadically be relative paths.
@@ -104,22 +103,24 @@ fn matches_target(
 ///     Spans not related to this URL will be filtered out.
 ///   - span: The baml span to convert.
 fn span_to_range(
-    session: &Session,
+    project: &Project,
     project_root: &Path,
     _file_url: &Url,
     span: &internal_baml_diagnostics::Span,
 ) -> Option<lsp_types::Range> {
 
-    let span_path_with_prefix = span.file.path();
-    let span_path = span_path_with_prefix.strip_prefix("file://")?;
+    let span_path = ensure_absolute(project_root, &PathBuf::from(span.file.path()));
+    // let span_path_with_prefix = span.file.path();
+    // let span_path = span_path_with_prefix.strip_prefix("file://").map_err(|e| {
+    //     tracing::warn!("Failed to strip file:// prefix from span path: {}", e);
+    //     e
+    // })?;
 
-    let doc_key = DocumentKey::from_path(project_root, &PathBuf::from(span_path)).expect("Should parse2");
-    let doc = session
-        .index
-        .as_ref()
-        .and_then(|i| i.documents.get(&doc_key))
-        .expect("Should exist");
-    let line_index = doc.as_text().unwrap().index();
+    let doc_key = DocumentKey::from_path(project_root, &PathBuf::from(span_path)).map_err(|e| {
+        tracing::warn!("Failed to create DocumentKey: {}", e);
+    }).ok()?;
+    let doc = project.baml_project.unsaved_files.get(&doc_key).or(project.baml_project.files.get(&doc_key))?;
+    let line_index = doc.index();
 
     let start_loc =
         line_index.source_location(TextSize::new(span.start as u32), span.file.as_str());

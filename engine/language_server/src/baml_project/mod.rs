@@ -148,14 +148,14 @@ pub fn trim_line(s: &str) -> String {
     res
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub struct BamlProject {
     pub root_dir_name: String,
     // This is the version of the file on disk
-    pub files: HashMap<DocumentKey, String>,
+    pub files: HashMap<DocumentKey, TextDocument>,
     // This is the version of the file that is currently being edited
     // (unsaved changes)
-    pub unsaved_files: HashMap<DocumentKey, String>,
+    pub unsaved_files: HashMap<DocumentKey, TextDocument>,
 }
 
 impl BamlProject {
@@ -168,9 +168,9 @@ impl BamlProject {
         let all_files = self
             .files
             .iter()
-            .map(|(document_key, contents)| {
+            .map(|(document_key, text_document)| {
                 let path_buf = document_key.url().path();
-                (PathBuf::from(path_buf), contents.clone())
+                (PathBuf::from(path_buf), text_document.contents.clone())
             })
             .collect();
         let generated = runtime.run_codegen(&all_files, no_version_check.unwrap_or(false))?;
@@ -194,36 +194,39 @@ impl BamlProject {
 
     pub fn set_unsaved_file(&mut self, document_key: &DocumentKey, content: Option<String>) {
         if let Some(content) = content {
-            self.unsaved_files.insert(document_key.clone(), content);
+            let text_document = TextDocument::new(content, 0);
+            self.unsaved_files.insert(document_key.clone(), text_document);
         } else {
             self.unsaved_files.remove(document_key);
         }
     }
     pub fn save_file(&mut self, document_key: &DocumentKey, content: &str) {
-        self.files.insert(document_key.clone(), content.to_string());
+        let text_document = TextDocument::new(content.to_string(), 0);
+        self.files.insert(document_key.clone(), text_document);
         self.unsaved_files.remove(document_key);
     }
 
     pub fn update_file(&mut self, document_key: &DocumentKey, content: Option<String>) {
         if let Some(content) = content {
-            self.files.insert(document_key.clone(), content);
+            let text_document = TextDocument::new(content, 0);
+            self.files.insert(document_key.clone(), text_document);
         } else {
             self.files.remove(document_key);
         }
     }
 
     /// Load files into the current state. Also return the newly loaded files.
-    pub fn load_files(&mut self) -> anyhow::Result<HashMap<DocumentKey, String>> {
+    pub fn load_files(&mut self) -> anyhow::Result<HashMap<DocumentKey, TextDocument>> {
         let workspace_file_paths = gather_files(&PathBuf::from(&self.root_dir_name), false)?;
         let workspace_files = workspace_file_paths
             .into_iter()
             .map(|file_path| {
-                let contents =
-                    std::fs::read_to_string(&file_path).context("Failed to read file")?;
-                // let file_url = Url::from_file_path(&file_path).expect("TODO");
                 let document_key =
                     DocumentKey::from_path(&PathBuf::from(&self.root_dir_name), &file_path)?;
-                Ok((document_key, contents))
+                let contents =
+                    std::fs::read_to_string(&file_path).context("Failed to read file")?;
+                let text_document = TextDocument::new(contents, 0);
+                Ok((document_key, text_document))
             })
             .collect::<anyhow::Result<HashMap<_, _>>>()?;
 
@@ -234,12 +237,12 @@ impl BamlProject {
     }
 
     pub fn runtime(&self, env_vars: HashMap<String, String>) -> Result<BamlRuntime, Diagnostics> {
-        let mut hm = self.files.iter().collect::<HashMap<_, _>>();
+        let mut hm = self.files.iter().collect::<HashMap<_,_>>();
         hm.extend(self.unsaved_files.iter());
 
         let files_for_runtime = hm
             .into_iter()
-            .map(|(k, v)| (k.url().path().to_string(), v.clone()))
+            .map(|(k, v)| (k.url().path().to_string(), v.contents.clone()))
             .collect::<HashMap<_, _>>();
 
         BamlRuntime::from_file_content(&self.root_dir_name, &files_for_runtime, env_vars).map_err(
@@ -260,7 +263,7 @@ impl BamlProject {
         });
         let formatted_files = all_files
             .iter()
-            .map(|(k, v)| format!("{}BAML_PATH_SPLTTER{}", k.url().path(), v))
+            .map(|(k, v)| format!("{}BAML_PATH_SPLTTER{}", k.url().path(), v.contents))
             .collect::<Vec<String>>();
         formatted_files
     }

@@ -12,7 +12,7 @@ pub(crate) type DocumentVersion = i32;
 #[derive(Debug, Clone)]
 pub struct TextDocument {
     /// The string contents of the document.
-    contents: String,
+    pub contents: String,
     /// A computed line index for the document. This should always reflect
     /// the current version of `contents`. Using a function like [`Self::modify`]
     /// will re-calculate the line index automatically when the `contents` value is updated.

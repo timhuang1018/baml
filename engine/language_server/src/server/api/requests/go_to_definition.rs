@@ -46,7 +46,7 @@ impl SyncRequestHandler for GotoDefinition {
                 document_key
             ))
             .internal_error()?;
-        let word = get_word_at_position(&doc, &params.text_document_position_params.position);
+        let word = get_word_at_position(&doc.contents, &params.text_document_position_params.position);
         let cleaned_word = trim_line(&word);
         if cleaned_word.is_empty() {
             return Ok(None);

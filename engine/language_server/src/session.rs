@@ -136,7 +136,7 @@ impl Session {
     /// creating one if it doesn't exist.
     pub fn ensure_project_db_for_baml_file(&mut self, url: &Url) -> anyhow::Result<()> {
         let baml_src = find_top_level_parent(&PathBuf::from(url.path()))
-            .context("Failed to find top level parent")?;
+            .context("Failed to find top level parent 2")?;
         match self.project_db_for_path(&baml_src) {
             Some(_) => Ok(()),
             None => {
@@ -155,6 +155,7 @@ impl Session {
     }
 
     pub fn reload(&mut self, notifier: Option<Notifier>) -> anyhow::Result<()> {
+        eprintln!("****************** RELOADING *******************");
         let project_updates: Vec<HashMap<_, _>> = self
             .projects_by_workspace_folder
             .iter_mut()
@@ -170,7 +171,7 @@ impl Session {
             .collect::<anyhow::Result<Vec<_>>>()?;
         let files: Vec<(DocumentKey, String)> = project_updates
             .into_iter()
-            .map(|project_files| project_files.into_iter().collect::<Vec<_>>())
+            .map(|project_files| project_files.into_iter().map(|(key, text_document)| (key, text_document.contents)).collect::<Vec<_>>())
             .flatten()
             .collect();
 
@@ -230,10 +231,11 @@ impl Session {
             }
         };
         for (_folder, project) in self.projects_by_workspace_folder.iter_mut() {
+            let text_document = TextDocument::new(new_contents.clone(), 0);
             project
                 .baml_project
                 .unsaved_files
-                .insert(document_key.clone(), new_contents.clone());
+                .insert(document_key.clone(), text_document);
         }
         Ok(())
     }
@@ -273,11 +275,12 @@ impl Session {
         self.projects_by_workspace_folder
             .iter_mut()
             .try_for_each(|(_folder, project)| {
+                let text_document = TextDocument::new(doc_contents.clone(), 0);
                 if project.baml_project.files.get(&doc_key).is_some() {
                     project
                         .baml_project
                         .files
-                        .insert(doc_key.clone(), doc_contents.to_string());
+                        .insert(doc_key.clone(), text_document);
 
                     project
                         .update_runtime(notifier.clone())

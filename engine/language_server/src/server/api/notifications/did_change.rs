@@ -25,34 +25,38 @@ impl SyncNotificationHandler for DidChangeTextDocumentHandler {
     ) -> Result<()> {
         tracing::info!("DidChangeTextDocumentHandler");
 
-        let url = params.text_document.uri;
-        let document_key = DocumentKey::from_url(&PathBuf::from(session.default_project_db().unwrap().root_path()), &url).internal_error()?;
+        // let url = params.text_document.uri;
+        // let document_key = DocumentKey::from_url(&PathBuf::from(session.default_project_db().unwrap().root_path()), &url).internal_error()?;
 
-        session
-            .set_unsaved_file(&document_key, params.content_changes)
-            .internal_error()?;
+        // session
+        //     .set_unsaved_file(&document_key, params.content_changes)
+        //     .internal_error()?;
 
-        session
-            .ensure_project_db_for_baml_file(&url)
-            .internal_error()?;
-        let project = session
-            .default_project_db_mut()
-            .expect("Already ensured this project exists");
-        project
-            .update_runtime(Some(notifier.clone()))
-            .internal_error()?;
+        // session
+        //     .ensure_project_db_for_baml_file(&url)
+        //     .internal_error()?;
+        // let project = session
+        //     .default_project_db_mut()
+        //     .expect("Already ensured this project exists");
+        // project
+        //     .update_runtime(Some(notifier.clone()))
+        //     .internal_error()?;
 
-        let diagnostics = session_lsp_diagnostics(session, &url);
 
-        // TODO: Only send this when clients do not support pull diagnostics?
-        notifier
-            .notify::<lsp_types::notification::PublishDiagnostics>(PublishDiagnosticsParams {
-                uri: url,
-                version: Some(params.text_document.version),
-                diagnostics,
-            })
-            .map_err(|e| anyhow::anyhow!("did_change err: {}", e))
-            .internal_error()?;
+
+
+        // let diagnostics = session_lsp_diagnostics(session, &url);
+
+        // // TODO: Only send this when clients do not support pull diagnostics?
+        // notifier
+        //     .notify::<lsp_types::notification::PublishDiagnostics>(PublishDiagnosticsParams {
+        //         uri: url,
+        //         version: Some(params.text_document.version),
+        //         diagnostics,
+        //     })
+        //     .map_err(|e| anyhow::anyhow!("did_change err: {}", e))
+        //     .internal_error()?;
+        
         // let Ok(path) = url_to_any_system_path(&params.text_document.uri) else {
         //     return Ok(());
         // };

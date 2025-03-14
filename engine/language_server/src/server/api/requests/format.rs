@@ -36,7 +36,7 @@ impl SyncRequestHandler for DocumentFormatting {
                     url
                 ))
             }
-            Some(contents) => Ok(contents),
+            Some(text_document) => Ok(text_document.contents.clone()),
         }
         .internal_error()?;
         format_schema(

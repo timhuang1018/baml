@@ -38,7 +38,7 @@ impl SyncRequestHandler for Completion {
                 document_key
             ))
             .internal_error()?;
-        let word = get_word_at_position(&doc, &params.text_document_position.position);
+        let word = get_word_at_position(&doc.contents, &params.text_document_position.position);
         let cleaned_word = trim_line(&word);
         // let cleaned_word = word;
         tracing::info!("Cleaned word: {:?}", cleaned_word);

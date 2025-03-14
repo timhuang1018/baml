@@ -36,10 +36,10 @@ impl SyncRequestHandler for Hover {
                     url
                 ))
             }
-            Some(contents) => Ok(TextDocumentItem {
+            Some(text_document) => Ok(TextDocumentItem {
                 uri: url.clone(),
                 language_id: "BAML".to_string(),
-                text: contents.clone(),
+                text: text_document.contents.clone(),
                 version: 1,
             }),
         }
