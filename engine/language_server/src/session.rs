@@ -66,6 +66,11 @@ impl Session {
         let index = index::Index::new(global_settings);
 
         for (url, _) in workspace_folders {
+            eprintln!(
+                "********* Try to convert url: {:?}. Result: {:?}",
+                url,
+                url.to_file_path()
+            );
             let workspace_path = url
                 .to_file_path()
                 .map_err(|()| anyhow!("Workspace URL is not a file or directory: {:?}", url))?;
@@ -73,7 +78,7 @@ impl Session {
             workspaces.insert(
                 workspace_path,
                 Project::new(BamlProject {
-                    root_dir_name: url.path().to_string(),
+                    root_dir_name: url.to_file_path().expect("TODO"),
                     files: HashMap::new(),
                     unsaved_files: HashMap::new(),
                 }),
@@ -135,16 +140,17 @@ impl Session {
     /// Ensures that a project database exists for the given BAML file,
     /// creating one if it doesn't exist.
     pub fn ensure_project_db_for_baml_file(&mut self, url: &Url) -> anyhow::Result<()> {
-        let baml_src = find_top_level_parent(&PathBuf::from(url.path()))
+        eprintln!("About to call PathBuf::from({:?})", url.path());
+        eprintln!("Result is {:?}", PathBuf::from(url.path()));
+        let baml_src = find_top_level_parent(&PathBuf::from(url.to_file_path().expect("TODO")))
             .context("Failed to find top level parent 2")?;
         match self.project_db_for_path(&baml_src) {
             Some(_) => Ok(()),
             None => {
-                let baml_src_str = baml_src.to_str().context("TODO")?.to_string();
                 self.projects_by_workspace_folder.insert(
-                    baml_src,
+                    baml_src.clone(),
                     Project::new(BamlProject {
-                        root_dir_name: baml_src_str,
+                        root_dir_name: baml_src,
                         files: HashMap::new(),
                         unsaved_files: HashMap::new(),
                     }),
@@ -155,7 +161,6 @@ impl Session {
     }
 
     pub fn reload(&mut self, notifier: Option<Notifier>) -> anyhow::Result<()> {
-        eprintln!("****************** RELOADING *******************");
         let project_updates: Vec<HashMap<_, _>> = self
             .projects_by_workspace_folder
             .iter_mut()
@@ -171,7 +176,12 @@ impl Session {
             .collect::<anyhow::Result<Vec<_>>>()?;
         let files: Vec<(DocumentKey, String)> = project_updates
             .into_iter()
-            .map(|project_files| project_files.into_iter().map(|(key, text_document)| (key, text_document.contents)).collect::<Vec<_>>())
+            .map(|project_files| {
+                project_files
+                    .into_iter()
+                    .map(|(key, text_document)| (key, text_document.contents))
+                    .collect::<Vec<_>>()
+            })
             .flatten()
             .collect();
 

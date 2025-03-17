@@ -59,6 +59,7 @@ pub fn find_baml_src(file_path: &Path) -> Option<PathBuf> {
 /// * `Ok(Vec<PathBuf>)` containing the paths of discovered files,
 ///   or an `io::Error` if an error is encountered.
 pub fn gather_files(root_path: &Path, debug: bool) -> io::Result<Vec<PathBuf>> {
+    eprintln!("gather_files from {root_path:?}");
     let mut visited_dirs = HashSet::new();
     let mut dir_stack = Vec::new();
     let mut file_list = Vec::new();

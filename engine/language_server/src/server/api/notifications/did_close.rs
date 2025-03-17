@@ -1,16 +1,16 @@
-use std::path::PathBuf;
 use lsp_server::ErrorCode;
 use lsp_types::notification::DidCloseTextDocument;
 use lsp_types::DidCloseTextDocumentParams;
+use std::path::PathBuf;
 
 // use crate::server::api::diagnostics::clear_diagnostics;
 use crate::server::api::traits::{NotificationHandler, SyncNotificationHandler};
 // use crate::server::api::LSPResult;
 use crate::server::api::LSPResult;
+use crate::server::api::ResultExt;
 use crate::server::client::{Notifier, Requester};
 use crate::server::Result;
 use crate::session::Session;
-use crate::server::api::ResultExt;
 use crate::DocumentKey;
 // use crate::system::{url_to_any_system_path, AnySystemPath};
 
@@ -28,16 +28,15 @@ impl SyncNotificationHandler for DidCloseTextDocumentHandler {
         params: DidCloseTextDocumentParams,
     ) -> Result<()> {
         tracing::info!("DidCloseTextDocumentHandler");
-        // let Ok(path) = url_to_any_system_path(&params.text_document.uri) else {
-        //     return Ok(());
-        // };
 
         match session.default_project_db() {
-            None => {},
+            None => {}
             Some(project) => {
-
-                // let key = session.key_from_url(params.text_document.uri);
-                let document_key = DocumentKey::from_url(&PathBuf::from(project.root_path()),&params.text_document.uri).internal_error()?;
+                let document_key = DocumentKey::from_url(
+                    &PathBuf::from(project.root_path()),
+                    &params.text_document.uri,
+                )
+                .internal_error()?;
                 session
                     .close_document(&document_key)
                     .with_failure_code(ErrorCode::InternalError)?;

@@ -63,81 +63,6 @@ pub struct WasmGeneratedFile {
     pub contents: String,
 }
 
-// impl Into<WasmGeneratorOutput> for GenerateOutput {
-//     fn into(self) -> WasmGeneratorOutput {
-//         WasmGeneratorOutput {
-//             output_dir: self.output_dir_full.to_string_lossy().to_string(),
-//             output_dir_relative_to_baml_src: self
-//                 .output_dir_shorthand
-//                 .to_string_lossy()
-//                 .to_string(),
-//             files: self
-//                 .files
-//                 .into_iter()
-//                 .map(|(path, contents)| WasmGeneratedFile {
-//                     path_in_output_dir: path.to_string_lossy().to_string(),
-//                     contents,
-//                 })
-//                 .collect(),
-//         }
-//     }
-// }
-
-// pub struct Project {
-//     /// The files that are open in the project.
-//     ///
-//     /// Setting the open files to a non-`None` value changes `check` to only check the
-//     /// open files rather than all files in the project.
-//     open_fileset: Option<Arc<FxHashSet<PathBuf>>>,
-
-//     /// The first-party files of this project.
-//     file_set: Option<Arc<FxHashSet<PathBuf>>>,
-//     // The metadata describing the project, including the unresolved options.
-//     // pub metadata: ProjectMetadata,
-// }
-
-// --- Supporting types for definition/hover handling ---
-
-// #[derive(Debug)]
-// pub struct Position {
-//     pub line: usize,
-//     pub character: usize,
-// }
-
-// #[derive(Debug)]
-// pub struct Range {
-//     pub start: Position,
-//     pub end: Position,
-// }
-
-// #[derive(Debug)]
-// pub struct LocationLink {
-//     pub target_uri: String,
-//     pub target_range: Range,
-//     pub target_selection_range: Range,
-// }
-
-// #[derive(Debug)]
-// pub struct HoverContent {
-//     pub language: String,
-//     pub value: String,
-// }
-
-// #[derive(Debug)]
-// pub struct Hover {
-//     pub contents: Vec<HoverContent>,
-// }
-
-// A stub type for the symbol match that the runtime returns when looking up a symbol.
-// #[derive(Debug)]
-// pub struct SymbolMatch {
-//     pub uri: String,
-//     pub start_line: usize,
-//     pub start_character: usize,
-//     pub end_line: usize,
-//     pub end_character: usize,
-// }
-
 // --- Helper functions for working with text documents ---
 
 /// Trims a given string by removing non-alphanumeric characters (besides underscores and periods).
@@ -150,7 +75,7 @@ pub fn trim_line(s: &str) -> String {
 
 #[derive(Clone, Debug)]
 pub struct BamlProject {
-    pub root_dir_name: String,
+    pub root_dir_name: PathBuf,
     // This is the version of the file on disk
     pub files: HashMap<DocumentKey, TextDocument>,
     // This is the version of the file that is currently being edited
@@ -169,7 +94,7 @@ impl BamlProject {
             .files
             .iter()
             .map(|(document_key, text_document)| {
-                let path_buf = document_key.url().path();
+                let path_buf = document_key.path();
                 (PathBuf::from(path_buf), text_document.contents.clone())
             })
             .collect();
@@ -195,7 +120,8 @@ impl BamlProject {
     pub fn set_unsaved_file(&mut self, document_key: &DocumentKey, content: Option<String>) {
         if let Some(content) = content {
             let text_document = TextDocument::new(content, 0);
-            self.unsaved_files.insert(document_key.clone(), text_document);
+            self.unsaved_files
+                .insert(document_key.clone(), text_document);
         } else {
             self.unsaved_files.remove(document_key);
         }
@@ -217,12 +143,11 @@ impl BamlProject {
 
     /// Load files into the current state. Also return the newly loaded files.
     pub fn load_files(&mut self) -> anyhow::Result<HashMap<DocumentKey, TextDocument>> {
-        let workspace_file_paths = gather_files(&PathBuf::from(&self.root_dir_name), false)?;
+        let workspace_file_paths = gather_files(&&self.root_dir_name, false)?;
         let workspace_files = workspace_file_paths
             .into_iter()
             .map(|file_path| {
-                let document_key =
-                    DocumentKey::from_path(&PathBuf::from(&self.root_dir_name), &file_path)?;
+                let document_key = DocumentKey::from_path(&self.root_dir_name, &file_path)?;
                 let contents =
                     std::fs::read_to_string(&file_path).context("Failed to read file")?;
                 let text_document = TextDocument::new(contents, 0);
@@ -237,23 +162,26 @@ impl BamlProject {
     }
 
     pub fn runtime(&self, env_vars: HashMap<String, String>) -> Result<BamlRuntime, Diagnostics> {
-        let mut hm = self.files.iter().collect::<HashMap<_,_>>();
+        let mut hm = self.files.iter().collect::<HashMap<_, _>>();
         hm.extend(self.unsaved_files.iter());
 
         let files_for_runtime = hm
             .into_iter()
-            .map(|(k, v)| (k.url().path().to_string(), v.contents.clone()))
+            .map(|(k, v)| (k.unchecked_to_string(), v.contents.clone()))
             .collect::<HashMap<_, _>>();
 
-        BamlRuntime::from_file_content(&self.root_dir_name, &files_for_runtime, env_vars).map_err(
-            |e| match e.downcast::<DiagnosticsError>() {
-                Ok(e) => e,
-                Err(e) => {
-                    log::debug!("Error: {:#?}", e);
-                    return Diagnostics::new(PathBuf::from(&self.root_dir_name));
-                }
-            },
+        BamlRuntime::from_file_content(
+            &self.root_dir_name.as_os_str().to_str().expect("TODO"),
+            &files_for_runtime,
+            env_vars,
         )
+        .map_err(|e| match e.downcast::<DiagnosticsError>() {
+            Ok(e) => e,
+            Err(e) => {
+                log::debug!("Error: {:#?}", e);
+                return Diagnostics::new(self.root_dir_name.clone());
+            }
+        })
     }
 
     pub fn files(&self) -> Vec<String> {
@@ -263,7 +191,7 @@ impl BamlProject {
         });
         let formatted_files = all_files
             .iter()
-            .map(|(k, v)| format!("{}BAML_PATH_SPLTTER{}", k.url().path(), v.contents))
+            .map(|(k, v)| format!("{}BAML_PATH_SPLTTER{}", k.unchecked_to_string(), v.contents))
             .collect::<Vec<String>>();
         formatted_files
     }
@@ -978,7 +906,7 @@ impl Project {
     }
 
     /// Returns the root path of this project.
-    pub fn root_path(&self) -> &str {
+    pub fn root_path(&self) -> &Path {
         &self.baml_project.root_dir_name
     }
 

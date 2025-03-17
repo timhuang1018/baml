@@ -20,17 +20,19 @@ impl SyncRequestHandler for Hover {
         params: HoverParams,
     ) -> Result<Option<types::Hover>> {
         let url = &params.text_document_position_params.text_document.uri;
+        eprintln!("******* HOVER: url: {:?}", url);
         session
             .ensure_project_db_for_baml_file(url)
             .internal_error()?;
         let project = session
             .default_project_db_mut()
             .expect("Ensured that a project db exists");
-        let document_key =
-            DocumentKey::from_url(&PathBuf::from(project.root_path()), &url).internal_error()?;
+        let document_key = DocumentKey::from_url(project.root_path(), &url).internal_error()?;
+
+        eprintln!("***** HOVER FILES: {:?}", project.baml_project.files);
         let text_document_item = match project.baml_project.files.get(&document_key) {
             None => {
-                tracing::warn!("Failed to find doc {:?}", url);
+                tracing::warn!("*** HOVER: Failed to find doc {:?}", url);
                 Err(anyhow::anyhow!(
                     "File {} was not present in the project",
                     url
